@@ -1,16 +1,21 @@
-# This is a sample Python script.
+import input
+import batch
+from pulp import *
+# import panda as pd
+import numpy as np
 
-# Press Maiusc+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+model = LpProblem("Lab_analisi", LpMinimize)
 
+# creao l'array delle variabili che corrispondono alla fine del job
+end_job = np.array(range(input.n))
+cost = np.array(range(input.n))
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Ciao, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+for i in range(input.n):
+    end_job[i] = pulp.LpVariable("x", lowBound=0)
+for i in range(input.n):
+    cost[i] = pulp.LpVariable("c", lowBound=0)
 
+    model += sum(cost) # x + c
+for i in range(input.n):
+    model += cost[i] == input.due_date[i] - end_job[i]
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
