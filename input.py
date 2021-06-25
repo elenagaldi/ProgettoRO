@@ -1,7 +1,8 @@
 from openpyxl import load_workbook
 from numpy import array
+from configuration import INPUT_FILE
 
-file_excel = load_workbook('C:\\Users\\User\\PycharmProjects\\pythonProject\\input.xlsx', data_only=True)
+file_excel = load_workbook(INPUT_FILE, data_only=True)
 # dal primo foglio della mia cartella excel
 sheet1 = file_excel["Sheet1"]
 n = sheet1['B1'].value # vado a leggere il numero di jobs

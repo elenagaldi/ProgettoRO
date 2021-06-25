@@ -2,7 +2,7 @@ import input
 from numpy import array
 
 class Batch:
-    def __init__(self, start=0, jt , j=array(range(input.M)), t=array(range(input.M))): # in ingresso prende un array di indici di job ed un array di indici di task
+    def __init__(self, start=0, j=array(range(input.M)), t=array(range(input.M))): # in ingresso prende un array di indici di job ed un array di indici di task
         self.j = j  # tengo memoria dei job a cui appartengono i task
         self.t = t  # per ogni job tengo memoria dei task nel batch
         self.start = start
