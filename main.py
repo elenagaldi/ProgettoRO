@@ -1,5 +1,5 @@
 import input
-# import batch
+from batch import *
 from job import *
 from task import *
 # from pulp import *
@@ -26,9 +26,20 @@ for i in range(input.n):
 t = []
 
 for i in range(input.k):
-    t.append(Task(i, False))
+    t.append(Task(i, i+2, False))
 
 j = Job(1, 1, 3, t)
+
+b = Batch([[j, t[0]]])
+
+print("batch", b.j_t[0][1].duration)
+
+b.add_task(j, t[3])
+
+b.get_max_dur()
+
+
+
 '''
 for i in range(input.k):
     print(t[i].duration, " ", t[i].state)

@@ -42,7 +42,7 @@ job = []
 for i in range(n):
     list_task_job = []
     for j in range(k):
-        list_task_job.append(Task(matrix_TJ[i][j] * duration_t[j]))  # per ciascun job, vado a leggere e tenere in
+        list_task_job.append(Task(j, matrix_TJ[i][j] * duration_t[j]))  # per ciascun job, vado a leggere e tenere in
         # memoria la durata dei task (la durata sarà 0 per i tasks non presenti in quello specifico job
     job.append(Job(i, sheet_job.cell(i+2, 2).value, sheet_job.cell(i+2, 3).value, list_task_job))  # inizializzo il
     # job con il suo id, releaseTime, dueDate, e la lista dei suoi task e lo aggiungo alla lista dei job
