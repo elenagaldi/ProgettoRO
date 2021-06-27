@@ -1,8 +1,7 @@
-import input
 
 class Task:
-    def __init__(self, duration, state=True):
-        self.duration=duration
+    def __init__(self, duration, state=False): # settare un task a False significa che quel determinato task non è ancora stato usato nel batch
+        self.duration = duration
         self.state = state
 
     def set_state(self, new_state):

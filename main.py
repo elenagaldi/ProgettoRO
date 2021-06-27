@@ -1,4 +1,4 @@
-# import input
+import input
 # import batch
 from job import *
 from task import *
@@ -23,10 +23,19 @@ for i in range(input.n):
     model += cost[i] == input.due_date[i] - end_job[i]
 
 '''
-t=list(range(input.n))
-for i in range(input.n):
-    t[i] = Task(i, False)
-print(t[2].state)
-j = Job(1, 3, t)
+t = []
+
+for i in range(input.k):
+    t.append(Task(i, False))
+
+j = Job(1, 1, 3, t)
+'''
+for i in range(input.k):
+    print(t[i].duration, " ", t[i].state)
+
+
+for i in range(input.k):
+    print(j.task[i].duration, " ", j.task[i].state)
+'''
 j.set_task_on(2)
 print(j.get_task(2))

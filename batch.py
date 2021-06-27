@@ -10,8 +10,8 @@ class Batch:
     def calcola_durata(self):
         durata_max = 0
         for i in range(input.M):
-            if durata_max < input.task_d[self.t[i]]:
-                durata_max = input.task_d[self.t[i]]
+            if durata_max < input.duration_t[self.t[i]]:
+                durata_max = input.duration_t[self.t[i]]
 
         print(durata_max)
         return durata_max

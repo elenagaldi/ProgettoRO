@@ -1,54 +1,50 @@
 from openpyxl import load_workbook
 from numpy import array
 from configuration import INPUT_FILE
+from task import *
+from job import *
+
 
 file_excel = load_workbook(INPUT_FILE, data_only=True)
 print(file_excel.sheetnames)
 # dal primo foglio della mia cartella excel
-sheet1 = file_excel["Sheet1"]
+sheet1 = file_excel['Sheet1']
 n = sheet1['B1'].value # vado a leggere il numero di jobs
 k = sheet1['B2'].value # vado a leggere il numero di tasks
 M = sheet1['B3'].value # vado a leggere il numero di provette che possono essere processate contemporaneamente
 
-# dal secondo foglio leggo i release time di ogni job
-sheet2 = file_excel['ReleaseTime']
-release_time = array(range(n))
+# Vado a leggere la matrice Job_x_Task
+sheet_matrix = file_excel['MatriceJ-T']
+matrix_TJ = [[0]*k for _ in range(n)]
+
 for i in range(n):
-    # print(i)
-    release_time[i] = sheet2.cell(i+1, 1).value
-print(release_time)
-
-# dal terzo foglio leggo i duedate di ogni job
-sheet3 = file_excel['DueDate']
-due_date = array(range(n))
-for i in range(n):
-    # print(i)
-    due_date[i] = sheet3.cell(i+1, 1).value
-print(due_date)
-
-# dal quarto foglio leggo la matrice Task x Job (colonne in un job che task vengono eseguiti)
-sheet4 = file_excel['MatriceJ-T']
-matrix_TJ = [[0]*n for _ in range(k)]
-
-for i in range(k):
-    for j in range(n):
-        matrix_TJ[i][j] = sheet4.cell(i+1, j+1).value
+    for j in range(k):
+        matrix_TJ[i][j] = sheet_matrix.cell(i+2, j+2).value
 
 print(matrix_TJ)
 
-# dal quinto foglio leggo l'array delle durate dei tasks
-sheet5 = file_excel['TaskDuration']
-task_d = array(range(k))
+# Vado a leggere le durate dei task e le metto in un array
+
+sheet_task = file_excel['Task']
+duration_t = array('I', range(k))
 
 for i in range(k):
-    task_d[i] = sheet5.cell(i+1, 1).value
+    duration_t[i] = sheet_task.cell(i + 2, 2).value
 
-print(task_d)
+print(duration_t)
 
-'''
-jobs = array(range(1, n+1))
-print(jobs)
+# Vado a crearmi la lista dei job.
 
-tasks = matrix_TJ * jobs
-print(tasks)
-'''
+
+sheet_job = file_excel['Job']
+job = []
+
+for i in range(n):
+    list_task_job = []
+    for j in range(k):
+        list_task_job.append(Task(matrix_TJ[i][j] * duration_t[j]))  # per ciascun job, vado a leggere e tenere in
+        # memoria la durata dei task (la durata sarà 0 per i tasks non presenti in quello specifico job
+    job.append(Job(i, sheet_job.cell(i+2, 2).value, sheet_job.cell(i+2, 3).value, list_task_job))  # inizializzo il
+    # job con il suo id, releaseTime, dueDate, e la lista dei suoi task e lo aggiungo alla lista dei job
+
+
