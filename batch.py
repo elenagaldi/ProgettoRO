@@ -5,7 +5,7 @@ from numpy import array
 
 
 class Batch:
-    def __init__(self, j_t, start=0):  # in ingresso prende una matrice 2xM, M numero
+    def __init__(self, j_t=None, start=0):  # in ingresso prende una matrice 2xM, M numero
         # massimo di task processabili in un batch contemporaneamente
         self.j_t = j_t
         self.start = start

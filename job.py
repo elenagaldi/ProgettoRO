@@ -4,7 +4,7 @@ from array import array
 # =list(range(input.k))
 
 class Job:
-    def __init__(self, j_id, release_time, due_date, task, last_batch=0):
+    def __init__(self, j_id, release_time, due_date, task=None, last_batch=0):
         self.id = j_id
         self.release_time = release_time
         self.due_date = due_date
