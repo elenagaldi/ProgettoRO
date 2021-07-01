@@ -1,6 +1,3 @@
-from task import *
-from array import array
-
 # =list(range(input.k))
 
 class Job:
@@ -24,20 +21,25 @@ class Job:
         return self.id
 
     def find_st(self):  # find shortest task
-        length = 1000
-        index = 0
-        for i in range(len(self.task)):
-            if length > self.task[i].duration:
-                length = self.task[i].duration
-                index = i
-        return i  # ritorna l'indice del task con durata minore
+        shortest = self.task[0]
+        for i in range(1, len(self.task)):
+            next_task = self.task[i]
+            if next_task.duration < shortest.duration:
+                shortest = next_task
+        return shortest
+
+    # alternativa
+    def find_st2(self):
+        return min(self.task, key=lambda t: t.duration)
 
     def find_lt(self):  # find longest task
-        length = 0
-        index = 0
-        i = 0
-        for i in range(len(self.task)):
-            if length < self.task[i].duration:
-                length = self.task[i].duration
-                index = i
-        return i  # ritorna l'indice del task con durata maggiore
+        longest = self.task[0]
+        for i in range(1, len(self.task)):
+            next_task = self.task[i]
+            if next_task.duration > longest.duration:
+                longest = next_task
+        return longest
+
+    # alternativa
+    def find_lt2(self):
+        return max(self.task, key=lambda t: t.duration)
