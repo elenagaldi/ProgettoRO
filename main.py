@@ -48,5 +48,6 @@ for i in range(input.k):
 for i in range(input.k):
     print(j.task[i].duration, " ", j.task[i].state)
 '''
+
 j.set_task_on(2)
 print(j.get_task(2))
