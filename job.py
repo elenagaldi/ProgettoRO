@@ -27,7 +27,7 @@ class Job:
             if next_task.duration < shortest.duration:
                 shortest = next_task
         return shortest
-
+    
     # alternativa
     def find_st2(self):
         return min(self.task, key=lambda t: t.duration)
