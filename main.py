@@ -1,35 +1,35 @@
-from model.batch import *
-from model.job import *
-from model.task import *
+import configuration
 from inputData.xlsInputData import XslInputData
-from configuration import *
+from model.batch import Batch
+from model.job import Job
+from model.task import Task
+
 # from pulp import *
 # import panda as pd
 
 
-t = []
-
-input_obj = XslInputData(INPUT_FILE)
-jobs = input_obj.read_jobs()
+input_obj = XslInputData(configuration.INPUT_FILE)
+jobs: [Job] = input_obj.read_jobs()
+capacity_batch = input_obj.read_capacity_batch()
 
 print(jobs)
 
+t = []
+for i in range(input_obj.tasks_num):
+    t.append(Task(i, i + 2, False))
 
-# for i in range(input_obj.tasks_num):
-#     t.append(Task(i, i+2, False))
-#
-# j = Job(1, 1, 3, t)
-#
-# b = Batch([[j, t[0]]])
-#
-# print("batch", b.j_t[0][1].duration)
-#
-# b.add_task(j, t[3])
-#
-# b.get_max_dur()
-#
-# j.set_task_on(2)
-# print(j.get_task(2))
+j = Job(1, 1, 3, t)
+
+b = Batch(capacity_batch, [[j, t[0]]])
+
+print("batch", b.j_t[0][1])
+
+b.add_task(j, t[3])
+
+b.get_max_dur()
+
+j.set_task_on(2)
+print(j.get_task(2))
 
 '''
 for i in range(input.k):

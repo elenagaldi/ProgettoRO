@@ -1,8 +1,13 @@
+from model.job import Job
+from model.task import Task
+
+
 class Batch:
-    def __init__(self, j_t=None, start=0):  # in ingresso prende una matrice 2xM, M numero
+    def __init__(self, capacity, j_t: [[Job, Task]] = None, start=0):  # in ingresso prende una matrice 2xM, M numero
         # massimo di task processabili in un batch contemporaneamente
         self.j_t = j_t
         self.start = start
+        self.capacity = capacity
 
     def get_max_dur(self):
         dur_max = 0
@@ -18,12 +23,12 @@ class Batch:
         return False
 
     def full_batch(self):
-        if len(self.j_t) == input.M:
+        if len(self.j_t) == self.capacity:
             return True
         return False
 
     def is_job_in(self, job_id):
-        for i in range(len(self.j_t)-1):
+        for i in range(len(self.j_t) - 1):
             if self.j_t[i][0].j_id == job_id:
                 return True
         return False
@@ -40,7 +45,3 @@ class Batch:
 
     def calc_end(self):
         return self.start + self.get_max_dur()
-
-
-
-
