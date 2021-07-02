@@ -11,3 +11,8 @@ class Task:
     def get_state(self):
         return self.state
 
+    def __repr__(self):
+        return f'"Task ID:{self.t_id} Duration:{self.duration} State: {self.state}"'
+    def __str__(self):
+        return self.__repr__()
+

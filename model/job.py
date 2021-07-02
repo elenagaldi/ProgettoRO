@@ -1,7 +1,8 @@
 # =list(range(input.k))
+from model.task import Task
 
 class Job:
-    def __init__(self, j_id, release_time, due_date, task=None, last_batch=0):
+    def __init__(self, j_id, release_time, due_date, task: list[Task] =None, last_batch=0):
         self.id = j_id
         self.release_time = release_time
         self.due_date = due_date
@@ -27,7 +28,7 @@ class Job:
             if next_task.duration < shortest.duration:
                 shortest = next_task
         return shortest
-    
+
     # alternativa
     def find_st2(self):
         return min(self.task, key=lambda t: t.duration)
@@ -43,3 +44,8 @@ class Job:
     # alternativa
     def find_lt2(self):
         return max(self.task, key=lambda t: t.duration)
+
+    def __repr__(self):
+        return f'Job ID:{self.id} Realease time:{self.release_time} Due date: {self.due_date} Task : [{self.task}]\n'
+    def __str__(self):
+        return self.__repr__()
