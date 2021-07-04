@@ -3,18 +3,22 @@ from model.task import Task
 
 
 class Batch:
-    def __init__(self, capacity, j_t: [[Job, Task]] = None, start=0):  # in ingresso prende una matrice 2xM, M numero
+    def __init__(self, id_batch, capacity, j_t: [[Job, Task]] = None,
+                 start=0):  # in ingresso prende una matrice 2xM, M numero
         # massimo di task processabili in un batch contemporaneamente
+        self.id = id_batch
         self.j_t = j_t
         self.start = start
         self.capacity = capacity
+        self.end = self.calc_end()
 
     def get_max_dur(self):
-        dur_max = 0
-        for i in self.j_t:
-            if dur_max < self.j_t[i][1].duration:
-                dur_max = self.j_t[i][1].duration
-        print(dur_max)
+        dur_max = max([task[1].duration for task in self.j_t])
+        # dur_max = 0
+        # for x in self.j_t:
+        #     if dur_max < x[1].duration:
+        #         dur_max = x[1].duration
+        # print(dur_max)
         return dur_max
 
     def empty_batch(self):
@@ -33,12 +37,21 @@ class Batch:
     def add_task(self, job, task):
         if not self.full_batch():
             self.j_t.append([job, task])
+            self.end = self.calc_end()
 
     def remove_task(self, job, task):
         if not self.empty_batch():
-            for i in self.j_t:
-                if self.j_t[i][0] == job and self.j_t[i][1] == task:
-                    del self.j_t[i]
+            for x in self.j_t:
+                if x[0] == job and x[1] == task:
+                    del x
+            self.end = self.calc_end()
 
     def calc_end(self):
-        return self.start + self.get_max_dur()
+        end = self.start + self.get_max_dur()
+        return end
+
+    def __repr__(self):
+        return f'"Batch {self.id} : {[(x[0], x[1].t_id) for x in self.j_t]} Start:{self.start} End: {self.end}"'
+
+    def __str__(self):
+        return self.__repr__()

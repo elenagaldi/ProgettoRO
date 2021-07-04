@@ -11,13 +11,13 @@ class Job:
         self.last_batch = last_batch
 
     def set_task_on(self, index):
-        self.task[index].set_state(True)
+        self.task[index].set_processed(True)
 
     def set_task_off(self, index):
-        self.task[index].set_state(False)
+        self.task[index].set_processed(False)
 
     def get_task(self, index):
-        return self.task[index].state
+        return self.task[index].processed
 
     def get_id(self):
         return self.id
@@ -27,6 +27,13 @@ class Job:
 
     def find_lt(self):  # find longest task
         return max(self.task, key=lambda t: t.duration)
+
+    def is_completed(self):
+        for x in self.task:
+            if x.processed is False:
+                return False
+        else:
+            return True
 
     # ALTERNATIVE
     # def find_st2(self):

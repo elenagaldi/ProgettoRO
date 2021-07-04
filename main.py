@@ -1,6 +1,6 @@
 import configuration
+from euristica import Greedy
 from inputData.xlsInputData import XslInputData
-from model.batch import Batch
 from model.job import Job
 from model.task import Task
 
@@ -18,18 +18,25 @@ t = []
 for i in range(input_obj.tasks_num):
     t.append(Task(i, i + 2, False))
 
-j = Job(1, 1, 3, t)
+tot_task = 0  # numero dei task totali = numero variabili
+for i in jobs:
+    tot_task += len(i.task)
 
-b = Batch(capacity_batch, [[j, t[0]]])
+greedy = Greedy(jobs, capacity_batch, tot_task)
+greedy.start()
 
-print("batch", b.j_t[0][1])
-
-b.add_task(j, t[3])
-
-b.get_max_dur()
-
-j.set_task_on(2)
-print(j.get_task(2))
+# j = Job(1, 1, 3, t)
+#
+# b = Batch(capacity_batch, [[j, t[0]]])
+#
+# print("batch", b.j_t[0][1])
+#
+# b.add_task(j, t[3])
+#
+# b.get_max_dur()
+#
+# j.set_task_on(2)
+# print(j.get_task(2))
 
 '''
 for i in range(input.k):
