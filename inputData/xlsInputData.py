@@ -41,7 +41,7 @@ class XslInputData:
         for i in range(self.jobs_num):
             list_task_job = []
             for j in range(self.tasks_num):
-                #### MODIFICA PER LE DURATE = 0 #######
+                # MODIFICA PER LE DURATE = 0
                 if matrix_TJ[i][j] == 1:
                     list_task_job.append(
                         # Task(j, matrix_TJ[i][j] * duration_t[j]))   per ciascun jobs, vado a leggere e tenere in

@@ -8,6 +8,10 @@ from model.task import Task
 # import panda as pd
 
 
+# def obj_function(job_l, batches):
+#    cost = 0
+
+
 input_obj = XslInputData(configuration.INPUT_FILE)
 jobs: [Job] = input_obj.read_jobs()
 capacity_batch = input_obj.read_capacity_batch()
