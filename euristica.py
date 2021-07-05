@@ -9,7 +9,8 @@ class Greedy:
         self.tot_task = tot_task
 
     def start(self):
-        self.labeling()
+        batches = self.labeling()
+        return batches
 
     def labeling(self):
         self.jobs.sort(key=lambda x: x.release_time)
@@ -33,6 +34,7 @@ class Greedy:
                     tasks_processed += 1
                     task_i += 1
                     if self.jobs[job_i].is_completed():
+                        job.last_batch = id_batch
                         job_i += 1
                         task_i = 0
                         job = self.jobs[job_i] if job_i < num_jobs else job
@@ -44,3 +46,4 @@ class Greedy:
             id_batch += 1
 
         print(f'Batches : {batches}')
+        return batches

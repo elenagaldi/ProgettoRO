@@ -3,7 +3,7 @@ from model.task import Task
 
 
 class Job:
-    def __init__(self, j_id, release_time, due_date, task: list[Task] = None, last_batch=0):
+    def __init__(self, j_id, release_time, due_date, task: [Task] = None, last_batch=0):
         self.id = j_id
         self.release_time = release_time
         self.due_date = due_date

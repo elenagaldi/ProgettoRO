@@ -1,15 +1,20 @@
 import configuration
 from euristica import Greedy
 from inputData.xlsInputData import XslInputData
+from model.batch import Batch
 from model.job import Job
 from model.task import Task
+
 
 # from pulp import *
 # import panda as pd
 
 
-# def obj_function(job_l, batches):
-#    cost = 0
+def obj_function(job_l: [Job], batches: [Batch]):
+    cost = 0
+    for job in job_l:
+        cost += job.due_date - batches[job.last_batch].end
+    return cost
 
 
 input_obj = XslInputData(configuration.INPUT_FILE)
@@ -27,7 +32,9 @@ for i in jobs:
     tot_task += len(i.task)
 
 greedy = Greedy(jobs, capacity_batch, tot_task)
-greedy.start()
+batches = greedy.start()
+
+print(f'Costo: {obj_function(jobs, batches)}')
 
 # j = Job(1, 1, 3, t)
 #
