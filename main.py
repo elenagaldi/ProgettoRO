@@ -14,7 +14,10 @@ from model.task import Task
 def obj_function(job_l: [Job], batches: [Batch]):
     cost = 0
     for job in job_l:
-        cost += job.due_date - batches[job.last_batch].end
+        aux = job.due_date - batches[job.last_batch].end
+        if aux < 0:
+            # cost += job.due_date - batches[job.last_batch].end
+            cost += aux
     return cost
 
 
@@ -32,7 +35,7 @@ tot_task = 0  # numero dei task totali = numero variabili
 for i in jobs:
     tot_task += len(i.task)
 
-greedy = Greedy(jobs, capacity_batch, tot_task)
+greedy = Greedy1(jobs, capacity_batch, tot_task)
 batches = greedy.start()
 
 print(f'Costo: {obj_function(jobs, batches)}')
