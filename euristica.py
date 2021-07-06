@@ -33,7 +33,7 @@ class Greedy:
                 # job.task.sort(key=lambda x: x.duration)
                 if not job.task[task_i].is_processed():
                     # j_t.append([job_i, job.task[task_i]])
-                    j_t.append([job, job.task[task_i]])
+                    j_t.append([job.id, job.task[task_i]])
                     job.task[task_i].set_processed(True)
                     tasks_processed += 1
                     task_i += 1

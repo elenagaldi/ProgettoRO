@@ -51,7 +51,7 @@ class Batch:
         return end
 
     def __repr__(self):
-        return f'"Batch {self.id} : {[(x[0].id, x[1].t_id) for x in self.j_t]} Start:{self.start} End: {self.end}"'
+        return f'"Batch {self.id} : {[(x[0], x[1].t_id) for x in self.j_t]} Start:{self.start} End: {self.end}"'
 
     def __str__(self):
         return self.__repr__()
