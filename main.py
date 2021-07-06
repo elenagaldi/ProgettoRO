@@ -1,8 +1,6 @@
 import configuration
 from euristica import Greedy
-from euristica1 import Greedy1
 from inputData.xlsInputData import XslInputData
-from model import task
 from model.batch import Batch
 from model.job import Job
 from model.task import Task
@@ -12,11 +10,11 @@ from model.task import Task
 # import panda as pd
 
 
-def obj_function(job_l: [Job], batches: [Batch]):
+def obj_function(job_l: [Job], batch_l: [Batch]):
     cost = 0
     for job in job_l:
-        aux = job.due_date - batches[job.last_batch].end
-        if aux < 0:
+        aux = batch_l[job.last_batch].end - job.due_date
+        if aux > 0:
             # cost += job.due_date - batches[job.last_batch].end
             cost += aux
     return cost
@@ -36,11 +34,10 @@ tot_task = 0  # numero dei task totali = numero variabili
 for i in jobs:
     tot_task += len(i.task)
 
-greedy = Greedy1(jobs, capacity_batch, tot_task)
+greedy = Greedy(jobs, capacity_batch, tot_task)
 batches = greedy.start()
 
 print(f'Costo: {obj_function(jobs, batches)}')
-
 
 # j = Job(1, 1, 3, t)
 #
