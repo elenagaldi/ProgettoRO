@@ -23,11 +23,12 @@ def obj_function(job_l: [Job], batch_l: [Batch]):
 input_obj = XslInputData(configuration.INPUT_FILE)
 jobs: [Job] = input_obj.read_jobs()
 capacity_batch = input_obj.read_capacity_batch()
+duration_list = input_obj._duration_t
 
 print(jobs)
 
 t = []
-for i in range(input_obj.tasks_num):
+for i in range(input_obj._tasks_num):
     t.append(Task(i, i + 2, False))
 
 tot_task = 0  # numero dei task totali = numero variabili
