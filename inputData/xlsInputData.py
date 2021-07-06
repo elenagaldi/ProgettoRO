@@ -59,3 +59,7 @@ class XslInputData:
 
     def read_duration_task(self):
         return self._duration_t
+
+    @property
+    def read_tasks_num(self):
+        return self._tasks_num
