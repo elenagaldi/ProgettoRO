@@ -2,6 +2,7 @@ import configuration
 from euristica import Greedy
 from euristica1 import Greedy1
 from inputData.xlsInputData import XslInputData
+from model import task
 from model.batch import Batch
 from model.job import Job
 from model.task import Task
@@ -39,6 +40,7 @@ greedy = Greedy1(jobs, capacity_batch, tot_task)
 batches = greedy.start()
 
 print(f'Costo: {obj_function(jobs, batches)}')
+
 
 # j = Job(1, 1, 3, t)
 #
