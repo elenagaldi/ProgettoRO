@@ -1,5 +1,6 @@
 import configuration
 from euristica import Greedy
+from euristica1 import Greedy1
 from inputData.xlsInputData import XslInputData
 from model.batch import Batch
 from model.job import Job
