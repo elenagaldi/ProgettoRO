@@ -39,6 +39,7 @@ class Greedy2:
                             self.jobs[self.tasks[task_i][0]].last_batch = id_batch
                         k += 1
                         task_i += 1
+
             batch = Batch(id_batch, self.m, j_t, start_next_batch)
             batches.append(batch)
             start_next_batch = max(batch.end, self.jobs[self.tasks[task_i][0]].release_time)

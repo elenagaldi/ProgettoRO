@@ -12,7 +12,7 @@ class Task:
         return self.processed
 
     def __repr__(self):
-        return f'"Task ID:{self.t_id} Duration:{self.duration} State: {self.processed}\n"'
+        return f'"Task ID:{self.t_id} Duration:{self.duration} State: {self.processed}"\n'
 
     def __str__(self):
         return self.__repr__()

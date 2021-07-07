@@ -43,6 +43,7 @@ class Greedy1:
                         task_i = 0
                         job = self.jobs[job_i] if job_i < num_jobs else job
                     k += 1
+
             batch = Batch(id_batch, self.m, j_t, start_next_batch)
             batches.append(batch)
             start_next_batch = max(batch.end, job.release_time)

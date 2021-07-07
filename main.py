@@ -28,9 +28,9 @@ capacity_batch = input_obj.read_capacity_batch()
 
 print(jobs)
 
-t = []
-for i in range(input_obj.tasks_num):
-    t.append(Task(i, i + 2, False))
+# t = []
+#for i in range(input_obj.tasks_num):
+#    t.append(Task(i, i + 2, False))
 
 tot_task = 0  # numero dei task totali = numero variabili
 for i in jobs:
