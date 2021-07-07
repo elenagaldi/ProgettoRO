@@ -1,9 +1,11 @@
-from model.job import Job
 from model.task import Task
 
 
 class Batch:
-    def __init__(self, id_batch, capacity, j_t: [[Job, Task]] = None,
+    # j_t è una matrice 2XM che indica i task da inserire nel batch, M è la dimensione
+    # massima del batch, ogni riga è formata da due elementi, il primo è un intero che indica l'id del job, il
+    # secondo è un oggetto Task
+    def __init__(self, id_batch, capacity, j_t: [[int, Task]] = None,
                  start=0):  # in ingresso prende una matrice 2xM, M numero
         # massimo di task processabili in un batch contemporaneamente
         self.id = id_batch
@@ -32,14 +34,14 @@ class Batch:
         #     if self.j_t[i][0].j_id == job_id:
         #         return True
         # return False
-        return job_id in [x[0].id for x in self.j_t]
+        return job_id in [x[0] for x in self.j_t]
 
-    def add_task(self, job, task):
+    def add_task(self, job: int, task):
         if not self.full_batch():
             self.j_t.append([job, task])
             self.end = self.calc_end()
 
-    def remove_task(self, job, task):
+    def remove_task(self, job: int, task):
         if not self.empty_batch():
             for x in self.j_t:
                 if x[0] == job and x[1] == task:
@@ -51,7 +53,7 @@ class Batch:
         return end
 
     def __repr__(self):
-            return f'"Batch {self.id} : {[(x[0], x[1].t_id) for x in self.j_t]} Start:{self.start} End: {self.end}"\n'
+        return f'"Batch {self.id} : {[(x[0], x[1].t_id) for x in self.j_t]} Start:{self.start} End: {self.end}"\n'
 
     def __str__(self):
         return self.__repr__()
