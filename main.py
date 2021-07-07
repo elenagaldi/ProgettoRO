@@ -1,5 +1,6 @@
 import configuration
 from euristica import Greedy
+from euristica2 import Greedy2
 from euristica1 import Greedy1
 from inputData.xlsInputData import XslInputData
 from model.batch import Batch
@@ -35,7 +36,14 @@ tot_task = 0  # numero dei task totali = numero variabili
 for i in jobs:
     tot_task += len(i.task)
 
-greedy = Greedy1(jobs, capacity_batch, tot_task)
+lista_task = []
+for i in jobs:
+    for j in range(len(i.task)):
+        lista_task.append([i.id, i.release_time, i.task[j]])
+
+# greedy2 = Greedy2(jobs, lista_task, capacity_batch)
+# batches2 = greedy2.start()
+greedy = Greedy(jobs, capacity_batch, tot_task)
 batches = greedy.start()
 
 print(f'Costo: {obj_function(jobs, batches)}')

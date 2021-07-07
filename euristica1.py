@@ -30,10 +30,10 @@ class Greedy1:
             k = 0
             while k in range(self.m) and job.release_time <= start_next_batch and job_i < num_jobs:
                 job.task.sort(key=lambda x: x.duration)
-                print(f'Job {job.id} \t Lista task {job.task}')
+                # print(f'Job {job.id} \t Lista task {job.task}')
                 if not job.task[task_i].is_processed():
                     # j_t.append([job_i, job.task[task_i]]) job_i è un numero e non rappresenta il job che stiamo relamente andando ad inserire
-                    j_t.append([job, job.task[task_i]])
+                    j_t.append([job.id, job.task[task_i]])
                     job.task[task_i].set_processed(True)
                     tasks_processed += 1
                     task_i += 1
