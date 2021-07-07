@@ -7,6 +7,7 @@ class Greedy:
         self.jobs = jobs
         self.m = capacity_batch
         self.tot_task = tot_task
+        # self.duration_t = duration_t
 
     def start(self):
         batches = self.labeling()
@@ -14,11 +15,14 @@ class Greedy:
 
     def labeling(self):
         self.jobs.sort(key=lambda x: x.release_time)
+
         num_jobs = len(self.jobs)
         job_i = 0
         task_i = 0
         j_t = []
         batches: [Batch] = []
+
+        print(self.jobs)
 
         job = self.jobs[job_i]
         start_next_batch = job.release_time

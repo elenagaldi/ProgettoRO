@@ -15,13 +15,16 @@ class Batch:
         self.end = self.calc_end()
 
     def get_max_dur(self):
-        dur_max = max([task[1].duration for task in self.j_t])
-        # dur_max = 0
-        # for x in self.j_t:
-        #     if dur_max < x[1].duration:
-        #         dur_max = x[1].duration
-        # print(dur_max)
-        return dur_max
+        if not self.empty_batch():
+            dur_max = max([task[1].duration for task in self.j_t])
+            # dur_max = 0
+            # for x in self.j_t:
+            #     if dur_max < x[1].duration:
+            #         dur_max = x[1].duration
+            # print(dur_max)
+            return dur_max
+        else:
+            return 0
 
     def empty_batch(self):
         return self.j_t == [[]] or not self.j_t
@@ -44,8 +47,8 @@ class Batch:
     def remove_task(self, job: int, task):
         if not self.empty_batch():
             for x in self.j_t:
-                if x[0] == job and x[1] == task:
-                    del x
+                if x[0] == job and x[1].t_id == task.t_id:
+                    del self.j_t[self.j_t.index(x)]
             self.end = self.calc_end()
 
     def calc_end(self):
