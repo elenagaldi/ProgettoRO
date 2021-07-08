@@ -14,7 +14,7 @@ class Greedy2:
 
     def labeling(self):
         self.tasks.sort(key=lambda x: x[1])
-        self.tasks.sort(key=lambda x: x[2].duration, reverse=True)
+        self.tasks.sort(key=lambda x: x[2].duration)
 
         print(f'Tasks:\t {self.tasks}')
         len_tasks = len(self.tasks)
@@ -26,12 +26,11 @@ class Greedy2:
 
         id_batch = 0
 
-        while task_i < len_tasks - 1:
+        while task_i < len_tasks -1:
             k = 0
-            while k in range(self.m) and self.jobs[
-                self.tasks[task_i][0]].release_time <= start_next_batch and task_i < len_tasks - 1:
-                for t in self.jobs[self.tasks[task_i][0]].task:
-                    if t.id == self.tasks[task_i][2].id:
+            while k in range(self.m) and self.jobs[self.tasks[task_i][0]].release_time <= start_next_batch and task_i < len_tasks - 1:
+                for t in self.jobs[self.tasks[task_i][0]].task :
+                    if t.id == self.tasks[task_i][2].id and task_i < len_tasks - 1:
                         # if not t.is_processed():
                         j_t.append([self.tasks[task_i][0], t])
                         t.set_processed(True)
@@ -39,10 +38,10 @@ class Greedy2:
                         if self.jobs[self.tasks[task_i][0]].is_completed():
                             self.jobs[self.tasks[task_i][0]].last_batch = id_batch
                         k += 1
-                        task_i += 1
-
+                        task_i += 1 if task_i < len_tasks - 1 else task_i
             batch = Batch(id_batch, self.m, j_t, start_next_batch)
             batches.append(batch)
+            print(f'{task_i} - {len_tasks}\n')
             start_next_batch = max(batch.end, self.jobs[self.tasks[task_i][0]].release_time)
             j_t = []
             id_batch += 1
