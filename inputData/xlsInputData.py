@@ -25,6 +25,10 @@ class XslInputData:
             # duration_t = sheet_task.cell(i + 2, 2).value
             self._duration_t.append(self._sheet_task.cell(i + 2, 2).value)
 
+        # self._duration_t = {}
+        # for i in range(self._tasks_num):
+        #     self._duration_t[str(i)] = self._sheet_task.cell(i + 2, 2).value
+
     def read_jobs(self):
         # Vado a leggere la matrice Job_x_Task
         matrix_TJ = [[0] * self._tasks_num for _ in range(self._jobs_num)]

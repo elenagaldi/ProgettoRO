@@ -1,35 +1,19 @@
 import configuration
 from euristica import Greedy
-from euristica2 import Greedy2
-from euristica1 import Greedy1
 from inputData.xlsInputData import XslInputData
-from model.batch import Batch
-from model.job import Job
-from model.task import Task
-
 
 # from pulp import *
 # import panda as pd
-
-
-def obj_function(job_l: [Job], batches: [Batch]):
-    cost = 0
-    for job in job_l:
-        aux = job.due_date - batches[job.last_batch].end
-        if aux < 0:
-            # cost += job.due_date - batches[job.last_batch].end
-            cost += aux
-    return cost
-
+from optimization import *
 
 input_obj = XslInputData(configuration.INPUT_FILE)
 jobs: [Job] = input_obj.read_jobs()
 capacity_batch = input_obj.read_capacity_batch()
 
-print(jobs)
+# print(jobs)
 
 # t = []
-#for i in range(input_obj.tasks_num):
+# for i in range(input_obj.tasks_num):
 #    t.append(Task(i, i + 2, False))
 
 tot_task = 0  # numero dei task totali = numero variabili
@@ -47,6 +31,12 @@ greedy = Greedy(jobs, capacity_batch, tot_task)
 batches = greedy.start()
 
 print(f'Costo: {obj_function(jobs, batches)}')
+
+cost = 0
+for i in range(10):  # faccio ricerca locale 10 volte
+    cost, batches = localsearch(batches, jobs)
+
+print(batches, f'Ottimo locale trovato : {cost}')
 
 # j = Job(1, 1, 3, t)
 #
