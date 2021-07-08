@@ -74,7 +74,6 @@ class Greedy:
             start_next_batch = max(batch.end, job.release_time)
             j_t = []
             id_batch += 1
-         #commento per push.
         print(f'Batches : {batches}')
 
         # Qui conto quanti sono i task dentro ogni lista
