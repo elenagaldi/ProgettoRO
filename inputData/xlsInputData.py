@@ -56,7 +56,7 @@ class XslInputData:
             jobs.append(Job(i, self._sheet_job.cell(i + 2, 2).value, self._sheet_job.cell(i + 2, 3).value,
                             list_task_job))  # inizializzo il
             # jobs con il suo id, releaseTime, dueDate, e la lista dei suoi task e lo aggiungo alla lista dei jobs
-        return jobs
+        return jobs, self._jobs_num, self._tasks_num, self._capacity_batch, self._duration_t
 
     def read_capacity_batch(self):
         return self._capacity_batch
@@ -67,3 +67,7 @@ class XslInputData:
     @property
     def read_tasks_num(self):
         return self._tasks_num
+
+    @property
+    def jobs_num(self):
+        return self._jobs_num

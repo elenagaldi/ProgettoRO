@@ -28,9 +28,10 @@ class Greedy2:
 
         while task_i < len_tasks - 1:
             k = 0
-            while k in range(self.m) and self.jobs[self.tasks[task_i][0]].release_time <= start_next_batch and task_i < len_tasks - 1:
+            while k in range(self.m) and self.jobs[
+                self.tasks[task_i][0]].release_time <= start_next_batch and task_i < len_tasks - 1:
                 for t in self.jobs[self.tasks[task_i][0]].task:
-                    if t.t_id == self.tasks[task_i][2].t_id:
+                    if t.id == self.tasks[task_i][2].id:
                         # if not t.is_processed():
                         j_t.append([self.tasks[task_i][0], t])
                         t.set_processed(True)

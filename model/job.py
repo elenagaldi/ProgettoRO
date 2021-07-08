@@ -35,23 +35,6 @@ class Job:
         else:
             return True
 
-    # ALTERNATIVE
-    # def find_st2(self):
-    #     shortest = self.task[0]
-    #     for i in range(1, len(self.task)):
-    #         next_task = self.task[i]
-    #         if next_task.duration < shortest.duration:
-    #             shortest = next_task
-    #     return shortest
-    #
-    # def find_lt2(self):
-    #     longest = self.task[0]
-    #     for i in range(1, len(self.task)):
-    #         next_task = self.task[i]
-    #         if next_task.duration > longest.duration:
-    #             longest = next_task
-    #     return longest
-
     def __repr__(self):
         return f'Job ID:{self.id} Realease time:{self.release_time} Due date: {self.due_date} Task : [{self.task}]\n'
 

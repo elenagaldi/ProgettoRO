@@ -17,11 +17,6 @@ class Batch:
     def get_max_dur(self):
         if not self.empty_batch():
             dur_max = max([task[1].duration for task in self.j_t])
-            # dur_max = 0
-            # for x in self.j_t:
-            #     if dur_max < x[1].duration:
-            #         dur_max = x[1].duration
-            # print(dur_max)
             return dur_max
         else:
             return 0
@@ -33,10 +28,6 @@ class Batch:
         return len(self.j_t) == self.capacity
 
     def is_job_in(self, job_id):
-        # for i in range(len(self.j_t) - 1):
-        #     if self.j_t[i][0].j_id == job_id:
-        #         return True
-        # return False
         return job_id in [x[0] for x in self.j_t]
 
     def add_task(self, job: int, task):
@@ -47,7 +38,7 @@ class Batch:
     def remove_task(self, job: int, task):
         if not self.empty_batch():
             for x in self.j_t:
-                if x[0] == job and x[1].t_id == task.t_id:
+                if x[0] == job and x[1] == task.id:
                     del self.j_t[self.j_t.index(x)]
             self.end = self.calc_end()
 
@@ -56,7 +47,7 @@ class Batch:
         return end
 
     def __repr__(self):
-        return f'"Batch {self.id} : {[(x[0], x[1].t_id) for x in self.j_t]} Start:{self.start} End: {self.end}"\n'
+        return f'"Batch {self.id} : {[(x[0], x[1].id) for x in self.j_t]} Start:{self.start} End: {self.end}"\n'
 
     def __str__(self):
         return self.__repr__()
