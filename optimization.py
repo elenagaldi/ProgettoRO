@@ -44,6 +44,26 @@ def localsearch(solution: [Batch], jobs_dict: dict):
     return best_cost, best_solution
 
 
+def destroy_repair(solution: [Batch], jobs: [Job]):
+    new_solution = copy.deepcopy(solution)
+    cost = obj_function(jobs, solution)
+    best_solution, best_cost = solution, cost
+    lista_rt=[]
+    for job in jobs:
+        lista_rt.append(job.release_time)
+    for batch in new_solution:
+        for jobtask in batch.j_t:
+            job, task = jobtask[0], jobtask[1]
+            for batch2 in new_solution[batch.id + 1:]:
+                for jobtask2 in batch2.j_t:
+                    job2, task2 = jobtask2[0], jobtask2[1]
+                    swap_move(new_solution, batch.id, batch2.id, job, task, job2, task2)
+                    new_cost = obj_function(jobs, new_solution)
+                    if new_cost < cost:
+                        best_cost, best_solution = new_cost, copy.deepcopy(new_solution)
+                    new_solution = copy.deepcopy(solution)
+    return best_cost, best_solution
+
 class Optimization:
     def __init__(self, initial_solution, tot_task):
         self._solution = initial_solution
@@ -51,3 +71,5 @@ class Optimization:
 
     def tabu_search(self):
         pass
+
+

@@ -54,20 +54,21 @@ class Greedy:
 
         job = self.jobs[primi_task[task_i][0]]
         start_next_batch = job.release_time
+        len_primi_task = len(primi_task)
 
-        while tasks_processed < len(primi_task):
+        while task_i < len_primi_task-1:
             k = 0
-            while k in range(self.m) and self.jobs[primi_task[task_i][0]].release_time <= start_next_batch and tasks_processed < len(primi_task):
-                for t in self.jobs[primi_task[task_i][0]].task:
-                    print(t.duration, primi_task[task_i][0], primi_task[task_i][1])
-                    if t.duration == primi_task[task_i][1] and not t.is_processed:
-                        # if not t.is_processed():
+            while k in range(self.m) and self.jobs[primi_task[task_i][0]].release_time <= start_next_batch and task_i < len_primi_task-1:
+                for t in self.jobs[primi_task[task_i][0]].task :
+                    #print(t.duration, primi_task[task_i][0], primi_task[task_i][1],k)
+                    if t.duration == primi_task[task_i][1]:
+                        print(t.is_processed())
                         j_t.append([primi_task[task_i][0], t])
                         t.set_processed(True)
                         if self.jobs[primi_task[task_i][0]].is_completed():
                             self.jobs[primi_task[task_i][0]].last_batch = id_batch
                         k += 1
-                        task_i += 1
+                        task_i += 1 if task_i < len_primi_task-1 else task_i
             batch = Batch(id_batch, self.m, j_t, start_next_batch)
             batches.append(batch)
             start_next_batch = max(batch.end, job.release_time)

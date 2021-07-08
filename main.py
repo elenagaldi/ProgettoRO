@@ -31,11 +31,11 @@ if __name__ == '__main__':
         for j in range(len(i.task)):
             lista_task.append([i.id, i.release_time, i.task[j]])
 
-    greedy2 = Greedy2(jobs, lista_task, capacity_batch)
-    batches = greedy2.start()
+    #greedy2 = Greedy2(jobs, lista_task, capacity_batch)
+    #batches = greedy2.start()
 
-    # greedy = Greedy3(jobs, capacity_batch, tot_task)
-    # batches = greedy.start()
+    greedy = Greedy(jobs, capacity_batch, tot_task)
+    batches = greedy.start()
 
     print(f'Costo: {obj_function(jobs_dict, batches, count_vincoli=False)}')
 
