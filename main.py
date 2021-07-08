@@ -1,5 +1,8 @@
 import configuration
 from euristica import Greedy
+from euristica1 import Greedy1
+from euristica2 import Greedy2
+from euristica3 import Greedy3
 from inputData.xlsInputData import XslInputData
 
 # from pulp import *
@@ -25,10 +28,10 @@ for i in jobs:
     for j in range(len(i.task)):
         lista_task.append([i.id, i.release_time, i.task[j]])
 
-# greedy2 = Greedy2(jobs, lista_task, capacity_batch)
-# batches2 = greedy2.start()
-greedy = Greedy(jobs, capacity_batch, tot_task)
-batches = greedy.start()
+greedy2 = Greedy2(jobs, lista_task, capacity_batch)
+batches = greedy2.start()
+#greedy = Greedy3(jobs, capacity_batch, tot_task)
+#batches = greedy.start()
 
 print(f'Costo: {obj_function(jobs, batches)}')
 

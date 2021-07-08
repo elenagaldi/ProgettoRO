@@ -2,7 +2,7 @@ from model.batch import Batch
 from model.job import Job
 
 
-class Greedy:
+class Greedy3:
     def __init__(self, jobs: [Job], capacity_batch, tot_task):
         self.jobs = jobs
         self.m = capacity_batch
