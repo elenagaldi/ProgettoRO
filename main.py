@@ -34,7 +34,7 @@ if __name__ == '__main__':
     # greedy2 = Greedy2(jobs, lista_task, capacity_batch)
     # batches = greedy2.start()
 
-    greedy = Greedy(jobs, capacity_batch, tot_task)
+    greedy = Greedy3(jobs, capacity_batch, tot_task)
     batches = greedy.start()
 
     print(f'Costo:\n {obj_function(jobs_dict, batches, count_vincoli=False)}')

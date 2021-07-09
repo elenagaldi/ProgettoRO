@@ -21,6 +21,12 @@ class Batch:
         else:
             return 0
 
+    def get_longest_task(self):
+        if not self.empty_batch():
+            return max([task[1] for task in self.j_t], key=lambda t: t.duration)
+        else:
+            return None
+
     def empty_batch(self):
         return self.j_t == [[]] or not self.j_t
 

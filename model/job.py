@@ -22,11 +22,11 @@ class Job:
     def get_id(self):
         return self.id
 
-    def find_st(self):  # find shortest task
-        return min(self.task, key=lambda t: t.duration)
+    def find_shortest_task_notprocessed(self):  # find shortest task
+        return min([task for task in self.task if not task.is_processed()], key=lambda t: t.duration)
 
-    def find_lt(self):  # find longest task
-        return max(self.task, key=lambda t: t.duration)
+    def find_longest_tast_notprocessed(self):  # find longest task
+        return max([task for task in self.task if not task.is_processed()], key=lambda t: t.duration)
 
     def is_completed(self):
         for x in self.task:
@@ -34,6 +34,9 @@ class Job:
                 return False
         else:
             return True
+
+    def sum_dur_task(self):
+        return sum(t.duration if not t.is_processed else 0 for t in self.task)
 
     def __repr__(self):
         return f'Job ID:{self.id} Realease time:{self.release_time} Due date: {self.due_date} Task : [{self.task}]\n'
