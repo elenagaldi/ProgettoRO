@@ -3,9 +3,9 @@ from model.job import Job
 
 
 class Greedy2:
-    def __init__(self, jobs: [Job], lista_task, capacity_batch):
+    def __init__(self, jobs: [Job], capacity_batch, tot_task):
         self.jobs = jobs
-        self.tasks = lista_task
+        self.tot_task = tot_task
         self.m = capacity_batch
 
     def start(self):
@@ -13,36 +13,42 @@ class Greedy2:
         return batches
 
     def labeling(self):
-        self.tasks.sort(key=lambda x: x[1])
-        self.tasks.sort(key=lambda x: x[2].duration)
+        lista_task = []
+        for i in self.jobs:
+            for j in range(len(i.task)):
+                lista_task.append([i.id, i.release_time, i.task[j]])
 
-        print(f'Tasks:\t {self.tasks}')
-        len_tasks = len(self.tasks)
+        lista_task.sort(key=lambda x: x[1])
+        lista_task.sort(key=lambda x: x[2].duration, reverse=True)
+
+        len_tasks = len(lista_task)
         task_i = 0
         j_t = []
         batches: [Batch] = []
-
-        start_next_batch = self.jobs[self.tasks[task_i][0]].release_time
+        # print(lista_task[task_i][0])
+        start_next_batch = self.jobs[lista_task[task_i][0]].release_time
 
         id_batch = 0
 
-        while task_i < len_tasks -1:
+        while task_i < len_tasks - 1:
             k = 0
-            while k in range(self.m) and self.jobs[self.tasks[task_i][0]].release_time <= start_next_batch and task_i < len_tasks - 1:
-                for t in self.jobs[self.tasks[task_i][0]].task :
-                    if t.id == self.tasks[task_i][2].id and task_i < len_tasks - 1:
-                        # if not t.is_processed():
-                        j_t.append([self.tasks[task_i][0], t])
-                        t.set_processed(True)
+            while k in range(self.m) and self.jobs[lista_task[task_i][0]].release_time <= start_next_batch:
+                if not lista_task[task_i][2].processed:
+                    for t in self.jobs[lista_task[task_i][0]].task:
+                        if t.id == lista_task[task_i][2].id:
+                            j_t.append([lista_task[task_i][0], t])
+                            t.set_processed(True)
+                            if self.jobs[lista_task[task_i][0]].is_completed():
+                                self.jobs[lista_task[task_i][0]].last_batch = id_batch
+                            k += 1
+                if task_i < len_tasks - 1:
+                    task_i += 1
+                else:
+                    break
 
-                        if self.jobs[self.tasks[task_i][0]].is_completed():
-                            self.jobs[self.tasks[task_i][0]].last_batch = id_batch
-                        k += 1
-                        task_i += 1 if task_i < len_tasks - 1 else task_i
             batch = Batch(id_batch, self.m, j_t, start_next_batch)
             batches.append(batch)
-            print(f'{task_i} - {len_tasks}\n')
-            start_next_batch = max(batch.end, self.jobs[self.tasks[task_i][0]].release_time)
+            start_next_batch = max(batch.end, self.jobs[lista_task[task_i][0]].release_time)
             j_t = []
             id_batch += 1
 

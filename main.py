@@ -26,24 +26,19 @@ if __name__ == '__main__':
     for i in jobs:
         tot_task += len(i.task)
 
-    lista_task = []
-    for i in jobs:
-        for j in range(len(i.task)):
-            lista_task.append([i.id, i.release_time, i.task[j]])
-
-    # greedy2 = Greedy2(jobs, lista_task, capacity_batch)
-    # batches = greedy2.start()
-
-    greedy = Greedy3(jobs, capacity_batch, tot_task)
+    greedy = Greedy(jobs, capacity_batch, tot_task)
     batches = greedy.start()
 
     print(f'Costo:\n {obj_function(jobs_dict, batches, count_vincoli=False)}')
 
-    cost = 0
-    for i in range(10):  # faccio ricerca locale 10 volte
+    '''cost = 0
+    cost, batches = destroy_repair(batches, jobs_dict, capacity_batch, tot_task)
+    print(batches, f'Ottimo locale trovato con destroy and repair : {cost}')
+    '''
+    '''for i in range(10):  # faccio ricerca locale 10 volte
         cost, batches = localsearch(batches, jobs_dict)
 
-    print(batches, f'Ottimo locale trovato : {cost}')
+    print(batches, f'Ottimo locale trovato : {cost}')'''
 
     '''
     for i in range(input.k):
