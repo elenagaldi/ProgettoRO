@@ -35,7 +35,7 @@ class Greedy:
 
         for i in prima_meta:
             for t in i.task:
-                primi_task.append([i.id, t.duration])
+                primi_task.append([i.id, t.duration, t.id])
 
         primi_task.sort(key=lambda x: x[1])
         print(primi_task)
@@ -44,7 +44,7 @@ class Greedy:
 
         for i in seconda_meta:
             for t in i.task:
-                secondi_task.append([i.id, t.duration])
+                secondi_task.append([i.id, t.duration, t.id])
         secondi_task.sort(key=lambda x: x[1])
         print(secondi_task)
 
@@ -52,48 +52,58 @@ class Greedy:
         start_next_batch = job.release_time
         len_primi_task = len(primi_task)
 
-        while task_i < len_primi_task - 1:
+        while task_i < len_primi_task:
             k = 0
-            while k in range(self.m) and self.jobs[
-                primi_task[task_i][0]].release_time <= start_next_batch and task_i < len_primi_task - 1:
+            while k in range(self.m) and self.jobs[primi_task[task_i][0]].release_time <= start_next_batch:
                 for t in self.jobs[primi_task[task_i][0]].task:
-                    # print(t.duration, primi_task[task_i][0], primi_task[task_i][1],k)
-                    if t.duration == primi_task[task_i][1]:
-                        print(t.is_processed())
-                        j_t.append([primi_task[task_i][0], t])
+                    if t.duration == primi_task[task_i][1] and not t.processed:
                         t.set_processed(True)
+                        j_t.append([primi_task[task_i][0], t])
                         if self.jobs[primi_task[task_i][0]].is_completed():
                             self.jobs[primi_task[task_i][0]].last_batch = id_batch
                         k += 1
-                        task_i += 1 if task_i < len_primi_task - 1 else task_i
+                if task_i < len_primi_task-1:
+                    task_i += 1
+                else:
+                    # print(task_i)
+                    break
             batch = Batch(id_batch, self.m, j_t, start_next_batch)
             batches.append(batch)
             start_next_batch = max(batch.end, job.release_time)
             j_t = []
             id_batch += 1
+            if task_i == len_primi_task -1:
+                break
         print(f'Batches prima lista:\n {batches}')
         len_secondi_task = len(secondi_task)
-        job = self.jobs[secondi_task[task_i][0]]
+        # job = self.jobs[secondi_task[task_i][0]]
+        print(len_secondi_task)
         task_i = 0
-        while task_i < len_secondi_task - 1:
+        job = self.jobs[secondi_task[task_i][0]]
+        start_next_batch = job.release_time
+        while task_i < len_secondi_task:
             k = 0
-            while k in range(self.m) and self.jobs[
-                secondi_task[task_i][0]].release_time <= start_next_batch and task_i < len_secondi_task - 1:
+            while k in range(self.m) and self.jobs[secondi_task[task_i][0]].release_time <= start_next_batch:
                 for t in self.jobs[secondi_task[task_i][0]].task:
                     # print(t.duration, primi_task[task_i][0], primi_task[task_i][1],k)
-                    if t.duration == secondi_task[task_i][1]:
-                        print(t.is_processed())
-                        j_t.append([secondi_task[task_i][0], t])
+                    if t.duration == secondi_task[task_i][1] and not t.processed:
                         t.set_processed(True)
+                        j_t.append([secondi_task[task_i][0], t])
                         if self.jobs[secondi_task[task_i][0]].is_completed():
                             self.jobs[secondi_task[task_i][0]].last_batch = id_batch
                         k += 1
-                        task_i += 1 if task_i < len_secondi_task - 1 else task_i
+                if task_i < len_secondi_task-1:
+                    task_i += 1
+                else:
+                    print(task_i)
+                    break
             batch = Batch(id_batch, self.m, j_t, start_next_batch)
             batches.append(batch)
             start_next_batch = max(batch.end, job.release_time)
             j_t = []
             id_batch += 1
+            if task_i == len_secondi_task -1:
+                break
         print(f'Batches seconda lista:\n {batches}')
 
         # Qui conto quanti sono i task dentro ogni lista

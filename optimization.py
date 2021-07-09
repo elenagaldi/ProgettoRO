@@ -1,5 +1,8 @@
 import copy
-
+from euristica2 import Greedy2
+from euristica3 import Greedy3
+from euristica1 import Greedy1
+from euristica import Greedy
 from model.batch import Batch
 from model.job import Job
 
@@ -44,25 +47,39 @@ def localsearch(solution: [Batch], jobs_dict: dict):
     return best_cost, best_solution
 
 
-def destroy_repair(solution: [Batch], jobs: [Job]):
+def destroy_repair(solution: [Batch], jobs_dict: dict, capacity_batch,tot_task):
     new_solution = copy.deepcopy(solution)
-    cost = obj_function(jobs, solution)
+    cost = obj_function(jobs_dict, solution, count_vincoli=True)
     best_solution, best_cost = solution, cost
-    lista_rt=[]
-    for job in jobs:
-        lista_rt.append(job.release_time)
-    for batch in new_solution:
-        for jobtask in batch.j_t:
-            job, task = jobtask[0], jobtask[1]
-            for batch2 in new_solution[batch.id + 1:]:
-                for jobtask2 in batch2.j_t:
-                    job2, task2 = jobtask2[0], jobtask2[1]
-                    swap_move(new_solution, batch.id, batch2.id, job, task, job2, task2)
-                    new_cost = obj_function(jobs, new_solution)
-                    if new_cost < cost:
-                        best_cost, best_solution = new_cost, copy.deepcopy(new_solution)
-                    new_solution = copy.deepcopy(solution)
-    return best_cost, best_solution
+    set_rt = {100}
+    jobs=[]
+    for job in jobs_dict.values():
+        set_rt.add(job.release_time)
+        jobs.append(job)
+    print(f'Prima soluzione: {new_solution}')
+    # per ogni valore possibile di release time faccio destroy and repair
+    for rt in set_rt:
+        task_to_do = []
+        job_to_do = []
+
+        # destroy
+        for batch in new_solution:
+            if batch.start > rt:
+                for jobtask in batch.j_t:
+                    job, task = jobtask[0], jobtask[1]
+                    if jobs_dict[job].release_time == rt:
+                        batch.j_t.remove(jobtask)
+                        task.set_processed(False)
+                        task_to_do.append(task)
+    print(f'Nuova soluzione: {new_solution}')
+    '''   # repair
+        greedy = Greedy2(jobs, capacity_batch, tot_task)
+        new_solution = greedy.start()
+        new_cost = obj_function(jobs_dict, new_solution, count_vincoli=True)
+        if new_cost < cost:
+            best_cost, best_solution = new_cost, copy.deepcopy(new_solution)
+            new_solution = copy.deepcopy(solution)
+    return best_cost, best_solution'''
 
 class Optimization:
     def __init__(self, initial_solution, tot_task):
