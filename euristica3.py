@@ -2,7 +2,13 @@ from model.batch import Batch
 from model.job import Job
 from model.task import Task
 
+# STRATEGY:
+# LPT/SPT -> sceglie il task più lungo/corto quando il batch è vuoto
 STRATEGY = "LPT"
+# CRITERIA SORT:
+# R/D/T -> ordina i job per RELEASE TIME/DUE DATE/SOMMA DURATA TASK
+# (se presente più di una lettera fa la somma dei termini)
+CRITERIA_SORT = "RDT"
 
 
 def take_shortest_n_task_not_processed(tasks, n):
@@ -28,7 +34,12 @@ def get_similar_task(batch: Batch, task_list: [Task]):
     return simil_task
 
 
-class Greedy3:
+def sort_criteria(criteria: str):
+    return lambda job: (job.release_time if "R" in criteria else 0) + (job.due_date if "D" in criteria else 0) + (
+        job.sum_dur_task() if "T" in criteria else 0)
+
+
+class Euristica3:
     def __init__(self, jobs: [Job], capacity_batch, tot_task):
         self.jobs = jobs
         self.m = capacity_batch
@@ -38,48 +49,8 @@ class Greedy3:
         batches = self.greedy3()
         return batches
 
-    def labeling(self):
-        self.jobs.sort(key=lambda x: (x.release_time))
-
-        num_jobs = len(self.jobs)
-        job_i = 0
-        task_i = 0
-        j_t = []
-        batches: [Batch] = []
-
-        job = self.jobs[job_i]
-        start_next_batch = job.release_time
-
-        tasks_processed = 0
-        id_batch = 0
-        while tasks_processed < self.tot_task:
-            k = 0
-            while k in range(self.m) and job.release_time <= start_next_batch and job_i < num_jobs:
-                if not job.task[task_i].is_processed():
-                    j_t.append([job.id, job.task[task_i]])
-                    job.task[task_i].set_processed(True)
-                    tasks_processed += 1
-                    task_i += 1
-                    if self.jobs[job_i].is_completed():
-                        job.last_batch = id_batch
-                        job_i += 1
-                        task_i = 0
-                        job = self.jobs[job_i] if job_i < num_jobs else job
-                    k += 1
-                else:
-                    tasks_processed += 1
-                    task_i += 1
-            batch = Batch(id_batch, self.m, j_t, start_next_batch)
-            batches.append(batch)
-            start_next_batch = max(batch.end, job.release_time)
-            j_t = []
-            id_batch += 1
-        # commento per push
-        print(f'Batches : {batches}')
-        return batches
-
     def greedy3(self):
-        self.jobs.sort(key=lambda x: (x.release_time + x.due_date + x.sum_dur_task()))
+        self.jobs.sort(key=sort_criteria(CRITERIA_SORT))
         num_jobs = len(self.jobs)
         # print(self.jobs)
         task_i = 0
@@ -101,22 +72,17 @@ class Greedy3:
                         task_to_insert = job.find_shortest_task_notprocessed()
                     else:
                         task_to_insert = job.find_longest_tast_notprocessed()
-                if not task_to_insert.is_processed():
-                    batch.add_task(job.id, task_to_insert)
-                    task_to_insert.set_processed(True)
-                    tasks_processed += 1
-                    task_i += 1
-                    if self.jobs[job_i].is_completed():
-                        job.last_batch = id_batch
-                        job_i += 1
-                        job = self.jobs[job_i] if job_i < num_jobs else job
-                    k += 1
-                else:
-                    tasks_processed += 1
-                    task_i += 1
+                batch.add_task(job.id, task_to_insert)
+                task_to_insert.set_processed(True)
+                tasks_processed += 1
+                task_i += 1
+                if self.jobs[job_i].is_completed():
+                    job.last_batch = id_batch
+                    job_i += 1
+                    job = self.jobs[job_i] if job_i < num_jobs else job
+                k += 1
             batches.append(batch)
             start_next_batch = max(batch.end, job.release_time)
             id_batch += 1
-        # commento per push
         print(f'Batches : {batches}')
         return batches
