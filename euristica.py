@@ -29,6 +29,7 @@ class Greedy:
         seconda_meta.sort(key=lambda x: x.release_time)
         print(prima_meta)
         print('Le differenze\n')
+
         print(seconda_meta)
         primi_task = []
         print(prima_meta)
