@@ -45,12 +45,11 @@ class Greedy2:
                     task_i += 1
                 else:
                     break
-
             batch = Batch(id_batch, self.m, j_t, start_next_batch)
             batches.append(batch)
             start_next_batch = max(batch.end, self.jobs[lista_task[task_i][0]].release_time)
-            j_t = []
             id_batch += 1
+            j_t = []
 
         print(f'Batches : {batches}')
         return batches
