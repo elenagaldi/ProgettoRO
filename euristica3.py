@@ -2,7 +2,7 @@ from model.batch import Batch
 from model.job import Job
 from model.task import Task
 
-STRATEGY = "SPT"
+STRATEGY = "LPT"
 
 
 def take_shortest_n_task_not_processed(tasks, n):
@@ -40,6 +40,7 @@ class Greedy3:
 
     def labeling(self):
         self.jobs.sort(key=lambda x: (x.release_time))
+
         num_jobs = len(self.jobs)
         job_i = 0
         task_i = 0
@@ -80,7 +81,7 @@ class Greedy3:
     def greedy3(self):
         self.jobs.sort(key=lambda x: (x.release_time + x.due_date + x.sum_dur_task()))
         num_jobs = len(self.jobs)
-
+        # print(self.jobs)
         task_i = 0
         batches: [Batch] = []
         tasks_processed = 0

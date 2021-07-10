@@ -63,7 +63,7 @@ class Greedy:
                         if self.jobs[primi_task[task_i][0]].is_completed():
                             self.jobs[primi_task[task_i][0]].last_batch = id_batch
                         k += 1
-                if task_i < len_primi_task-1:
+                if task_i < len_primi_task - 1:
                     task_i += 1
                 else:
                     # print(task_i)
@@ -73,7 +73,7 @@ class Greedy:
             start_next_batch = max(batch.end, job.release_time)
             j_t = []
             id_batch += 1
-            if task_i == len_primi_task -1:
+            if task_i == len_primi_task - 1:
                 break
         print(f'Batches prima lista:\n {batches}')
         len_secondi_task = len(secondi_task)
@@ -93,7 +93,7 @@ class Greedy:
                         if self.jobs[secondi_task[task_i][0]].is_completed():
                             self.jobs[secondi_task[task_i][0]].last_batch = id_batch
                         k += 1
-                if task_i < len_secondi_task-1:
+                if task_i < len_secondi_task - 1:
                     task_i += 1
                 else:
                     print(task_i)
@@ -103,7 +103,7 @@ class Greedy:
             start_next_batch = max(batch.end, job.release_time)
             j_t = []
             id_batch += 1
-            if task_i == len_secondi_task -1:
+            if task_i == len_secondi_task - 1:
                 break
         print(f'Batches seconda lista:\n {batches}')
 
