@@ -29,7 +29,7 @@ if __name__ == '__main__':
     greedy = Greedy2(jobs, capacity_batch, tot_task)
     batches = greedy.start()
 
-    print(f'Costo:\n {obj_function(jobs_dict, batches, count_vincoli=False)}')
+    print(f'Costo:\n {obj_function(jobs_dict, batches, count_vincoli=True)}')
 
     cost = 0
     cost, batches = destroy_repair(batches, jobs_dict, capacity_batch, tot_task)
