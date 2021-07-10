@@ -29,7 +29,6 @@ class Greedy:
         seconda_meta.sort(key=lambda x: x.release_time)
         print(prima_meta)
         print('Le differenze\n')
-
         print(seconda_meta)
         primi_task = []
         print(prima_meta)
@@ -81,7 +80,7 @@ class Greedy:
         print(len_secondi_task)
         task_i = 0
         job = self.jobs[secondi_task[task_i][0]]
-        start_next_batch = job.release_time
+
         while task_i < len_secondi_task:
             k = 0
             while k in range(self.m) and self.jobs[secondi_task[task_i][0]].release_time <= start_next_batch:
