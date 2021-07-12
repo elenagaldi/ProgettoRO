@@ -82,7 +82,7 @@ def destroy_repair(solution: [Batch], jobs_dict: dict, capacity_batch, tot_task)
         task_processed = 0
         while task_processed < len(j_t_todo):
             for b in new_solution:
-                max_durata = max([task[1].duration for task in b.j_t])
+                # max_durata = max([task[1].duration for task in b.j_t])
                 k = task_in_batch[b.id]
                 # for j in b.j_t:
                 #     if j[1].duration > max_durata:
@@ -101,7 +101,7 @@ def destroy_repair(solution: [Batch], jobs_dict: dict, capacity_batch, tot_task)
                         if t.id == best_jt[1].id:
                             t.set_processed(True)
                     if jobs_dict[best_jt[0]].is_completed:
-                        print('sei completo?')
+                        # print('sei completo?')
                         jobs_dict[best_jt[0]].last_batch = b.id
                     if k > 1:
                         k -= 1

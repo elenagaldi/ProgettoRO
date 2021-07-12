@@ -1,8 +1,7 @@
 import configuration
 from euristica import Greedy
-from euristica1 import Greedy1
 from euristica2 import Greedy2
-from euristica3 import Greedy3
+from euristica3 import Euristica3
 from inputData.xlsInputData import XslInputData
 from optimization import *
 
@@ -26,14 +25,15 @@ if __name__ == '__main__':
     for i in jobs:
         tot_task += len(i.task)
 
-    greedy = Greedy(jobs, capacity_batch, tot_task)
+    greedy = Greedy2(jobs, capacity_batch, tot_task)
     batches = greedy.start()
 
-    print(f'Costo:\n {obj_function(jobs_dict, batches, count_vincoli=True)}')
+    print(f'Costo:\n {obj_function(jobs_dict, batches, count_vincoli=False)}')
 
-    cost = 0
-    cost, batches = destroy_repair(batches, jobs_dict, capacity_batch, tot_task)
-    print(batches, f'Ottimo locale trovato con destroy and repair : {cost}')
+    '''cost = 0
+    cost, batches = destroy_repair\
+        (batches, jobs_dict, capacity_batch, tot_task)
+    print(batches, f'Ottimo locale trovato con destroy and repair : {cost}')'''
 
     '''for i in range(10):  # faccio ricerca locale 10 volte
         cost, batches = localsearch(batches, jobs_dict)

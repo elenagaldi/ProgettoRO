@@ -4,11 +4,11 @@ from model.task import Task
 
 # STRATEGY:
 # LPT/SPT -> sceglie il task più lungo/corto quando il batch è vuoto
-STRATEGY = "LPT"
+STRATEGY = "SPT"
 # CRITERIA SORT:
 # R/D/T -> ordina i job per RELEASE TIME/DUE DATE/SOMMA DURATA TASK
 # (se presente più di una lettera fa la somma dei termini)
-CRITERIA_SORT = "RDT"
+CRITERIA_SORT = "RD"
 
 
 def take_shortest_n_task_not_processed(tasks, n):

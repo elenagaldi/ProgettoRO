@@ -16,16 +16,18 @@ class Greedy2:
         lista_task = []
         for i in self.jobs:
             for j in range(len(i.task)):
-                lista_task.append([i.id, i.release_time, i.task[j]])
+                lista_task.append([i.id, i.release_time, i.task[j], i.due_date])
 
+        lista_task.sort(key=lambda x: x[2].duration)
+        lista_task.sort(key=lambda x: x[3])
         lista_task.sort(key=lambda x: x[1])
-        lista_task.sort(key=lambda x: x[2].duration, reverse=True)
+
 
         len_tasks = len(lista_task)
         task_i = 0
         j_t = []
         batches: [Batch] = []
-        # print(lista_task[task_i][0])
+        print(lista_task)
         start_next_batch = self.jobs[lista_task[task_i][0]].release_time
 
         id_batch = 0
