@@ -25,7 +25,8 @@ if __name__ == '__main__':
     for i in jobs:
         tot_task += len(i.task)
 
-    greedy = Greedy2(jobs, capacity_batch, tot_task)
+    greedy = Greedy2\
+        (jobs, capacity_batch, tot_task)
     batches = greedy.start()
 
     print(f'Costo:\n {obj_function(jobs_dict, batches, count_vincoli=False)}')

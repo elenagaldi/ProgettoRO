@@ -32,9 +32,9 @@ class Greedy2:
 
         id_batch = 0
 
-        while task_i < len_tasks - 1:
+        while task_i < len_tasks:
             k = 0
-            while k in range(self.m) and self.jobs[lista_task[task_i][0]].release_time <= start_next_batch:
+            while k in range(self.m) and task_i < len_tasks and self.jobs[lista_task[task_i][0]].release_time <= start_next_batch:
                 if not lista_task[task_i][2].processed:
                     for t in self.jobs[lista_task[task_i][0]].task:
                         if t.id == lista_task[task_i][2].id:
@@ -43,15 +43,13 @@ class Greedy2:
                             if self.jobs[lista_task[task_i][0]].is_completed():
                                 self.jobs[lista_task[task_i][0]].last_batch = id_batch
                             k += 1
-                if task_i < len_tasks - 1:
                     task_i += 1
-                else:
-                    break
             batch = Batch(id_batch, self.m, j_t, start_next_batch)
             batches.append(batch)
-            start_next_batch = max(batch.end, self.jobs[lista_task[task_i][0]].release_time)
-            id_batch += 1
-            j_t = []
+            if task_i < len_tasks:
+                start_next_batch = max(batch.end, self.jobs[lista_task[task_i][0]].release_time)
+                id_batch += 1
+                j_t = []
 
         print(f'Batches : {batches}')
         return batches
