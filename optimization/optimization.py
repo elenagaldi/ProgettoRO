@@ -1,31 +1,5 @@
 import copy
-from euristica2 import Greedy2
-from euristica3 import Euristica3
-from euristica import Greedy
 from model.batch import Batch
-from model.job import Job
-
-
-def obj_function(job_dict: dict, batch_l: [Batch], count_vincoli: bool):
-    cost = 0
-    for job in job_dict.values():
-        aux = batch_l[job.last_batch].end - job.due_date
-        if aux > 0:
-            cost += aux
-        if count_vincoli:
-            for batch in batch_l:
-                for jobtask in batch.j_t:
-                    if job_dict[jobtask[0]].release_time > batch.start:
-                        cost += 100
-    return cost
-
-
-def swap_move(solution: [Batch], batch_i, batch_j, job_i, task_i, job_j, task_j):
-    batch1, batch2 = solution[batch_i], solution[batch_j]
-    batch1.remove_task(job_i, task_i)
-    batch2.remove_task(job_j, task_j)
-    batch1.add_task(job_j, task_j)
-    batch2.add_task(job_i, task_i)
 
 
 def localsearch(solution: [Batch], jobs_dict: dict):

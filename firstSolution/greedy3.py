@@ -8,7 +8,7 @@ STRATEGY = "SPT"
 # CRITERIA SORT:
 # R/D/T -> ordina i job per RELEASE TIME/DUE DATE/SOMMA DURATA TASK
 # (se presente più di una lettera fa la somma dei termini)
-CRITERIA_SORT = "RD"
+CRITERIA_SORT = "RDT"
 
 
 def take_shortest_n_task_not_processed(tasks, n):
@@ -39,7 +39,7 @@ def sort_criteria(criteria: str):
         job.sum_dur_task() if "T" in criteria else 0)
 
 
-class Euristica3:
+class Greedy3:
     def __init__(self, jobs: [Job], capacity_batch, tot_task):
         self.jobs = jobs
         self.m = capacity_batch

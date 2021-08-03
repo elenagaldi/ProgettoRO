@@ -27,6 +27,9 @@ class Batch:
         else:
             return None
 
+    def get_earliest_reltime(self, jobs_dict):
+        return min([jobs_dict[task[0]].release_time for task in self.j_t])
+
     def empty_batch(self):
         return self.j_t == [[]] or not self.j_t
 
@@ -57,3 +60,8 @@ class Batch:
 
     def __str__(self):
         return self.__repr__()
+
+    def update_time(self, new_id, start):
+        self.id = new_id
+        self.start = start
+        self.end = self.calc_end()
