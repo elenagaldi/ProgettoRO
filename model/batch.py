@@ -61,7 +61,6 @@ class Batch:
     def __str__(self):
         return self.__repr__()
 
-    def update_time(self, new_id, start):
-        self.id = new_id
+    def update_time(self, start):
         self.start = start
         self.end = self.calc_end()

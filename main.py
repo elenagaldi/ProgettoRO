@@ -4,7 +4,7 @@ from firstSolution.greedy2 import Greedy2
 from firstSolution.greedy3 import Greedy3
 from inputData.xlsInputData import XslInputData
 from model.solution import Solution
-from optimization import simpleLocalSearch
+from optimization import localSearch
 from optimization.acceptanceCriteria import *
 
 
@@ -17,7 +17,7 @@ def list_to_dict(ll: list, count=None):
 
 if __name__ == '__main__':
 
-    input_obj = XslInputData(configuration.INPUT_FILE)
+    input_obj = XslInputData(configuration.INPUT_FILE4)
     jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
 
     jobs_dict: dict = list_to_dict(jobs, jobs_num)
@@ -27,20 +27,19 @@ if __name__ == '__main__':
     for i in jobs:
         tot_task += len(i.task)
 
-    greedy = Greedy2(jobs, capacity_batch, tot_task)
+    greedy = Greedy3(jobs, capacity_batch, tot_task)
     batches = greedy.start()
 
     solution = Solution(batches, jobs_dict)
+    initial_cost = solution.obj_function(count_vincoli=False)
+    print(f'Costo:\n {initial_cost}')
 
-    print(f'Costo:\n {solution.obj_function(count_vincoli=False)}')
+    solution, cost, numero_ricerche = local_search(solution)
 
     '''cost, solution = simulated_annealing(solution)
     print(solution.batches, f'Ottimo locale trovato : {cost}')'''
 
-    cost = 0
-    for i in range(1):  # faccio ricerca locale 10 volte
-        cost, solution = simpleLocalSearch.search(solution)
-    print(solution.batches, f'Ottimo locale trovato : {cost}')
+    print(solution.batches, f'Ottimo locale trovato : {cost} \n Numero ricerce: {numero_ricerche}')
 
     '''cost = 0
     cost, batches = destroy_repair\
