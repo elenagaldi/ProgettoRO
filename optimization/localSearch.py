@@ -2,19 +2,20 @@ import copy
 from model.solution import Solution
 
 
-def local_search(solution: Solution):
+# Best improvement strategy settato a false implica che verrà usata la First improvement strategy
+def local_search(solution: Solution, best_improvement_strategy=True):
     initial_cost = solution.obj_function(count_vincoli=True)
     cost = initial_cost
-    new_cost, solution = search(solution)
+    new_cost, solution = search(solution, best_improvement_strategy)
     numero_ricerce = 1
     while new_cost < cost:
         cost = new_cost
-        new_cost, solution = search(solution)
+        new_cost, solution = search(solution, best_improvement_strategy)
         numero_ricerce += 1
     return solution, cost, numero_ricerce
 
 
-def search(solution: Solution):
+def search(solution: Solution, best_improvement_strategy):
     new_solution = copy.deepcopy(solution)
     cost = solution.obj_function(count_vincoli=True)
     best_solution, best_cost = solution, cost
@@ -25,5 +26,7 @@ def search(solution: Solution):
             new_cost = new_solution.obj_function(count_vincoli=True)
             if new_cost < cost:
                 best_cost, best_solution = new_cost, copy.deepcopy(new_solution)
+                if best_improvement_strategy is False:
+                    return best_cost, best_solution
             new_solution = copy.deepcopy(solution)
     return best_cost, best_solution

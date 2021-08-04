@@ -34,12 +34,12 @@ if __name__ == '__main__':
     initial_cost = solution.obj_function(count_vincoli=False)
     print(f'Costo:\n {initial_cost}')
 
-    solution, cost, numero_ricerche = local_search(solution)
+    solution, cost, numero_scambi = local_search(solution, best_improvement_strategy=False)
 
     '''cost, solution = simulated_annealing(solution)
     print(solution.batches, f'Ottimo locale trovato : {cost}')'''
 
-    print(solution.batches, f'Ottimo locale trovato : {cost} \n Numero ricerce: {numero_ricerche}')
+    print(solution.batches, f'Ottimo locale trovato : {cost} \n Numero scambi: {numero_scambi}')
 
     '''cost = 0
     cost, batches = destroy_repair\

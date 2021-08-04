@@ -34,9 +34,9 @@ class Solution:
                         batch.get_earliest_reltime(self.jobs)) if pos > 0 else batch.get_earliest_reltime(self.jobs)
             batch.update_time(start)
 
-    def swap_task(self, batch_i, batch_j, job_i, task_i, job_j, task_j):
-        batch1, batch2 = self.batches[batch_i], self.batches[batch_j]
-        batch1.remove_task(job_i, task_i)
-        batch2.remove_task(job_j, task_j)
-        batch1.add_task(job_j, task_j)
-        batch2.add_task(job_i, task_i)
+    # def swap_task(self, batch_i, batch_j, job_i, task_i, job_j, task_j):
+    #     batch1, batch2 = self.batches[batch_i], self.batches[batch_j]
+    #     batch1.remove_task(job_i, task_i)
+    #     batch2.remove_task(job_j, task_j)
+    #     batch1.add_task(job_j, task_j)
+    #     batch2.add_task(job_i, task_i)
