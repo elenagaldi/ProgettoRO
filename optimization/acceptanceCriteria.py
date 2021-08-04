@@ -16,7 +16,7 @@ def simulated_annealing(solution):
 
     while t > 0.1:
         for k in range(TEMP_EQ):  # imposto il ciclo fino al raggiungimento dell'equilibrio
-            next_cost, next_solution = search(current_solution)
+            next_cost, next_solution = search_with_worsening(current_solution)
             deltaE = next_cost - current_cost
             if deltaE < 0:  # è stato ottenuto un miglioramento quindi accetto la soluzione trovata
                 current_solution = copy.deepcopy(next_solution)
