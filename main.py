@@ -27,7 +27,7 @@ if __name__ == '__main__':
     for i in jobs:
         tot_task += len(i.task)
 
-    greedy = Greedy3(jobs, capacity_batch, tot_task)
+    greedy = Greedy2(jobs, capacity_batch, tot_task)
     batches = greedy.start()
 
     initial_solution = Solution(batches, jobs_dict)
