@@ -17,7 +17,7 @@ def list_to_dict(ll: list, count=None):
 
 if __name__ == '__main__':
 
-    input_obj = XslInputData(configuration.INPUT_FILE7)
+    input_obj = XslInputData(configuration.INPUT_FILE)
     jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
 
     jobs_dict: dict = list_to_dict(jobs, jobs_num)
