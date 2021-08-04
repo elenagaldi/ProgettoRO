@@ -62,7 +62,6 @@ class Solution:
                     # ciclo all'indietro sui batch partendo dalla posizione precedente a old_pos
                     for batch in reversed(self.batches[:old_pos - 1]): # questa dovrebbe procedere all'indietro
                         # dalla vecchia posizione fino alla nuova posizione dove troverà sicuramente il job e a questo punto job_last_batch = new_pos
-                        # perchè c'è - 1??? se old_pos = 1 e new_pos=0 non viene aggiornato il  job_last_batch
                         if job_id in [jobtask[0] for jobtask in batch.j_t]:
                             job_last_batch = batch.id
                             break
