@@ -39,7 +39,7 @@ class Job:
         return sum(t.duration if not t.is_processed else 0 for t in self.task)
 
     def __repr__(self):
-        return f'Job ID:{self.id} Realease time:{self.release_time} Due date: {self.due_date} Task : [{self.task}]\n'
+        return f'Job ID:{self.id} Realease time:{self.release_time} Due date: {self.due_date} Last Batch : {self.last_batch}\n'
 
     def __str__(self):
         return self.__repr__()
