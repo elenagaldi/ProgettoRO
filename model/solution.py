@@ -35,12 +35,10 @@ class Solution:
         b1.id = pos1
         b2.id = pos2
 
-        # propago la modifica aggiornado il parametro last_batch dei job nei due batch
-        self.update_jobs_last_batch(b1, old_pos=pos2, new_pos=pos1)
-        self.update_jobs_last_batch(b2, old_pos=pos1, new_pos=pos2)
-
         # aggiorno i parametri start ed end dei batch in conseguenza allo swap
         self.update_batches()
+
+        self.update_jobs_last_batch()
 
     def update_batches(self):
         for pos, batch in enumerate(self.batches):
@@ -48,26 +46,13 @@ class Solution:
                         batch.get_earliest_reltime(self.jobs)) if pos > 0 else batch.get_earliest_reltime(self.jobs)
             batch.update_time(start)
 
-    def update_jobs_last_batch(self, batch: Batch, old_pos, new_pos):
-        ## ottengo lista (senza ripetizioni) contenente i job nel batch in esame
-        job_in_task = [jobtask[0] for jobtask in batch.j_t]
-        job_in_task = list(dict.fromkeys(job_in_task))
-
-        for job_id in job_in_task:
-            job_last_batch = self.jobs[job_id].last_batch
-            if job_last_batch == old_pos:
-                if new_pos > old_pos:
-                    job_last_batch = new_pos
-                else:
-                    # ciclo all'indietro sui batch partendo dalla posizione precedente a old_pos
-                    for batch in reversed(self.batches[:old_pos - 1]): # questa dovrebbe procedere all'indietro
-                        # dalla vecchia posizione fino alla nuova posizione dove troverà sicuramente il job e a questo punto job_last_batch = new_pos
-                        if job_id in [jobtask[0] for jobtask in batch.j_t]:
-                            job_last_batch = batch.id
-                            break
-            elif old_pos < job_last_batch < new_pos:  # qui metterei <= new_pos perchè anche in questo caso si dovrà aggiornare  job_last_batch = new_pos
-                job_last_batch = new_pos
-            self.jobs[job_id].last_batch = job_last_batch
+    def update_jobs_last_batch(self):
+        for job in self.jobs.values():
+            for batch in reversed(self.batches):
+                job_in_task = [jobtask[0] for jobtask in batch.j_t]
+                if job.id in job_in_task:
+                    job.last_batch = batch.id
+                    break
 
     def swap_task(self, batch_i, batch_j, job_i, task_i, job_j, task_j):
         batch1, batch2 = self.batches[batch_i], self.batches[batch_j]
