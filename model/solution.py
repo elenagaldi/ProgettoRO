@@ -26,18 +26,23 @@ class Solution:
         ## effettuo una deepcopy per non modificare batch nella soluzione originale
         ## nel caso siano stati passati per riferimento
         b2, b1 = copy.deepcopy(batch1), copy.deepcopy(batch2)
-
         ## scambio i batch nella soluzione
         self.batches[pos1] = b1
         self.batches[pos2] = b2
-
         # aggiorno gli id dei batch
         b1.id = pos1
         b2.id = pos2
-
-        # aggiorno i parametri start ed end dei batch in conseguenza allo swap
+        # aggiorno i parametri dei batch in conseguenza allo swap
         self.update_batches()
+        self.update_jobs_last_batch()
 
+    def swap_task(self, batch_i, batch_j, job_i, task_i, job_j, task_j):
+        batch1, batch2 = self.batches[batch_i], self.batches[batch_j]
+        batch1.remove_task(job_i, task_i)
+        batch2.remove_task(job_j, task_j)
+        batch1.add_task(job_j, task_j)
+        batch2.add_task(job_i, task_i)
+        self.update_batches()
         self.update_jobs_last_batch()
 
     def update_batches(self):
@@ -53,13 +58,6 @@ class Solution:
                 if job.id in job_in_task:
                     job.last_batch = batch.id
                     break
-
-    def swap_task(self, batch_i, batch_j, job_i, task_i, job_j, task_j):
-        batch1, batch2 = self.batches[batch_i], self.batches[batch_j]
-        batch1.remove_task(job_i, task_i)
-        batch2.remove_task(job_j, task_j)
-        batch1.add_task(job_j, task_j)
-        batch2.add_task(job_i, task_i)
 
     def analyze_delay(self):
         for job in self.jobs.values():

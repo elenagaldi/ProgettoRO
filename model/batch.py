@@ -42,6 +42,7 @@ class Batch:
 
     def add_task(self, job: int, task: Task):
         if not self.full_batch():
+            ##inserisce il task in ordine di durata nel batch
             durations = [jt[1].duration for jt in self.j_t]
             i = bisect_left(durations, task.duration)
             self.j_t.insert(i, [job, task])
