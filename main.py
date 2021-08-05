@@ -34,14 +34,12 @@ if __name__ == '__main__':
     initial_cost = initial_solution.obj_function(count_vincoli=False)
     print(f'Costo:\n {initial_cost}')
 
-    print(jobs_dict)
-
     solution, cost, numero_ricerche = local_search(initial_solution, best_improvement_strategy=True)
 
     print(solution.batches,
           f'Ottimo locale trovato con ricerca locale : {cost} \n Numero scambi: {numero_ricerche - 1}')
 
-    print(solution.jobs)
+    solution.analyze_delay()
 
     # cost, solution = simulated_annealing(initial_solution)
     # print(solution.batches, f'Ottimo locale trovato con simulated annealing : {cost}')

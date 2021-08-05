@@ -1,4 +1,5 @@
 from model.task import Task
+from bisect import bisect_left
 
 
 class Batch:
@@ -39,9 +40,11 @@ class Batch:
     def is_job_in(self, job_id):
         return job_id in [x[0] for x in self.j_t]
 
-    def add_task(self, job: int, task):
+    def add_task(self, job: int, task: Task):
         if not self.full_batch():
-            self.j_t.append([job, task])
+            durations = [jt[1].duration for jt in self.j_t]
+            i = bisect_left(durations, task.duration)
+            self.j_t.insert(i, [job, task])
             self.end = self.calc_end()
 
     def remove_task(self, job: int, task):

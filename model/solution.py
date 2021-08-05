@@ -17,7 +17,7 @@ class Solution:
                 for batch in self.batches:
                     for jobtask in batch.j_t:
                         if self.jobs[jobtask[0]].release_time > batch.start:
-                            cost += 100
+                            cost += 1000
         return cost
 
     # effettuo scambio tra due batch
@@ -62,4 +62,19 @@ class Solution:
         batch2.add_task(job_i, task_i)
 
     def analyze_delay(self):
-        pass
+        for job in self.jobs.values():
+            aux = self.batches[job.last_batch].end - job.due_date
+            job.delay = aux
+            print(f'Ritardo job {job.id}: {job.delay} ')
+
+        for batch in self.batches:
+            if batch.capacity > len(batch.j_t):
+                print(f'Batch {batch.id} non pieno')
+
+            aux = 0
+            weight = 1
+            for jt1, jt2 in zip(batch.j_t[0::1], batch.j_t[1::1]):
+                auxTemp = abs(jt1[1].duration - jt2[1].duration) * weight
+                weight += 1 if auxTemp > 0 else 0
+                aux = aux + auxTemp
+            print(f' Differenza durate task nel batch {batch.id}: {aux}')

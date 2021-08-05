@@ -9,6 +9,7 @@ class Job:
         self.due_date = due_date
         self.task = task
         self.last_batch = last_batch
+        self.delay = None
 
     def set_task_on(self, index):
         self.task[index].set_processed(True)
