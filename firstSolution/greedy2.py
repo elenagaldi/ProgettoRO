@@ -18,9 +18,10 @@ class Greedy2:
             for j in range(len(i.task)):
                 lista_task.append([i.id, i.release_time, i.task[j], i.due_date])
 
-        lista_task.sort(key=lambda x: x[2].duration)
+
         lista_task.sort(key=lambda x: x[3])
         lista_task.sort(key=lambda x: x[1])
+        lista_task.sort(key=lambda x: x[2].duration)
 
 
         len_tasks = len(lista_task)
@@ -34,17 +35,19 @@ class Greedy2:
 
         while task_i < len_tasks:
             k = 0
+            batch = Batch(id_batch, self.m, [], start_next_batch)
             while k in range(self.m) and task_i < len_tasks and self.jobs[lista_task[task_i][0]].release_time <= start_next_batch:
                 if not lista_task[task_i][2].processed:
                     for t in self.jobs[lista_task[task_i][0]].task:
                         if t.id == lista_task[task_i][2].id:
-                            j_t.append([lista_task[task_i][0], t])
+                            #j_t.append([lista_task[task_i][0], t])
+                            batch.add_task(lista_task[task_i][0], t)
                             t.set_processed(True)
                             if self.jobs[lista_task[task_i][0]].is_completed():
                                 self.jobs[lista_task[task_i][0]].last_batch = id_batch
                             k += 1
                     task_i += 1
-            batch = Batch(id_batch, self.m, j_t, start_next_batch)
+#            batch = Batch(id_batch, self.m, j_t, start_next_batch)
             batches.append(batch)
             if task_i < len_tasks:
                 start_next_batch = max(batch.end, self.jobs[lista_task[task_i][0]].release_time)
