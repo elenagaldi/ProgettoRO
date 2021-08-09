@@ -41,8 +41,8 @@ if __name__ == '__main__':
 
     solution.analyze_delay()
 
-    # cost, solution = simulated_annealing(initial_solution)
-    # print(solution.batches, f'Ottimo locale trovato con simulated annealing : {cost}')
+    cost, solution = simulated_annealing(solution)
+    print(solution.batches, f'Ottimo locale trovato con simulated annealing : {cost}')
 
     '''cost = 0
     cost, batches = destroy_repair\
