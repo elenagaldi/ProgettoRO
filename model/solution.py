@@ -20,6 +20,24 @@ class Solution:
                             cost += 1000
         return cost
 
+    def analyze_delay(self):
+        for job in self.jobs.values():
+            aux = self.batches[job.last_batch].end - job.due_date
+            job.delay = aux
+            print(f'Ritardo job {job.id}: {job.delay} ')
+
+        for batch in self.batches:
+            if batch.capacity > len(batch.j_t):
+                print(f'Batch {batch.id} non pieno')
+
+            aux = 0
+            weight = 1
+            for jt1, jt2 in zip(batch.j_t[0::1], batch.j_t[1::1]):
+                auxTemp = abs(jt1[1].duration - jt2[1].duration) * weight
+                weight += 1 if auxTemp > 0 else 0
+                aux = aux + auxTemp
+            print(f' Differenza durate task nel batch {batch.id}: {aux}')
+
     # effettuo scambio tra due batch
     # batch1 passa da pos1 a pos2, batch2 passa da pos2 a pos1
     def swap_batches(self, batch1: Batch, batch2: Batch, pos1: int, pos2: int):
@@ -54,25 +72,7 @@ class Solution:
     def update_jobs_last_batch(self):
         for job in self.jobs.values():
             for batch in reversed(self.batches):
-                job_in_task = [jobtask[0] for jobtask in batch.j_t]
-                if job.id in job_in_task:
+                job_in_batch = [jobtask[0] for jobtask in batch.j_t]
+                if job.id in job_in_batch:
                     job.last_batch = batch.id
                     break
-
-    def analyze_delay(self):
-        for job in self.jobs.values():
-            aux = self.batches[job.last_batch].end - job.due_date
-            job.delay = aux
-            print(f'Ritardo job {job.id}: {job.delay} ')
-
-        for batch in self.batches:
-            if batch.capacity > len(batch.j_t):
-                print(f'Batch {batch.id} non pieno')
-
-            aux = 0
-            weight = 1
-            for jt1, jt2 in zip(batch.j_t[0::1], batch.j_t[1::1]):
-                auxTemp = abs(jt1[1].duration - jt2[1].duration) * weight
-                weight += 1 if auxTemp > 0 else 0
-                aux = aux + auxTemp
-            print(f' Differenza durate task nel batch {batch.id}: {aux}')

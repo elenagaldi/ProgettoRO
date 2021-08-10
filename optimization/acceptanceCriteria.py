@@ -40,5 +40,4 @@ def simulated_annealing(solution: Solution):
                     current_solution = copy.deepcopy(next_solution)
         t = t / 2  # abbasso la temperatura
 
-
     return best_cost, best_solution
