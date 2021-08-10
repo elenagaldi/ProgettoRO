@@ -27,13 +27,13 @@ if __name__ == '__main__':
     for i in jobs:
         tot_task += len(i.task)
 
-    greedy = Greedy2(jobs, capacity_batch, tot_task)
+    greedy = Greedy3(jobs, capacity_batch, tot_task)
     batches = greedy.start()
 
     initial_solution = Solution(batches, jobs_dict)
     initial_cost = initial_solution.obj_function(count_vincoli=False)
     print(f'Costo:\n {initial_cost}')
-
+    initial_solution.analyze_delay()
     solution, cost, numero_ricerche = local_search(initial_solution, best_improvement_strategy=True)
 
     print(solution.batches,
@@ -43,6 +43,11 @@ if __name__ == '__main__':
 
     cost, solution = simulated_annealing(solution)
     print(solution.batches, f'Ottimo locale trovato con simulated annealing : {cost}')
+
+    solution, cost, numero_ricerche = local_search(solution, best_improvement_strategy=True)
+
+    print(solution.batches,
+          f'Ottimo locale trovato con ricerca locale : {cost} \n Numero scambi: {numero_ricerche - 1}')
 
     '''cost = 0
     cost, batches = destroy_repair\
