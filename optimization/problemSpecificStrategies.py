@@ -28,6 +28,7 @@ def fill_not_full_batch(solution: Solution):
                 temp_solution = copy.deepcopy(new_solution)
             else:
                 print(f'\t\tNessun task trovato compatibile con il batch:{batch_in}')
+            temp_solution = copy.deepcopy(new_solution)
         del temp_solution
     else:
         print('\tNessun batch non pieno')
