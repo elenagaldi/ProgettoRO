@@ -67,12 +67,6 @@ class SimulatedAnnealing:
         self.t = 0.2 * self.current_cost
         self.k = 0
 
-    def next_step(self):
-        self.k += 1
-        if self.k >= self.TEMP_EQ:
-            self.k = 0
-            self.t = self.t / 2
-
     def stop_condition(self):
         return self.t <= self.MAX_T
 
