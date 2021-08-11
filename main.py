@@ -17,7 +17,7 @@ def list_to_dict(ll: list, count=None):
 
 if __name__ == '__main__':
 
-    input_obj = XslInputData(configuration.INPUT_FILE4)
+    input_obj = XslInputData(configuration.INPUT_FILE10)
     jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
 
     jobs_dict: dict = list_to_dict(jobs, jobs_num)
@@ -34,18 +34,17 @@ if __name__ == '__main__':
     initial_cost = initial_solution.obj_function(count_vincoli=False)
     print(f'Costo:\n {initial_cost}')
 
-
     solution, cost = iteratedLS.start(initial_solution)
     print(solution.batches, f'Ottimo trovato con ILS: {cost} \n')
 
     # solution, cost, n = local_search(initial_solution, best_improvement_strategy=True)
-    #
+
     # print(solution.batches,
     #       f'Ottimo locale trovato con ricerca locale : {cost} \n Numero scambi:{n}')
-
+    #
     # SA_solution, SA_cost, = simulated_annealing(solution)
     # print(SA_solution.batches, f'Ottimo locale trovato con simulated annealing : {SA_cost}')
-
+    #
     # solution, cost, numero_ricerche = local_search(SA_solution, best_improvement_strategy=True)
     #
     # print(solution.batches,
@@ -69,8 +68,7 @@ if __name__ == '__main__':
 
     # solution.analyze_delay()
 
-
-     '''cost = 0
+    '''cost = 0
     cost, batches = destroy_repair\
         (batches, jobs_dict, capacity_batch, tot_task)
     print(batches, f'Ottimo locale trovato con destroy and repair : {cost}')'''
