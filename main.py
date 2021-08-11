@@ -34,6 +34,7 @@ if __name__ == '__main__':
     initial_cost = initial_solution.obj_function(count_vincoli=False)
     print(f'Costo:\n {initial_cost}')
 
+
     solution, cost = iteratedLS.start(initial_solution)
     print(solution.batches, f'Ottimo trovato con ILS: {cost} \n')
 
@@ -68,7 +69,8 @@ if __name__ == '__main__':
 
     # solution.analyze_delay()
 
-    '''cost = 0
+
+     '''cost = 0
     cost, batches = destroy_repair\
         (batches, jobs_dict, capacity_batch, tot_task)
     print(batches, f'Ottimo locale trovato con destroy and repair : {cost}')'''

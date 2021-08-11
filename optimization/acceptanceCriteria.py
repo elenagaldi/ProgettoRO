@@ -14,18 +14,17 @@ def simulated_annealing(solution: Solution):
     best_solution, best_cost = solution, current_cost
     t = 0.2 * current_cost
 
-    while t > 0.0001:
+
+    while t > 0.00001:
         for k in range(TEMP_EQ):  # imposto il ciclo fino al raggiungimento dell'equilibrio
             next_solution = copy.deepcopy(current_solution)
-
-            temp = copy.deepcopy(next_solution)
-
-            batch1 = choice(temp.batches)
+            batch1 = choice(next_solution.batches)
             pos1 = batch1.id
-            temp.batches.remove(batch1)
-            batch2 = choice(temp.batches)
+            batch2 = choice(next_solution.batches)
+            while batch2.id == batch1.id:
+                batch2 = choice(next_solution.batches)
             pos2 = batch2.id
-            del temp
+     
 
             next_solution.swap_batches(batch1, batch2, pos1, pos2)
             next_cost = next_solution.obj_function(count_vincoli=True)
@@ -35,6 +34,7 @@ def simulated_annealing(solution: Solution):
             deltaE = next_cost - current_cost
             if deltaE < 0:  # è stato ottenuto un miglioramento quindi accetto la soluzione trovata
                 current_solution = copy.deepcopy(next_solution)
+                print(f'({pos1},{pos2})')
                 current_cost = next_cost
                 if next_cost < best_cost:
                     best_solution = next_solution
