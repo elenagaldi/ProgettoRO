@@ -29,8 +29,8 @@ if __name__ == '__main__':
 
     greedy = Greedy3(jobs, capacity_batch, tot_task)
     batches = greedy.start()
-
     initial_solution = Solution(batches, jobs_dict)
+    initial_solution.update_jobs_delay()
     initial_cost = initial_solution.obj_function(count_vincoli=False)
     print(f'Costo:\n {initial_cost}')
 

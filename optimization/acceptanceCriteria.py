@@ -66,26 +66,40 @@ class SimulatedAnnealing:
         self.best_solution, self.best_cost = initial_solution, self.current_cost
         self.t = 0.2 * self.current_cost
         self.k = 0
+        self.static_solution = False
+        self.tabu_list = []
 
     def stop_condition(self):
-        return self.t <= self.MAX_T
+        return self.t <= self.MAX_T or self.static_solution
 
     def acceptance_test(self, next_solution, next_cost):
-        deltaE = next_cost - self.current_cost
-        if deltaE < 0:
-            self.current_solution = next_solution
-            self.current_cost = next_cost
-            if next_cost < self.best_cost:
-                self.best_solution = next_solution
-                self.best_cost = next_cost
+        if next_solution == self.current_solution:
+            print("La soluzione non è cambiata, verrà interrotta la ricerca")
+            self.static_solution = True
         else:
-            r = random()
-            if r < math.exp(-(deltaE / self.t)):
+            print(f'\tTest di accettazione: nuovo costo: {next_cost}', end=' ')
+            deltaE = next_cost - self.current_cost
+            if deltaE < 0:
                 self.current_solution = next_solution
                 self.current_cost = next_cost
-        self.k += 1
-        if self.k >= self.TEMP_EQ:
-            self.k = 0
-            self.t = self.t / 2
+                print(f'miglioramento', end=' ')
+                if next_cost < self.best_cost:
+                    self.best_solution = next_solution
+                    self.best_cost = next_cost
+                    print('globale')
+                else:
+                    print('')
+            else:
+                r = random()
+                if r < math.exp(-(deltaE / self.t)):
+                    self.current_solution = next_solution
+                    self.current_cost = next_cost
+                    print('soluzione accettata')
+                else:
+                    print("soluzione rifiutata")
+            self.k += 1
+            if self.k >= self.TEMP_EQ:
+                self.k = 0
+                self.t = self.t / 2
 
         return self.current_solution, self.current_cost

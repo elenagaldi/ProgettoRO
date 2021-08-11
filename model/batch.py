@@ -48,10 +48,10 @@ class Batch:
             self.j_t.insert(i, [job, task])
             self.end = self.calc_end()
 
-    def remove_task(self, job: int, task):
+    def remove_task(self, job: int, task: Task):
         if not self.empty_batch():
             for x in self.j_t:
-                if x[0] == job and x[1] == task.id:
+                if x[0] == job and x[1].id == task.id:
                     del self.j_t[self.j_t.index(x)]
             self.end = self.calc_end()
 
@@ -68,3 +68,13 @@ class Batch:
     def update_time(self, start):
         self.start = start
         self.end = self.calc_end()
+
+    def __eq__(self, other):
+        if not isinstance(other, Batch):
+            # don't attempt to compare against unrelated types
+            return NotImplemented
+
+        for jt1, jt2 in zip(self.j_t, other.j_t):
+            if jt1[0] != jt2[0] or jt1[1].id != jt2[1].id:
+                return False
+        return True
