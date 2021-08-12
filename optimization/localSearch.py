@@ -30,6 +30,7 @@ def search(solution: Solution, best_improvement_strategy):
                 best_cost, best_solution = new_cost, copy.deepcopy(new_solution)
                 swap = (pos1, pos2)
                 if best_improvement_strategy is False:
+                    print(f'\tMiglioramento con swap: {swap}')
                     return best_cost, best_solution
             new_solution = copy.deepcopy(solution)
 
