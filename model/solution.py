@@ -27,8 +27,8 @@ class Solution:
                 b_list.append(batch)
         return b_list
 
-    def find_latest_jobtask(self):
-        latest_job = max(self.jobs.values(), key=lambda j: j.delay)
+    def find_latest_jobtask(self, jobs_temp: dict):
+        latest_job = max(jobs_temp.values(), key=lambda j: j.delay)
         batch = self.batches[latest_job.last_batch]
         longest_jt = max(filter(lambda jt: jt[0] == latest_job.id, batch.j_t), key=lambda jt: jt[1].duration)
         return batch, longest_jt
@@ -78,6 +78,7 @@ class Solution:
 
     def update_batches_start_and_end(self):
         for pos, batch in enumerate(self.batches):
+            batch.id = pos
             start = max(self.batches[pos - 1].end,
                         batch.get_earliest_reltime(self.jobs)) if pos > 0 else batch.get_earliest_reltime(self.jobs)
             batch.update_time(start)
@@ -94,6 +95,8 @@ class Solution:
     def move_task_in_other_batch(self, batch_to_fill: int, batch_to_dump: int, jt: [int, Task]):
         btf, btd = self.batches[batch_to_fill], self.batches[batch_to_dump]
         btd.remove_task(jt[0], jt[1])
+        if btd.empty_batch():
+            del self.batches[btd.id]
         btf.add_task(jt[0], jt[1])
         self.update_solution_parameters()
 

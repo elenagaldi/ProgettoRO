@@ -8,28 +8,26 @@ def fill_not_full_batch(solution: Solution):
     batches_to_fill = new_solution.find_not_full_batch()
     if batches_to_fill:
         print("\tTrovati batch non pieni")
-        temp_solution = copy.deepcopy(new_solution)
         for batch_in in batches_to_fill:
-            batch_from, jobtask_to_move = temp_solution.find_latest_jobtask()
+            temp_jobs: dict = copy.deepcopy(new_solution.jobs)
+            batch_from, jobtask_to_move = new_solution.find_latest_jobtask(temp_jobs)
             job_id = jobtask_to_move[0]
-            while not (batch_from.id > batch_in.id and temp_solution.jobs[job_id].release_time < batch_in.start
+            while not (batch_from.id > batch_in.id and temp_jobs[job_id].release_time < batch_in.start
                     # and task_extend_the_batch(jobtask_to_move[1], batch_in)
             ):
-                del temp_solution.jobs[job_id]
-                if not temp_solution.jobs:
+                del temp_jobs[job_id]
+                if not temp_jobs:
                     break
-                batch_from, jobtask_to_move = temp_solution.find_latest_jobtask()
+                batch_from, jobtask_to_move = new_solution.find_latest_jobtask(temp_jobs)
                 job_id = jobtask_to_move[0]
-            if temp_solution.jobs:
+            if temp_jobs:
                 print(
                     f'\t\tSposto task: {(job_id, jobtask_to_move[1].id)} dal batch {batch_from.id} al batch {batch_in.id}')
                 new_solution.move_task_in_other_batch(batch_in.id, batch_from.id, jobtask_to_move)
                 result = True
-                temp_solution = copy.deepcopy(new_solution)
             else:
                 print(f'\t\tNessun task trovato compatibile con il batch:{batch_in}')
-            temp_solution = copy.deepcopy(new_solution)
-        del temp_solution
+        del temp_jobs
     else:
         print('\tNessun batch non pieno')
     return result, new_solution

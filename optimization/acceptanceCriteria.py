@@ -58,7 +58,7 @@ def simulated_annealing(solution: Solution):
 
 
 class SimulatedAnnealing:
-    def __init__(self, initial_solution: Solution, temp_eq=2, max_t=1):
+    def __init__(self, initial_solution: Solution, temp_eq=5, max_t=0.1):
         self.TEMP_EQ = temp_eq
         self.MAX_T = max_t
         self.current_solution = copy.deepcopy(initial_solution)
