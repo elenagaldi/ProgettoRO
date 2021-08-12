@@ -3,6 +3,7 @@ import math
 from random import uniform, random, choice, sample
 
 from model.solution import Solution
+from optimization.history import History
 from optimization.localSearch import *
 from random import *
 
@@ -57,24 +58,22 @@ def simulated_annealing(solution: Solution):
     return best_solution, best_cost
 
 
-class SimulatedAnnealing:
-    def __init__(self, initial_solution: Solution, temp_eq=5, max_t=0.1):
+class SimulatedAnnealing(History):
+    def __init__(self, initial_solution: Solution, temp_eq=5, max_t=0.01):
+        super().__init__(initial_solution)
         self.TEMP_EQ = temp_eq
         self.MAX_T = max_t
-        self.current_solution = copy.deepcopy(initial_solution)
-        self.current_cost = initial_solution.obj_function(count_vincoli=True)
-        self.best_solution, self.best_cost = initial_solution, self.current_cost
         self.t = 0.2 * self.current_cost
         self.k = 0
-        self.static_solution = False
-        self.tabu_list = []
 
     def stop_condition(self):
-        return self.t <= self.MAX_T or self.static_solution
+        if self.static_solution:
+            self.nochages_count += 1
+        return self.t <= self.MAX_T or self.nochages_count > 5
 
     def acceptance_test(self, next_solution, next_cost):
         if next_solution == self.current_solution:
-            print("La soluzione non è cambiata, verrà interrotta la ricerca")
+            print("La soluzione non è cambiata")
             self.static_solution = True
         else:
             print(f'\tTest di accettazione: nuovo costo: {next_cost}', end=' ')
@@ -90,6 +89,8 @@ class SimulatedAnnealing:
                 else:
                     print('')
             else:
+                stato = 'invariata' if deltaE == 0 else 'peggioramento'
+                print(stato, end=' ')
                 r = random()
                 if r < math.exp(-(deltaE / self.t)):
                     self.current_solution = next_solution

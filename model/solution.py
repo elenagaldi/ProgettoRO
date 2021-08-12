@@ -1,6 +1,7 @@
 from model.batch import Batch
 from model.task import Task
 import copy
+from random import choice
 
 
 class Solution:
@@ -33,6 +34,11 @@ class Solution:
         longest_jt = max(filter(lambda jt: jt[0] == latest_job.id, batch.j_t), key=lambda jt: jt[1].duration)
         return batch, longest_jt
 
+    def get_random_jobtask(self):
+        rand_batch = choice(self.batches)
+        rand_jt = choice(rand_batch.j_t)
+        return rand_batch, rand_jt
+
     def analyze_solution(self):
         for job in self.jobs.values():
             print(f'Ritardo job {job.id}: {job.delay} ')
@@ -49,7 +55,15 @@ class Solution:
                 aux = aux + auxTemp
             print(f' Differenza durate task nel batch {batch.id}: {aux}')
 
-    # effettuo scambio tra due batch
+    def analyze_not_full_batch(self):
+        count_nfb = 0
+        for batch in self.batches:
+            if batch.capacity > len(batch.j_t):
+                count_nfb += 1
+        return count_nfb
+
+        # effettuo scambio tra due batch
+
     # batch1 passa da pos1 a pos2, batch2 passa da pos2 a pos1
     def swap_batches(self, batch1: Batch, batch2: Batch, pos1: int, pos2: int):
         ## effettuo una deepcopy per non modificare batch nella soluzione originale
