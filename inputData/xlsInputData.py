@@ -6,7 +6,7 @@ from model.job import Job
 from model.task import Task
 
 
-class XslInputData:
+class XlsInputData:
     def __init__(self, input_file):
         file_excel = load_workbook(input_file, data_only=True)
         # print(file_excel.sheetnames)
@@ -70,4 +70,8 @@ class XslInputData:
 
     @property
     def jobs_num(self):
+        return self._jobs_num
+
+    @property
+    def capacity_batch(self):
         return self._jobs_num

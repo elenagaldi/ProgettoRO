@@ -82,3 +82,8 @@ def shuffle_batches(solution: Solution):
     shuffle(new_solution.batches)
     new_solution.update_solution_parameters()
     return new_solution
+
+
+def destroy_and_repair(solution: Solution):
+    batch_to_destroy = solution.get_first_Mbatch_by_duration_differences(solution.batches[0].capacity)
+    
