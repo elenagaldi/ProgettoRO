@@ -29,7 +29,10 @@ class Batch:
             return None
 
     def get_earliest_reltime(self, jobs_dict):
-        return min([jobs_dict[task[0]].release_time for task in self.j_t])
+        if len(self.j_t) == 0:
+            return 0
+        else:
+            return max([jobs_dict[task[0]].release_time for task in self.j_t])
 
     def empty_batch(self):
         return self.j_t == [[]] or not self.j_t

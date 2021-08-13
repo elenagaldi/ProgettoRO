@@ -9,45 +9,79 @@ def fill_not_full_batch(solution: Solution):
     new_solution = copy.deepcopy(solution)
     result = False
     batches_to_fill = new_solution.find_not_full_batch()
-
-    if batches_to_fill:
-
+    task_to_swap = []
+    b = 0
+    for batch in batches_to_fill:
         print("\tTrovati batch non pieni")
+        for task in batch.j_t:
+            task_to_swap.append([batch.id, task])
+        # batches_to_fill[b].j_t.clear()
+        b+=1
 
-        temp_jobs: dict = copy.deepcopy(new_solution.jobs)
-        batch_in = choice(batches_to_fill)
-
-        step = randrange(2)
-        if step == 0:
-            print("\t\tSposto task dal job più in ritardo in un batch non pieno:")
-            batch_from, jobtask_to_move = new_solution.find_latest_jobtask(temp_jobs)
-            job_id, task_id = jobtask_to_move[0], jobtask_to_move[1].id
-            while not (batch_from.id >= batch_in.id and temp_jobs[job_id].release_time < batch_in.start
-                    # and task_extend_the_batch(jobtask_to_move[1], batch_in)
-            ):
-                del temp_jobs[job_id]
-                if not temp_jobs:
-                    break
-                batch_from, jobtask_to_move = new_solution.find_latest_jobtask(temp_jobs)
-                job_id, task_id = jobtask_to_move[0], jobtask_to_move[1].id
-        else:
-
-            print("\t\tSposto task casuale in un batch non pieno:")
-            batch_from, jobtask_to_move = new_solution.get_random_jobtask()
-            job_id, task_id = jobtask_to_move[0], jobtask_to_move[1].id
-
-        if temp_jobs:
-            print(
-                f'\t\tSposto task: {(job_id, task_id)} dal batch {batch_from.id} al batch {batch_in.id}')
-            new_solution.move_task_in_other_batch(batch_in.id, batch_from.id, jobtask_to_move)
-            result = True
-        else:
-            print(f'\t\tNessun task trovato compatibile con il batch:{batch_in}')
-
-        del temp_jobs
-    else:
-        print('\tNessun batch non pieno')
+    task_to_swap.sort(key=lambda x: x[1][1].duration)
+    # print(f'Tasks to swap: {task_to_swap}')
+    n_tasks = len(task_to_swap)
+    batches_to_fill.sort(key=lambda batch:batch.start)
+    for batch in batches_to_fill:
+        k = 0
+        # print(f'prima: {batch.full_batch()}')
+        while not batch.full_batch() and k < n_tasks:
+            t=0
+            for task in task_to_swap:
+                batch_from = task[0]
+                jobtask_to_move = task[1]
+                # print(jobtask_to_move)
+                if batch.start >= new_solution.jobs[jobtask_to_move[0]].release_time and not batch.id == batch_from:
+                    # print(f'Nel batch {batch.id} il task {jobtask_to_move[1].id} del job {new_solution.jobs[jobtask_to_move[0]].id} dal batch{batch_from}')
+                    new_solution.move_task_in_other_batch(batch.id, batch_from, jobtask_to_move)
+                    # print(f'dopo {batch}')
+                    del task_to_swap[t]
+                    n_tasks = len(task_to_swap)
+                    if batch.full_batch():
+                        break
+                t += 1
+            k += 1
+    print(f'Soluzione perturbata: \n {new_solution.batches}')
     return result, new_solution
+
+    # if batches_to_fill:
+    #
+    #     print("\tTrovati batch non pieni")
+    #
+    #     temp_jobs: dict = copy.deepcopy(new_solution.jobs)
+    #     batch_in = choice(batches_to_fill)
+    #
+    #     step = randrange(2)
+    #     if step == 0:
+    #         print("\t\tSposto task dal job più in ritardo in un batch non pieno:")
+    #         batch_from, jobtask_to_move = new_solution.find_latest_jobtask(temp_jobs)
+    #         job_id, task_id = jobtask_to_move[0], jobtask_to_move[1].id
+    #         while not (batch_from.id >= batch_in.id and temp_jobs[job_id].release_time < batch_in.start
+    #                 # and task_extend_the_batch(jobtask_to_move[1], batch_in)
+    #         ):
+    #             del temp_jobs[job_id]
+    #             if not temp_jobs:
+    #                 break
+    #             batch_from, jobtask_to_move = new_solution.find_latest_jobtask(temp_jobs)
+    #             job_id, task_id = jobtask_to_move[0], jobtask_to_move[1].id
+    #     else:
+    #
+    #         print("\t\tSposto task casuale in un batch non pieno:")
+    #         batch_from, jobtask_to_move = new_solution.get_random_jobtask()
+    #         job_id, task_id = jobtask_to_move[0], jobtask_to_move[1].id
+    #
+    #     if temp_jobs:
+    #         print(
+    #             f'\t\tSposto task: {(job_id, task_id)} dal batch {batch_from.id} al batch {batch_in.id}')
+    #         new_solution.move_task_in_other_batch(batch_in.id, batch_from.id, jobtask_to_move)
+    #         result = True
+    #     else:
+    #         print(f'\t\tNessun task trovato compatibile con il batch:{batch_in}')
+    #
+    #     del temp_jobs
+    # else:
+    #     print('\tNessun batch non pieno')
+    # return result, new_solution
 
 
 def random_swap_task(solution: Solution, history: History):
