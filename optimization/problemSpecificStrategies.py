@@ -32,7 +32,7 @@ def fill_not_full_batch(solution: Solution):
                 jobtask_to_move = task[1]
                 # print(jobtask_to_move)
                 if batch.start >= new_solution.jobs[jobtask_to_move[0]].release_time and not batch.id == batch_from:
-                    # print(f'Nel batch {batch.id} il task {jobtask_to_move[1].id} del job {new_solution.jobs[jobtask_to_move[0]].id} dal batch{batch_from}')
+                    print(f'Sposto nel batch {batch.id} il task {jobtask_to_move[1].id} del job {new_solution.jobs[jobtask_to_move[0]].id} dal batch{batch_from}')
                     new_solution.move_task_in_other_batch(batch.id, batch_from, jobtask_to_move)
                     # print(f'dopo {batch}')
                     del task_to_swap[t]

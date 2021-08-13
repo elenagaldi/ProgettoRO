@@ -100,7 +100,7 @@ class Solution:
         for pos, batch in enumerate(self.batches):
             batch.id = pos
             start = max(self.batches[pos - 1].end,
-                        batch.get_earliest_reltime(self.jobs)) if pos > 0 else batch.get_earliest_reltime(self.jobs)
+                        batch.get_latest_reltime(self.jobs)) if pos > 0 else batch.get_latest_reltime(self.jobs)
             batch.update_time(start)
 
     def update_jobs_delay(self):

@@ -28,7 +28,7 @@ class Batch:
         else:
             return None
 
-    def get_earliest_reltime(self, jobs_dict):
+    def get_latest_reltime(self, jobs_dict):
         if len(self.j_t) == 0:
             return 0
         else:

@@ -16,6 +16,7 @@ def perturb_solution(solution: Solution, history: History):
     if count_not_full_batch >= 1 and history.counter_search % 3 == 0:
         print("\tPerturbo riempiendo batch non pieni")
         result, new_solution = problemSpecificStrategies.fill_not_full_batch(solution)
+        new_solution, _ = simulated_annealing(new_solution)
 
     else:
         if history.counter_search % 2 == 0:
