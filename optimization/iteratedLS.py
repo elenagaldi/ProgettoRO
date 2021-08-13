@@ -11,15 +11,16 @@ def stop_condition(history: History):
 
 def perturb_solution(solution: Solution, history: History):
     print("Perturbo soluzione:")
+    # new_solution, _ = simulated_annealing(solution)
     count_not_full_batch = solution.analyze_not_full_batch()
     if count_not_full_batch >= 1 and history.counter_search % 3 == 0:
         print("\tPerturbo riempiendo batch non pieni")
         result, new_solution = problemSpecificStrategies.fill_not_full_batch(solution)
-    # sol, _ = simulated_annealing(solution)
+
     else:
         if history.counter_search % 2 == 0:
             print("\tPerturbo facendo swap dei task casuali")
-            new_solution = problemSpecificStrategies.random_swap_task(solution, history)
+            new_solution = problemSpecificStrategies.random_swap(solution, history)
         else:
             print("\tSHUFFLE")
             new_solution = problemSpecificStrategies.shuffle_batches(solution)
