@@ -2,6 +2,7 @@ from model.batch import Batch
 from model.task import Task
 import copy
 from random import choice
+from bisect import bisect_left
 
 
 class Solution:
@@ -47,13 +48,18 @@ class Solution:
             if batch.capacity > len(batch.j_t):
                 print(f'Batch {batch.id} non pieno')
 
-            aux = 0
-            weight = 1
-            for jt1, jt2 in zip(batch.j_t[0::1], batch.j_t[1::1]):
-                auxTemp = abs(jt1[1].duration - jt2[1].duration) * weight
-                weight += 1 if auxTemp > 0 else 0
-                aux = aux + auxTemp
-            print(f' Differenza durate task nel batch {batch.id}: {aux}')
+            diff = batch.analyze_task_duration_diff()
+            print(f' Differenza durate task nel batch {batch.id}: {diff}')
+
+    def get_first_Mbatch_by_duration_differences(self, m):
+        diff_l = []
+        batch_l = []
+        for pos, batch in enumerate(self.batches):
+            diff = batch.analyze_task_duration_diff()
+            i = bisect_left(diff_l, diff)
+            diff_l.insert(i, diff)
+            batch_l.insert(i, batch)
+        return batch_l[-m:]
 
     def analyze_not_full_batch(self):
         count_nfb = 0

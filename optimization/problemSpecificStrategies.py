@@ -84,7 +84,7 @@ def fill_not_full_batch(solution: Solution):
     # return result, new_solution
 
 
-def random_swap_task(solution: Solution, history: History):
+def random_swap(solution: Solution, history: History):
     new_solution = copy.deepcopy(solution)
     for i in range(randrange(1, 10)):
         batch1, batch2 = choice(new_solution.batches), choice(new_solution.batches)
@@ -94,9 +94,15 @@ def random_swap_task(solution: Solution, history: History):
         jobtask1, jobtask2 = choice(batch1.j_t), choice(batch2.j_t)
         job1, job2 = jobtask1[0], jobtask2[0]
         task1, task2 = jobtask1[1], jobtask2[1]
-        print(
-            f'\t\t Swap tra task {(job1, task1.id)} nel batch {batch1.id} e task {(job2, task2.id)} nel batch {batch2.id}')
-        new_solution.swap_task(batch1.id, batch2.id, job1, task1, job2, task2)
+
+        step = randrange(2)
+        if step == 0:
+            print(
+                f'\t\t Swap tra task {(job1, task1.id)} nel batch {batch1.id} e task {(job2, task2.id)} nel batch {batch2.id}')
+            new_solution.swap_task(batch1.id, batch2.id, job1, task1, job2, task2)
+        else:
+            print(f'\tSwap casuale tra batch ({batch1.id},{batch2.id}')
+            new_solution.swap_batches(batch1, batch2, batch1.id, batch2.id)
     return new_solution
 
 
@@ -110,3 +116,8 @@ def shuffle_batches(solution: Solution):
     shuffle(new_solution.batches)
     new_solution.update_solution_parameters()
     return new_solution
+
+
+def destroy_and_repair(solution: Solution):
+    batch_to_destroy = solution.get_first_Mbatch_by_duration_differences(solution.batches[0].capacity)
+    

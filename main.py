@@ -2,7 +2,7 @@ import configuration
 from firstSolution.greedy import Greedy
 from firstSolution.greedy2 import Greedy2
 from firstSolution.greedy3 import Greedy3
-from inputData.xlsInputData import XslInputData
+from inputData.xlsInputData import XlsInputData
 from model.solution import Solution
 from optimization import localSearch, iteratedLS
 from optimization.acceptanceCriteria import *
@@ -17,7 +17,7 @@ def list_to_dict(ll: list, count=None):
 
 if __name__ == '__main__':
 
-    input_obj = XslInputData(configuration.INPUT_FILE10)
+    input_obj = XlsInputData(configuration.INPUT_FILE11)
     jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
 
     jobs_dict: dict = list_to_dict(jobs, jobs_num)
