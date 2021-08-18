@@ -13,18 +13,21 @@ def perturb_solution(solution: Solution, history: History):
     print("Perturbo soluzione:")
     # new_solution, _ = simulated_annealing(solution)
     count_not_full_batch = solution.analyze_not_full_batch()
-    if count_not_full_batch >= 1 and history.counter_search % 3 == 0:
-        print("\tPerturbo riempiendo batch non pieni")
-        result, new_solution = problemSpecificStrategies.fill_not_full_batch(solution)
-        new_solution, _ = simulated_annealing(new_solution)
+    # if count_not_full_batch >= 1 and history.counter_search % 3 == 0:
+    #     print("\tPerturbo riempiendo batch non pieni")
+    #     new_solution = problemSpecificStrategies.fill_not_full_batch(solution)
+    #     new_solution, _ = simulated_annealing(new_solution)
 
+    if history.counter_search % 2 == 0:
+        print("\tPerturbo facendo D&R")
+        new_solution = problemSpecificStrategies.destroy_and_repair(solution)
     else:
-        if history.counter_search % 2 == 0:
-            print("\tPerturbo facendo swap dei task casuali")
-            new_solution = problemSpecificStrategies.random_swap(solution, history)
-        else:
+        if history.counter_search % 3 == 0:
             print("\tSHUFFLE")
             new_solution = problemSpecificStrategies.shuffle_batches(solution)
+        else:
+            print("\tPerturbo facendo swap dei task casuali")
+            new_solution = problemSpecificStrategies.random_swap(solution, history)
     return new_solution
 
 

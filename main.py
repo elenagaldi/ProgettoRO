@@ -6,6 +6,7 @@ from inputData.xlsInputData import XlsInputData
 from model.solution import Solution
 from optimization import localSearch, iteratedLS
 from optimization.acceptanceCriteria import *
+from optimization import problemSpecificStrategies
 
 
 def list_to_dict(ll: list, count=None):
@@ -17,7 +18,7 @@ def list_to_dict(ll: list, count=None):
 
 if __name__ == '__main__':
 
-    input_obj = XlsInputData(configuration.INPUT_FILE11)
+    input_obj = XlsInputData(configuration.INPUT_FILE10)
     jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
 
     jobs_dict: dict = list_to_dict(jobs, jobs_num)
@@ -27,10 +28,12 @@ if __name__ == '__main__':
     for i in jobs:
         tot_task += len(i.task)
 
-    greedy = Greedy2(jobs, capacity_batch, tot_task)
+    greedy = Greedy3(jobs, capacity_batch, tot_task)
     batches = greedy.start()
     initial_solution = Solution(batches, jobs_dict)
+
     initial_solution.update_jobs_delay()
+    # print(initial_solution.jobs)
     initial_cost = initial_solution.obj_function(count_vincoli=False)
     print(f'Costo:\n {initial_cost}')
 
@@ -49,24 +52,6 @@ if __name__ == '__main__':
     #
     # print(solution.batches,
     #       f'Ottimo locale trovato con ricerca locale : {cost} \n Numero scambi: {numero_ricerche - 1}')
-    # l = []
-    # c = []
-    # for i in range(10):
-    #     SA_cost, SA_solution = simulated_annealing(solution)
-    #     print(f'Ottimo locale trovato con simulated annealing : {SA_cost}')
-    #     if SA_cost not in l:
-    #         l.append(SA_cost)
-    #         c.append(1)
-    #     else:
-    #         i = l.index(SA_cost)
-    #         c.insert(i, c[i] + 1)
-    #
-    # lc = list(zip(l, c))
-    # lc.sort(key=lambda xx: xx[1], reverse=True)
-    # for y in lc:
-    #     print(f'Costo: {y[0]}, occorrenze: {y[1]}')
-
-    # solution.analyze_delay()
 
     '''cost = 0
     cost, batches = destroy_repair\

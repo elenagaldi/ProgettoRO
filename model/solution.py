@@ -41,8 +41,8 @@ class Solution:
         return rand_batch, rand_jt
 
     def analyze_solution(self):
-        for job in self.jobs.values():
-            print(f'Ritardo job {job.id}: {job.delay} ')
+        # for job in self.jobs.values():
+        #     print(f'Ritardo job {job.id}: {job.delay} ')
 
         for batch in self.batches:
             if batch.capacity > len(batch.j_t):
@@ -118,6 +118,20 @@ class Solution:
         if btd.empty_batch():
             del self.batches[btd.id]
         btf.add_task(jt[0], jt[1])
+        self.update_solution_parameters()
+
+    def reset_batch_and_newInsert(self, batch_i: int, task_stack: [[int, Task]], strategy="SPT"):
+        s = 0 if strategy == "SPT" else -1
+        batch = self.batches[batch_i]
+        batch_temp = copy.deepcopy(batch)
+        for jt in batch_temp.j_t:
+            batch.remove_task(jt[0], jt[1])
+        del batch_temp
+        for i in range(batch.capacity):
+            if not task_stack:
+                break
+            jobtask_i = task_stack.pop(s)
+            batch.add_task(jobtask_i[0], jobtask_i[1])
         self.update_solution_parameters()
 
     def __eq__(self, other):

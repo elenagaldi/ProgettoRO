@@ -7,7 +7,6 @@ from optimization.history import History
 
 def fill_not_full_batch(solution: Solution):
     new_solution = copy.deepcopy(solution)
-    result = False
     batches_to_fill = new_solution.find_not_full_batch()
     task_to_swap = []
     b = 0
@@ -16,23 +15,24 @@ def fill_not_full_batch(solution: Solution):
         for task in batch.j_t:
             task_to_swap.append([batch.id, task])
         # batches_to_fill[b].j_t.clear()
-        b+=1
+        b += 1
 
     task_to_swap.sort(key=lambda x: x[1][1].duration)
     # print(f'Tasks to swap: {task_to_swap}')
     n_tasks = len(task_to_swap)
-    batches_to_fill.sort(key=lambda batch:batch.start)
+    batches_to_fill.sort(key=lambda btc: btc.start)
     for batch in batches_to_fill:
         k = 0
         # print(f'prima: {batch.full_batch()}')
         while not batch.full_batch() and k < n_tasks:
-            t=0
+            t = 0
             for task in task_to_swap:
                 batch_from = task[0]
                 jobtask_to_move = task[1]
                 # print(jobtask_to_move)
                 if batch.start >= new_solution.jobs[jobtask_to_move[0]].release_time and not batch.id == batch_from:
-                    print(f'Sposto nel batch {batch.id} il task {jobtask_to_move[1].id} del job {new_solution.jobs[jobtask_to_move[0]].id} dal batch{batch_from}')
+                    print(
+                        f'Sposto nel batch {batch.id} il task {jobtask_to_move[1].id} del job {new_solution.jobs[jobtask_to_move[0]].id} dal batch{batch_from}')
                     new_solution.move_task_in_other_batch(batch.id, batch_from, jobtask_to_move)
                     # print(f'dopo {batch}')
                     del task_to_swap[t]
@@ -42,7 +42,7 @@ def fill_not_full_batch(solution: Solution):
                 t += 1
             k += 1
     print(f'Soluzione perturbata: \n {new_solution.batches}')
-    return result, new_solution
+    return new_solution
 
     # if batches_to_fill:
     #
@@ -119,5 +119,19 @@ def shuffle_batches(solution: Solution):
 
 
 def destroy_and_repair(solution: Solution):
-    batch_to_destroy = solution.get_first_Mbatch_by_duration_differences(solution.batches[0].capacity)
-    
+    new_solution = copy.deepcopy(solution)
+    capacity_batch = new_solution.batches[0].capacity
+    batch_to_destroy = new_solution.get_first_Mbatch_by_duration_differences(capacity_batch)
+    print(batch_to_destroy)
+    jobtask = []
+    for batch in batch_to_destroy:
+        jobtask.extend(batch.j_t)
+
+    jobtask.sort(key=lambda jt: jt[1].duration)
+    print(jobtask)
+
+    for batch in batch_to_destroy:
+        if not jobtask:
+            break
+        new_solution.reset_batch_and_newInsert(batch.id, jobtask, "SPT")
+    return new_solution
