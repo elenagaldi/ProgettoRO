@@ -32,14 +32,14 @@ def search(solution: Solution, best_improvement_strategy):
                 best_cost, best_solution = new_cost, copy.deepcopy(new_solution)
                 swap = (pos1, pos2)
                 if best_improvement_strategy is False:
-                    print(f'\tMiglioramento con swap: {swap} ')
+                    print(f'\t\tMiglioramento con swap: {swap} ')
                     return best_cost, best_solution
             new_solution = copy.deepcopy(solution)
 
     if swap is None:
-        print(f"\tTrovato ottimo locale, costo:{best_cost}")
+        print(f"\t\tTrovato ottimo locale, costo:{best_cost}")
     else:
-        print(f'\tMiglioramento con swap: {swap} con costo {best_cost}')
+        print(f'\t\tMiglioramento con swap: {swap} con costo {best_cost}')
     return best_cost, best_solution
 
 
@@ -64,6 +64,7 @@ def swaptask_search(solution: Solution, best_improvement_strategy):
     new_solution = copy.deepcopy(solution)
     cost = solution.obj_function(count_vincoli=True)
     best_solution, best_cost = solution, cost
+    swap = None
     for batch in solution.batches:
         for jobtask in batch.j_t:
             job, task = jobtask[0], jobtask[1]
@@ -74,10 +75,16 @@ def swaptask_search(solution: Solution, best_improvement_strategy):
                     new_cost = new_solution.obj_function(count_vincoli=True)
                     if new_cost < best_cost:
                         best_cost, best_solution = new_cost, copy.deepcopy(new_solution)
-
+                        swap = (batch.id, batch2.id, (job, task.id), (job2, task2.id))
                         if best_improvement_strategy is False:
+                            print(
+                                f'\t\tMiglioramento con swap (B1,B2, Job-Task1, Job-Task2): {swap} con costo {best_cost}')
                             return best_cost, best_solution
                     new_solution = copy.deepcopy(solution)
+    if swap is None:
+        print(f"\t\tTrovato ottimo locale, costo:{best_cost}")
+    else:
+        print(f'\t\tMiglioramento con swap (B1,B2, Job-Task1, Job-Task2): {swap} con costo {best_cost}')
     return best_solution, best_cost
 
 

@@ -22,6 +22,12 @@ class Solution:
                             cost += 1000
         return cost
 
+    def alternative_obj_function(self):
+        diff_cost = 0
+        for batch in self.batches:
+            diff_cost += batch.analyze_task_duration_diff()
+        return diff_cost
+
     def find_not_full_batch(self):
         b_list = []
         for batch in self.batches[:-1]:  # non controllo l'ultimo batch

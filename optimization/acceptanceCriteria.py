@@ -15,7 +15,7 @@ def simulated_annealing(solution: Solution):
     best_solution, best_cost = solution, current_cost
     t = 0.2 * current_cost
 
-    while t > 0.00001:
+    while t > 0.001:
         for k in range(TEMP_EQ):  # imposto il ciclo fino al raggiungimento dell'equilibrio
             next_solution = copy.deepcopy(current_solution)
             batch1 = choice(next_solution.batches)
@@ -55,7 +55,7 @@ def simulated_annealing(solution: Solution):
 
         t = t / 2  # abbasso la temperatura
 
-    return best_solution, best_cost
+    return best_solution
 
 
 class SimulatedAnnealing(History):
@@ -69,7 +69,7 @@ class SimulatedAnnealing(History):
     def stop_condition(self):
         if self.static_solution:
             self.nochages_count += 1
-        return self.t <= self.MAX_T or self.nochages_count > 5
+        return self.t <= self.MAX_T or self.nochages_count > 3
 
     def acceptance_test(self, next_solution, next_cost):
         if next_solution == self.current_solution:

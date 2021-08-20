@@ -126,6 +126,13 @@ def destroy_and_repair(solution: Solution):
     capacity_batch = new_solution.batches[0].capacity
     batch_to_destroy = new_solution.get_first_Mbatch_by_duration_differences(capacity_batch)
 
+    late_jobs: [Job] = list(filter(lambda j: j.delay > 0, new_solution.jobs.values()))
+
+    for late_job in late_jobs:
+        b = new_solution.batches[late_job.last_batch]
+        if b not in batch_to_destroy:
+            batch_to_destroy.append(b)
+
     jobtask = []
     for batch in batch_to_destroy:
         jobtask.extend(batch.j_t)
@@ -135,23 +142,26 @@ def destroy_and_repair(solution: Solution):
 
     splitted_jt = []
     counter = 0
-    for i in range(capacity_batch):
+    for i in range(len(batch_to_destroy)):
         jt_sublist = []
         for k in range(capacity_batch):
             jt_sublist.append(jobtask[counter])
             counter += 1
+            if counter >= size:
+                break
         splitted_jt.append(jt_sublist)
         if counter >= size:
             break
 
     splitted_jt.sort(
         key=lambda jt_sub: sum([solution.jobs[jt[0]].release_time + solution.jobs[jt[0]].due_date for jt in jt_sub]))
-    jobtask = [item for sublist in splitted_jt for item in sublist]
+    jobtask = [item for sublist in splitted_jt for item in sublist]  # flatten di splitten_jt
 
     # randchoice = randrange(2)
     # strategy = "SPT" if randchoice == 0 else "LPT"
 
     for batch in batch_to_destroy:
+        print(f'\t\tDistruggo batch: {batch.id}')
         if not jobtask:
             break
         new_solution.reset_batch_and_newInsert(batch.id, jobtask, "SPT")
