@@ -37,8 +37,16 @@ if __name__ == '__main__':
     initial_cost = initial_solution.obj_function(count_vincoli=False)
     print(f'Costo:\n {initial_cost}')
 
-    solution, cost = iteratedLS.start(initial_solution)
-    print(solution.batches, f'Ottimo trovato con ILS: {cost} \n')
+    # solution, cost = iteratedLS.start(initial_solution)
+    # print(solution.batches, f'Ottimo trovato con ILS: {cost} \n')
+    initial_solution.analyze_solution()
+    solution = initial_solution
+    for i in range(10):
+        solution = problemSpecificStrategies.swaplatetask_local_search(solution)
+        print(solution.batches,
+              f'Ottimo trovato con SWAP LATE TASK LS : {solution.obj_function(count_vincoli=False)} \n')
+
+    solution.analyze_solution()
 
     # solution, cost, n = local_search(initial_solution, best_improvement_strategy=True)
 

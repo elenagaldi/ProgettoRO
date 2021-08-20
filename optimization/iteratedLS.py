@@ -2,7 +2,7 @@ from model.solution import Solution
 from optimization import problemSpecificStrategies
 from optimization.acceptanceCriteria import SimulatedAnnealing, simulated_annealing
 from optimization.history import History
-from optimization.localSearch import local_search
+from optimization.localSearch import local_search, swaptask_search
 
 
 def stop_condition(history: History):
@@ -17,17 +17,21 @@ def perturb_solution(solution: Solution, history: History):
     #     print("\tPerturbo riempiendo batch non pieni")
     #     new_solution = problemSpecificStrategies.fill_not_full_batch(solution)
     #     new_solution, _ = simulated_annealing(new_solution)
-
     if history.counter_search % 2 == 0:
-        print("\tPerturbo facendo D&R")
-        new_solution = problemSpecificStrategies.destroy_and_repair(solution)
+
+        new_solution, new_cost = swaptask_search(solution, True)
+        print(f'task local search costo : {new_cost}')
     else:
         if history.counter_search % 3 == 0:
-            print("\tSHUFFLE")
-            new_solution = problemSpecificStrategies.shuffle_batches(solution)
+            print("\tPerturbo facendo D&R")
+            new_solution = problemSpecificStrategies.destroy_and_repair(solution)
         else:
-            print("\tPerturbo facendo swap dei task casuali")
-            new_solution = problemSpecificStrategies.random_swap(solution, history)
+            if history.counter_search % 5 == 0:
+                print("\tSHUFFLE")
+                new_solution = problemSpecificStrategies.shuffle_batches(solution)
+            else:
+                print("\tPerturbo facendo swap dei task casuali")
+                new_solution = problemSpecificStrategies.random_swap(solution, history)
     return new_solution
 
 

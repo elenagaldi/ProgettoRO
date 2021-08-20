@@ -41,8 +41,8 @@ class Solution:
         return rand_batch, rand_jt
 
     def analyze_solution(self):
-        # for job in self.jobs.values():
-        #     print(f'Ritardo job {job.id}: {job.delay} ')
+        for job in self.jobs.values():
+            print(f'Ritardo job {job.id}: {job.delay} -> ultimo batch: {job.last_batch} ')
 
         for batch in self.batches:
             if batch.capacity > len(batch.j_t):

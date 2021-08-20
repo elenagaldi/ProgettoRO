@@ -1,8 +1,10 @@
 import copy
 from model.solution import Solution
 
-
 # Best improvement strategy settato a false implica che verrà usata la First improvement strategy
+from model.task import Task
+
+
 def local_search(solution: Solution, best_improvement_strategy=True):
     print("Local search:")
     initial_cost = solution.obj_function(count_vincoli=True)
@@ -76,4 +78,24 @@ def swaptask_search(solution: Solution, best_improvement_strategy):
                         if best_improvement_strategy is False:
                             return best_cost, best_solution
                     new_solution = copy.deepcopy(solution)
-    return best_cost, best_solution
+    return best_solution, best_cost
+
+
+def swap_onetask_search(solution: Solution, batch_id: int, jt: [int, Task]):
+    cost = solution.obj_function(count_vincoli=True)
+    best_solution, best_cost = solution, cost
+    new_solution = copy.deepcopy(solution)
+    for i in range(batch_id + 1):
+        batch = new_solution.batches[i]
+        for jobtask in batch.j_t:
+            job2, task2 = jobtask[0], jobtask[1]
+            new_solution.swap_task(batch_id, batch.id, jt[0], jt[1], job2, task2)
+            new_cost = new_solution.obj_function(count_vincoli=True)
+            if new_cost < best_cost:
+                best_cost, best_solution = new_cost, copy.deepcopy(new_solution)
+        new_solution = copy.deepcopy(solution)
+    if best_cost < cost:
+        print(f'\tmiglioramento, costo: {best_cost}')
+    else:
+        print(f'\t nessun miglioramento')
+    return best_solution, best_cost
