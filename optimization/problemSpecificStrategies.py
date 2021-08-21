@@ -17,7 +17,7 @@ def fill_not_full_batch(solution: Solution):
         # batches_to_fill[b].j_t.clear()
         b += 1
 
-    task_to_swap.sort(key=lambda x: x[1][1].duration)
+    task_to_swap.sort(key=lambda x: x[1][1].duration, reverse=True)
     # print(f'Tasks to swap: {task_to_swap}')
     n_tasks = len(task_to_swap)
     batches_to_fill.sort(key=lambda btc: btc.start)
@@ -28,18 +28,21 @@ def fill_not_full_batch(solution: Solution):
             t = 0
             for task in task_to_swap:
                 batch_from = task[0]
-                jobtask_to_move = task[1]
-                # print(jobtask_to_move)
-                if batch.start >= new_solution.jobs[jobtask_to_move[0]].release_time and not batch.id == batch_from:
-                    print(
-                        f'Sposto nel batch {batch.id} il task {jobtask_to_move[1].id} del job {new_solution.jobs[jobtask_to_move[0]].id} dal batch{batch_from}')
-                    new_solution.move_task_in_other_batch(batch.id, batch_from, jobtask_to_move)
-                    # print(f'dopo {batch}')
-                    del task_to_swap[t]
-                    n_tasks = len(task_to_swap)
-                    if batch.full_batch():
-                        break
-                t += 1
+                if batch_from < len(new_solution.batches):
+                    jobtask_to_move = task[1]
+                    # print(jobtask_to_move)
+                    if batch.start >= new_solution.jobs[jobtask_to_move[0]].release_time and not batch.id == batch_from:
+                        print(
+                            f'Sposto nel batch {batch.id} il task {jobtask_to_move[1].id} del job {new_solution.jobs[jobtask_to_move[0]].id} dal batch{batch_from}')
+                        new_solution.move_task_in_other_batch(batch.id, batch_from, jobtask_to_move)
+                        # print(f'dopo {batch}')
+                        del task_to_swap[t]
+                        n_tasks = len(task_to_swap)
+                        if batch.full_batch():
+                            break
+                    t += 1
+                else:
+                    break
             k += 1
     print(f'Soluzione perturbata: \n {new_solution.batches}')
     return new_solution

@@ -19,7 +19,8 @@ class Solution:
                 for batch in self.batches:
                     for jobtask in batch.j_t:
                         if self.jobs[jobtask[0]].release_time > batch.start:
-                            cost += 1000
+                            print(f'Soluzione non ammissibile aumento costo di 100')
+                            cost += 100
         return cost
 
     def find_not_full_batch(self):

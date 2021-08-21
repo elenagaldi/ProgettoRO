@@ -42,9 +42,14 @@ def start(initial_solution: Solution):
     while stop_condition(history) is False:
         print(f'Iterated Local search: {history.counter_search}')
         temp_solution = perturb_solution(current_solution, history)
+        temp_solution, _ = simulated_annealing(temp_solution)
+        # temp_solution = problemSpecificStrategies.destroy_and_repair(current_solution)
+        # temp_solution = problemSpecificStrategies.fill_not_full_batch(temp_solution)
+        # temp_solution = problemSpecificStrategies.shuffle_batches(current_solution)
+        # temp_solution = problemSpecificStrategies.random_swap(current_solution, history)
         temp_solution, temp_cost, _ = local_search(temp_solution, True)
         # print(temp_solution.batches, temp_cost)
-        # temp_solution.analyze_solution()
+        temp_solution.analyze_solution()
         current_solution, current_cost = acceptance_test(temp_solution, temp_cost, history)
         history.increment_counter_search()
     return history.best_solution, history.best_cost

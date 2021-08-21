@@ -61,15 +61,16 @@ def simulated_annealing(solution: Solution):
 class SimulatedAnnealing(History):
     def __init__(self, initial_solution: Solution, temp_eq=5, max_t=0.01):
         super().__init__(initial_solution)
+        self.initial_cost = initial_solution.obj_function(count_vincoli=True)
         self.TEMP_EQ = temp_eq
         self.MAX_T = max_t
-        self.t = 0.2 * self.current_cost
+        self.t = 0.2 * self.initial_cost
         self.k = 0
 
     def stop_condition(self):
         if self.static_solution:
             self.nochages_count += 1
-        return self.t <= self.MAX_T or self.nochages_count > 5
+        return self.t <= self.MAX_T or self.nochages_count > 2
 
     def acceptance_test(self, next_solution, next_cost):
         if next_solution == self.current_solution:
@@ -102,5 +103,6 @@ class SimulatedAnnealing(History):
             if self.k >= self.TEMP_EQ:
                 self.k = 0
                 self.t = self.t / 2
+                # print(self.t)
 
         return self.current_solution, self.current_cost

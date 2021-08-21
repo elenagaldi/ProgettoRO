@@ -18,7 +18,7 @@ def list_to_dict(ll: list, count=None):
 
 if __name__ == '__main__':
 
-    input_obj = XlsInputData(configuration.INPUT_FILE10)
+    input_obj = XlsInputData(configuration.INPUT_FILE9)
     jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
 
     jobs_dict: dict = list_to_dict(jobs, jobs_num)
@@ -34,6 +34,7 @@ if __name__ == '__main__':
 
     initial_solution.update_jobs_delay()
     # print(initial_solution.jobs)
+    # initial_solution.swap_batches(initial_solution.batches[0],initial_solution.batches[-1],0,len(initial_solution.batches)-1)
     initial_cost = initial_solution.obj_function(count_vincoli=False)
     print(f'Costo:\n {initial_cost}')
 
