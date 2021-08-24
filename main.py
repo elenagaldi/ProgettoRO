@@ -5,7 +5,7 @@ from firstSolution.greedy3 import Greedy3
 from inputData.xlsInputData import XlsInputData
 from model.solution import Solution
 from optimization import localSearch, iteratedLS
-from optimization.acceptanceCriteria import *
+from optimization.SA_Criteria_History import *
 from optimization import problemSpecificStrategies
 
 
@@ -18,7 +18,7 @@ def list_to_dict(ll: list, count=None):
 
 if __name__ == '__main__':
 
-    input_obj = XlsInputData(configuration.INPUT_FILE10)
+    input_obj = XlsInputData(configuration.INPUT_FILE9)
     jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
 
     jobs_dict: dict = list_to_dict(jobs, jobs_num)
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     for i in jobs:
         tot_task += len(i.task)
 
-    greedy = Greedy2(jobs, capacity_batch, tot_task)
+    greedy = Greedy3(jobs, capacity_batch, tot_task)
     batches = greedy.start()
     initial_solution = Solution(batches, jobs_dict)
 
