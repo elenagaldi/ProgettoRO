@@ -6,7 +6,7 @@ from model.task import Task
 
 
 def local_search(solution: Solution, best_improvement_strategy=True):
-    print("Local search:")
+    print("Local search sui batches:")
     initial_cost = solution.obj_function(count_vincoli=True)
     cost = initial_cost
     new_cost, solution = search(solution, best_improvement_strategy)
@@ -60,6 +60,19 @@ def search_with_worsening(solution: Solution):
     return best_cost, best_solution
 
 
+def task_local_search(solution: Solution, best_improvement_strategy=True):
+    print("Local search sui tasks:")
+    initial_cost = solution.obj_function(count_vincoli=True)
+    cost = initial_cost
+    new_cost, solution = swaptask_search(solution, best_improvement_strategy)
+    numero_ricerche = 1
+    while new_cost < cost:
+        cost = new_cost
+        new_cost, solution = swaptask_search(solution, best_improvement_strategy)
+        numero_ricerche += 1
+    return solution, cost, numero_ricerche
+
+
 def swaptask_search(solution: Solution, best_improvement_strategy):
     new_solution = copy.deepcopy(solution)
     cost = solution.obj_function(count_vincoli=True)
@@ -85,7 +98,7 @@ def swaptask_search(solution: Solution, best_improvement_strategy):
         print(f"\t\tTrovato ottimo locale, costo:{best_cost}")
     else:
         print(f'\t\tMiglioramento con swap (B1,B2, Job-Task1, Job-Task2): {swap} con costo {best_cost}')
-    return best_solution, best_cost
+    return best_cost, best_solution
 
 
 def swap_onetask_search(solution: Solution, batch_id: int, jt: [int, Task]):
