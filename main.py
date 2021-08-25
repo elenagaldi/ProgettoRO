@@ -2,11 +2,13 @@ import configuration
 from firstSolution.greedy import Greedy
 from firstSolution.greedy2 import Greedy2
 from firstSolution.greedy3 import Greedy3
+from firstSolution.greedyBattery import greedyBattery
 from inputData.xlsInputData import XlsInputData
 from model.solution import Solution
-from optimization import localSearch, iteratedLS
-from optimization.acceptanceCriteria import *
+from optimization import localSearch, iteratedVNS
+from optimization.SA_Criteria_History import *
 from optimization import problemSpecificStrategies
+from optimization.simulatedAnnealing import simulated_annealing
 
 
 def list_to_dict(ll: list, count=None):
@@ -18,7 +20,7 @@ def list_to_dict(ll: list, count=None):
 
 if __name__ == '__main__':
 
-    input_obj = XlsInputData(configuration.INPUT_FILE9)
+    input_obj = XlsInputData(configuration.INPUT_FILE13)
     jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
 
     jobs_dict: dict = list_to_dict(jobs, jobs_num)
@@ -28,60 +30,35 @@ if __name__ == '__main__':
     for i in jobs:
         tot_task += len(i.task)
 
-    greedy = Greedy3(jobs, capacity_batch, tot_task)
-    batches = greedy.start()
-    initial_solution = Solution(batches, jobs_dict)
+    solutions = greedyBattery(jobs, capacity_batch, tot_task, jobs_dict)
 
-    initial_solution.update_jobs_delay()
-    # print(initial_solution.jobs)
-    # initial_solution.swap_batches(initial_solution.batches[0],initial_solution.batches[-1],0,len(initial_solution.batches)-1)
-    initial_cost = initial_solution.obj_function(count_vincoli=False)
-    print(f'Costo:\n {initial_cost}')
+    costi_iniziali = []
+    for pos, sol in enumerate(solutions):
+        initial_cost = sol.obj_function(count_vincoli=True)
+        costi_iniziali.append(initial_cost)
+        print(f'Soluzione {pos} -> Costo: {initial_cost}')
 
-    solution, cost = iteratedLS.start(initial_solution)
-    print(solution.batches, f'Ottimo trovato con ILS: {cost} \n')
+    print(len(solutions))
 
-    # solution, cost, n = local_search(initial_solution, best_improvement_strategy=True)
+    best_solution = None
+    best_cost = None
+    costi = []
+    for pos, sol in enumerate(solutions):
+        print(f'Miglioro soluzione {pos}')
+        sol, _ = local_search(sol, neighborhood=0)
+        solution, cost = local_search(sol, neighborhood=1)
+        costi.append(cost)
+        if pos == 0:
+            best_solution, best_cost = solution, cost
+        else:
+            if cost < best_cost:
+                best_solution, best_cost = solution, cost
+        print(f'Ottimo trovato: {cost} \n')
 
-    # print(solution.batches,
-    #       f'Ottimo locale trovato con ricerca locale : {cost} \n Numero scambi:{n}')
-    #
-    # SA_solution, SA_cost, = simulated_annealing(solution)
-    # print(SA_solution.batches, f'Ottimo locale trovato con simulated annealing : {SA_cost}')
-    #
-    # solution, cost, numero_ricerche = local_search(SA_solution, best_improvement_strategy=True)
-    #
-    # print(solution.batches,
-    #       f'Ottimo locale trovato con ricerca locale : {cost} \n Numero scambi: {numero_ricerche - 1}')
+    print(costi_iniziali)
+    print(costi)
+    print(f'Migliore soluzione:\n{best_solution.batches} Costo: {best_cost}')
 
-    '''cost = 0
-    cost, batches = destroy_repair\
-        (batches, jobs_dict, capacity_batch, tot_task)
-    print(batches, f'Ottimo locale trovato con destroy and repair : {cost}')'''
-
-    '''
-    for i in range(input.k):
-        print(t[i].duration, " ", t[i].state)
-    
-    
-    for i in range(input.k):
-        print(j.task[i].duration, " ", j.task[i].state)
-    '''
-
-    '''
-    model = LpProblem("Lab_analisi", LpMinimize)
-    
-    # creao l'array delle variabili che corrispondono alla fine del job
-    end_job = np.array(range(input.n))
-    cost = np.array(range(input.n))
-    
-    for i in range(input.n):
-        end_job[i] = pulp.LpVariable("x", lowBound=0)
-    for i in range(input.n):
-        cost[i] = pulp.LpVariable("c", lowBound=0)
-    
-        model += sum(cost) # x + c
-    for i in range(input.n):
-        model += cost[i] == input.due_date[i] - end_job[i]
-    
-    '''
+    final_solution, final_cost = iteratedVNS.start(best_solution)
+    print(f'Soluzione: dopo ottimizzazione \n{final_solution.batches} Costo: {final_cost}')
+    # solution.analyze_solution()

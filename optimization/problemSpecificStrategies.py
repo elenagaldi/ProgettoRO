@@ -1,7 +1,10 @@
+from model.batch import Batch
+from model.job import Job
 from model.solution import Solution
 import copy
 from random import randrange, choice, shuffle
 
+from optimization import localSearch
 from optimization.history import History
 
 
@@ -11,13 +14,13 @@ def fill_not_full_batch(solution: Solution):
     task_to_swap = []
     b = 0
     for batch in batches_to_fill:
-        print("\tTrovati batch non pieni")
+        # print("\tTrovati batch non pieni")
         for task in batch.j_t:
             task_to_swap.append([batch.id, task])
         # batches_to_fill[b].j_t.clear()
         b += 1
 
-    task_to_swap.sort(key=lambda x: x[1][1].duration, reverse=True)
+    task_to_swap.sort(key=lambda x: x[1][1].duration)
     # print(f'Tasks to swap: {task_to_swap}')
     n_tasks = len(task_to_swap)
     batches_to_fill.sort(key=lambda btc: btc.start)
@@ -28,23 +31,23 @@ def fill_not_full_batch(solution: Solution):
             t = 0
             for task in task_to_swap:
                 batch_from = task[0]
-                if batch_from < len(new_solution.batches):
-                    jobtask_to_move = task[1]
-                    # print(jobtask_to_move)
-                    if batch.start >= new_solution.jobs[jobtask_to_move[0]].release_time and not batch.id == batch_from:
-                        print(
-                            f'Sposto nel batch {batch.id} il task {jobtask_to_move[1].id} del job {new_solution.jobs[jobtask_to_move[0]].id} dal batch{batch_from}')
+                jobtask_to_move = task[1]
+                # print(jobtask_to_move)
+                if batch.start >= new_solution.jobs[jobtask_to_move[0]].release_time and not batch.id == batch_from:
+                    # print(
+                    #    f'Sposto nel batch {batch.id} il task {jobtask_to_move[1].id} del job {new_solution.jobs[jobtask_to_move[0]].id} dal batch{batch_from}')
+                    try:
                         new_solution.move_task_in_other_batch(batch.id, batch_from, jobtask_to_move)
-                        # print(f'dopo {batch}')
-                        del task_to_swap[t]
-                        n_tasks = len(task_to_swap)
-                        if batch.full_batch():
-                            break
-                    t += 1
-                else:
-                    break
+                    except:
+                        pass
+                    # print(f'dopo {batch}')
+                    del task_to_swap[t]
+                    n_tasks = len(task_to_swap)
+                    if batch.full_batch():
+                        break
+                t += 1
             k += 1
-    print(f'Soluzione perturbata: \n {new_solution.batches}')
+    # print(f'Soluzione perturbata: \n {new_solution.batches}')
     return new_solution
 
     # if batches_to_fill:
@@ -100,11 +103,11 @@ def random_swap(solution: Solution, history: History):
 
         step = randrange(2)
         if step == 0:
-            print(
-                f'\t\t Swap tra task {(job1, task1.id)} nel batch {batch1.id} e task {(job2, task2.id)} nel batch {batch2.id}')
+            # print(
+            #   f'\t\t Swap tra task {(job1, task1.id)} nel batch {batch1.id} e task {(job2, task2.id)} nel batch {batch2.id}')
             new_solution.swap_task(batch1.id, batch2.id, job1, task1, job2, task2)
         else:
-            print(f'\tSwap casuale tra batch ({batch1.id},{batch2.id}')
+            # print(f'\tSwap casuale tra batch ({batch1.id},{batch2.id}')
             new_solution.swap_batches(batch1, batch2, batch1.id, batch2.id)
     return new_solution
 
@@ -125,16 +128,62 @@ def destroy_and_repair(solution: Solution):
     new_solution = copy.deepcopy(solution)
     capacity_batch = new_solution.batches[0].capacity
     batch_to_destroy = new_solution.get_first_Mbatch_by_duration_differences(capacity_batch)
-    print(batch_to_destroy)
+
+    late_jobs: [Job] = list(filter(lambda j: j.delay > 0, new_solution.jobs.values()))
+
+    for late_job in late_jobs:
+        b = new_solution.batches[late_job.last_batch]
+        if b not in batch_to_destroy:
+            batch_to_destroy.append(b)
+
     jobtask = []
     for batch in batch_to_destroy:
         jobtask.extend(batch.j_t)
 
     jobtask.sort(key=lambda jt: jt[1].duration)
-    print(jobtask)
+    size = len(jobtask)
+
+    splitted_jt = []
+    counter = 0
+    for i in range(len(batch_to_destroy)):
+        jt_sublist = []
+        for k in range(capacity_batch):
+            jt_sublist.append(jobtask[counter])
+            counter += 1
+            if counter >= size:
+                break
+        splitted_jt.append(jt_sublist)
+        if counter >= size:
+            break
+
+    splitted_jt.sort(
+        key=lambda jt_sub: sum([solution.jobs[jt[0]].release_time + solution.jobs[jt[0]].due_date for jt in jt_sub]))
+    jobtask = [item for sublist in splitted_jt for item in sublist]  # flatten di splitten_jt
+
+    # randchoice = randrange(2)
+    # strategy = "SPT" if randchoice == 0 else "LPT"
 
     for batch in batch_to_destroy:
+        # print(f'\t\tDistruggo batch: {batch.id}')
         if not jobtask:
             break
         new_solution.reset_batch_and_newInsert(batch.id, jobtask, "SPT")
+    return new_solution
+
+
+def swaplatetask_local_search(solution: Solution):
+    new_solution = copy.deepcopy(solution)
+    cost = solution.obj_function(True)
+    late_jobs: [Job] = list(filter(lambda j: j.delay > 0, new_solution.jobs.values()))
+    late_jobs.sort(key=lambda j: j.delay, reverse=True)
+
+    # print(f'job in ritardo {late_jobs}')
+    imrovement = False
+    for late_job in late_jobs:
+        late_batch: Batch = new_solution.batches[late_job.last_batch]
+        jobtask_to_swap = [jt for jt in late_batch.j_t if jt[0] == late_job.id]
+
+        for jt in jobtask_to_swap:
+            #       print(f'scambio jobtask {jt[0], jt[1].id}')
+            new_solution, new_cost = localSearch.swap_onetask_search(new_solution, late_batch.id, jt)
     return new_solution
