@@ -12,11 +12,11 @@ def local_search(solution: Solution, neighborhood=0):
         if neighborhood == 0:
             new_cost, solution = search(solution, best_improvement_strategy=True)
         else:
-            new_cost, solution = swaptask_search(solution, best_improvement_strategy=True)
+            new_cost, solution = swaptask_search(solution, best_improvement_strategy=False)
         if new_cost >= cost:
             break
         cost = new_cost
-    return solution, cost,
+    return solution, cost
 
 
 def search(solution: Solution, best_improvement_strategy):
@@ -33,14 +33,14 @@ def search(solution: Solution, best_improvement_strategy):
                 best_cost, best_solution = new_cost, copy.deepcopy(new_solution)
                 swap = (pos1, pos2)
                 if best_improvement_strategy is False:
-                    print(f'\t\tMiglioramento con swap: {swap} ')
+                    # print(f'\t\tMiglioramento con swap: {swap} ')
                     return best_cost, best_solution
             new_solution = copy.deepcopy(solution)
 
-    if swap is None:
-        print(f"\t\tTrovato ottimo locale, costo:{best_cost}")
-    else:
-        print(f'\t\tMiglioramento con swap: {swap} con costo {best_cost}')
+    # if swap is None:
+    #     print(f"\t\tTrovato ottimo locale, costo:{best_cost}")
+    # else:
+    #     print(f'\t\tMiglioramento con swap: {swap} con costo {best_cost}')
     return best_cost, best_solution
 
 
@@ -61,32 +61,12 @@ def swaptask_search(solution: Solution, best_improvement_strategy):
                         best_cost, best_solution = new_cost, copy.deepcopy(new_solution)
                         swap = (batch.id, batch2.id, (job, task.id), (job2, task2.id))
                         if best_improvement_strategy is False:
-                            print(
-                                f'\t\tMiglioramento con swap (B1,B2, Job-Task1, Job-Task2): {swap} con costo {best_cost}')
+                            # print(
+                            #    f'\t\tMiglioramento con swap (B1,B2, Job-Task1, Job-Task2): {swap} con costo {best_cost}')
                             return best_cost, best_solution
                     new_solution = copy.deepcopy(solution)
-    if swap is None:
-        print(f"\t\tTrovato ottimo locale, costo:{best_cost}")
-    else:
-        print(f'\t\tMiglioramento con swap (B1,B2, Job-Task1, Job-Task2): {swap} con costo {best_cost}')
+    # if swap is None:
+    #     print(f"\t\tTrovato ottimo locale, costo:{best_cost}")
+    # else:
+    #     print(f'\t\tMiglioramento con swap (B1,B2, Job-Task1, Job-Task2): {swap} con costo {best_cost}')
     return best_cost, best_solution
-
-
-def swap_onetask_search(solution: Solution, batch_id: int, jt: [int, Task]):
-    cost = solution.obj_function(count_vincoli=True)
-    best_solution, best_cost = solution, cost
-    new_solution = copy.deepcopy(solution)
-    for i in range(batch_id + 1):
-        batch = new_solution.batches[i]
-        for jobtask in batch.j_t:
-            job2, task2 = jobtask[0], jobtask[1]
-            new_solution.swap_task(batch_id, batch.id, jt[0], jt[1], job2, task2)
-            new_cost = new_solution.obj_function(count_vincoli=True)
-            if new_cost < best_cost:
-                best_cost, best_solution = new_cost, copy.deepcopy(new_solution)
-        new_solution = copy.deepcopy(solution)
-    if best_cost < cost:
-        print(f'\tmiglioramento, costo: {best_cost}')
-    else:
-        print(f'\t nessun miglioramento')
-    return best_solution, best_cost

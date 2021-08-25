@@ -6,9 +6,9 @@ from bisect import bisect_left
 
 
 class Solution:
-    def __init__(self, batches: [Batch], jobs_dict: dict):
+    def __init__(self, batches: [Batch], jobs_dict_readonly: dict):
         self.batches = batches
-        self.jobs = jobs_dict
+        self.jobs = copy.deepcopy(jobs_dict_readonly)
 
     def obj_function(self, count_vincoli: bool):
         cost = 0

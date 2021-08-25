@@ -14,7 +14,7 @@ def fill_not_full_batch(solution: Solution):
     task_to_swap = []
     b = 0
     for batch in batches_to_fill:
-        print("\tTrovati batch non pieni")
+        # print("\tTrovati batch non pieni")
         for task in batch.j_t:
             task_to_swap.append([batch.id, task])
         # batches_to_fill[b].j_t.clear()
@@ -34,8 +34,8 @@ def fill_not_full_batch(solution: Solution):
                 jobtask_to_move = task[1]
                 # print(jobtask_to_move)
                 if batch.start >= new_solution.jobs[jobtask_to_move[0]].release_time and not batch.id == batch_from:
-                    print(
-                        f'Sposto nel batch {batch.id} il task {jobtask_to_move[1].id} del job {new_solution.jobs[jobtask_to_move[0]].id} dal batch{batch_from}')
+                    # print(
+                    #    f'Sposto nel batch {batch.id} il task {jobtask_to_move[1].id} del job {new_solution.jobs[jobtask_to_move[0]].id} dal batch{batch_from}')
                     try:
                         new_solution.move_task_in_other_batch(batch.id, batch_from, jobtask_to_move)
                     except:
@@ -47,7 +47,7 @@ def fill_not_full_batch(solution: Solution):
                         break
                 t += 1
             k += 1
-    print(f'Soluzione perturbata: \n {new_solution.batches}')
+    # print(f'Soluzione perturbata: \n {new_solution.batches}')
     return new_solution
 
     # if batches_to_fill:
@@ -103,11 +103,11 @@ def random_swap(solution: Solution, history: History):
 
         step = randrange(2)
         if step == 0:
-            print(
-                f'\t\t Swap tra task {(job1, task1.id)} nel batch {batch1.id} e task {(job2, task2.id)} nel batch {batch2.id}')
+            # print(
+            #   f'\t\t Swap tra task {(job1, task1.id)} nel batch {batch1.id} e task {(job2, task2.id)} nel batch {batch2.id}')
             new_solution.swap_task(batch1.id, batch2.id, job1, task1, job2, task2)
         else:
-            print(f'\tSwap casuale tra batch ({batch1.id},{batch2.id}')
+            # print(f'\tSwap casuale tra batch ({batch1.id},{batch2.id}')
             new_solution.swap_batches(batch1, batch2, batch1.id, batch2.id)
     return new_solution
 
@@ -164,7 +164,7 @@ def destroy_and_repair(solution: Solution):
     # strategy = "SPT" if randchoice == 0 else "LPT"
 
     for batch in batch_to_destroy:
-        print(f'\t\tDistruggo batch: {batch.id}')
+        # print(f'\t\tDistruggo batch: {batch.id}')
         if not jobtask:
             break
         new_solution.reset_batch_and_newInsert(batch.id, jobtask, "SPT")
@@ -177,13 +177,13 @@ def swaplatetask_local_search(solution: Solution):
     late_jobs: [Job] = list(filter(lambda j: j.delay > 0, new_solution.jobs.values()))
     late_jobs.sort(key=lambda j: j.delay, reverse=True)
 
-    print(f'job in ritardo {late_jobs}')
+    # print(f'job in ritardo {late_jobs}')
     imrovement = False
     for late_job in late_jobs:
         late_batch: Batch = new_solution.batches[late_job.last_batch]
         jobtask_to_swap = [jt for jt in late_batch.j_t if jt[0] == late_job.id]
 
         for jt in jobtask_to_swap:
-            print(f'scambio jobtask {jt[0], jt[1].id}')
+            #       print(f'scambio jobtask {jt[0], jt[1].id}')
             new_solution, new_cost = localSearch.swap_onetask_search(new_solution, late_batch.id, jt)
     return new_solution

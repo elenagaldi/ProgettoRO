@@ -1,15 +1,19 @@
+import copy
+
 from model.batch import Batch
 from model.job import Job
 
 
 class Greedy2:
     def __init__(self, jobs: [Job], capacity_batch, tot_task):
-        self.jobs = jobs
+        self.jobs = copy.deepcopy(jobs)
         self.tot_task = tot_task
         self.m = capacity_batch
 
     def start(self):
+        init_jobs = copy.deepcopy(self.jobs)
         batches = self.labeling()
+        self.jobs = init_jobs
         return batches
 
     def labeling(self):
@@ -32,23 +36,23 @@ class Greedy2:
         while task_i < len_tasks:
             k = 0
             batch = Batch(id_batch, self.m, [], start_next_batch)
-            while k in range(self.m) and task_i < len_tasks and self.jobs[lista_task[task_i][0]].release_time <= start_next_batch:
+            while k in range(self.m) and task_i < len_tasks and self.jobs[
+                lista_task[task_i][0]].release_time <= start_next_batch:
                 if not lista_task[task_i][2].processed:
                     for t in self.jobs[lista_task[task_i][0]].task:
                         if t.id == lista_task[task_i][2].id:
-                            #j_t.append([lista_task[task_i][0], t])
+                            # j_t.append([lista_task[task_i][0], t])
                             batch.add_task(lista_task[task_i][0], t)
                             t.set_processed(True)
                             if self.jobs[lista_task[task_i][0]].is_completed():
                                 self.jobs[lista_task[task_i][0]].last_batch = id_batch
                             k += 1
                     task_i += 1
-#            batch = Batch(id_batch, self.m, j_t, start_next_batch)
+            #            batch = Batch(id_batch, self.m, j_t, start_next_batch)
             batches.append(batch)
             if task_i < len_tasks:
                 start_next_batch = max(batch.end, self.jobs[lista_task[task_i][0]].release_time)
                 id_batch += 1
                 j_t = []
 
-        print(f'Batches : {batches}')
         return batches
