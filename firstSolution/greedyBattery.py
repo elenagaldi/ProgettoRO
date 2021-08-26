@@ -12,7 +12,7 @@ def greedyBattery(jobs, capacity_batch, tot_task, jobs_dict):
     greedy3 = Greedy3(jobs, capacity_batch, tot_task)
 
     sol = Solution(greedy2.start(), jobs_dict)
-    sol.update_jobs_delay()
+    sol.update_solution_parameters()
     solutions.append(sol)
 
     x = "RDT"
@@ -23,12 +23,12 @@ def greedyBattery(jobs, capacity_batch, tot_task, jobs_dict):
 
     for crt in criterias:
         for strat in strategies:
-            sol1 = Solution(greedy3.start(1, crt, strat), jobs_dict)
+            # sol1 = Solution(greedy3.start(1, crt, strat), jobs_dict)
             sol2 = Solution(greedy3.start(2, crt, strat), jobs_dict)
-            if sol1 not in solutions:
-                sol1.update_jobs_delay()
-                solutions.append(sol1)
+            # if sol1 not in solutions:
+            #     sol1.update_solution_parameters()
+            #     solutions.append(sol1)
             if sol2 not in solutions:
-                sol2.update_jobs_delay()
+                sol2.update_solution_parameters()
                 solutions.append(sol2)
     return solutions

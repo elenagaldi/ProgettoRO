@@ -9,6 +9,7 @@ from optimization import localSearch, iteratedVNS
 from optimization.SA_Criteria_History import *
 from optimization import problemSpecificStrategies
 from optimization.simulatedAnnealing import simulated_annealing
+from statistics import stdev
 
 
 def list_to_dict(ll: list, count=None):
@@ -18,9 +19,14 @@ def list_to_dict(ll: list, count=None):
         return {k: ll[k] for k in range(len(ll))}
 
 
+def average(l: [int]):
+    s = sum(l)
+    return s / len(l)
+
+
 if __name__ == '__main__':
 
-    input_obj = XlsInputData(configuration.INPUT_FILE13)
+    input_obj = XlsInputData(configuration.INPUT_FILE9)
     jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
 
     jobs_dict: dict = list_to_dict(jobs, jobs_num)
@@ -31,32 +37,32 @@ if __name__ == '__main__':
         tot_task += len(i.task)
 
     solutions = greedyBattery(jobs, capacity_batch, tot_task, jobs_dict)
-
     costi_iniziali = []
     for pos, sol in enumerate(solutions):
-        initial_cost = sol.obj_function(count_vincoli=True)
-        costi_iniziali.append(initial_cost)
-        print(f'Soluzione {pos} -> Costo: {initial_cost}')
+        costi_iniziali.append(sol.cost)
+        print(f'Soluzione {pos} -> Costo: {sol.cost}')
 
-    print(len(solutions))
+    # FILTRO SOLUZIONI
+    # solutions = list(filter(lambda sl: sl.cost < average(costi_iniziali) + stdev(costi_iniziali), solutions))
+    # costi_iniziali = [sol.cost for sol in solutions]
+    solutions = list(filter(lambda sl: sl.cost < average(costi_iniziali), solutions))
 
     best_solution = None
     best_cost = None
     costi = []
     for pos, sol in enumerate(solutions):
         print(f'Miglioro soluzione {pos}')
-        sol, _ = local_search(sol, neighborhood=0)
-        solution, cost = local_search(sol, neighborhood=1)
-        costi.append(cost)
+        sol = local_search(sol, neighborhood=0)
+        if (jobs_num * task_num * capacity_batch) <= 100:
+            sol = local_search(sol, neighborhood=1)
+        costi.append(sol.cost)
         if pos == 0:
-            best_solution, best_cost = solution, cost
+            best_solution, best_cost = sol, sol.cost
         else:
-            if cost < best_cost:
-                best_solution, best_cost = solution, cost
-        print(f'Ottimo trovato: {cost} \n')
+            if sol.cost < best_cost:
+                best_solution, best_cost = sol, sol.cost
+        print(f'Ottimo trovato: {sol.cost} \n')
 
-    print(costi_iniziali)
-    print(costi)
     print(f'Migliore soluzione:\n{best_solution.batches} Costo: {best_cost}')
 
     final_solution, final_cost = iteratedVNS.start(best_solution)

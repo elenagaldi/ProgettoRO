@@ -9,6 +9,7 @@ class Solution:
     def __init__(self, batches: [Batch], jobs_dict_readonly: dict):
         self.batches = batches
         self.jobs = copy.deepcopy(jobs_dict_readonly)
+        self.cost = None
 
     def obj_function(self, count_vincoli: bool):
         cost = 0
@@ -29,6 +30,8 @@ class Solution:
             diff_cost += batch.analyze_task_duration_diff()
         return diff_cost
 
+    ## FUNZIONI INFORMATIVE DELLA SOLUZIONE
+
     def find_not_full_batch(self):
         b_list = []
         for batch in self.batches[:-1]:  # non controllo l'ultimo batch
@@ -41,11 +44,6 @@ class Solution:
         batch = self.batches[latest_job.last_batch]
         longest_jt = max(filter(lambda jt: jt[0] == latest_job.id, batch.j_t), key=lambda jt: jt[1].duration)
         return batch, longest_jt
-
-    def get_random_jobtask(self):
-        rand_batch = choice(self.batches)
-        rand_jt = choice(rand_batch.j_t)
-        return rand_batch, rand_jt
 
     def analyze_solution(self):
         for job in self.jobs.values():
@@ -75,8 +73,9 @@ class Solution:
                 count_nfb += 1
         return count_nfb
 
-        # effettuo scambio tra due batch
+    ## MOSSE
 
+    # effettuo scambio tra due batch
     # batch1 passa da pos1 a pos2, batch2 passa da pos2 a pos1
     def swap_batches(self, batch1: Batch, batch2: Batch, pos1: int, pos2: int):
         ## effettuo una deepcopy per non modificare batch nella soluzione originale
@@ -99,9 +98,36 @@ class Solution:
         batch2.add_task(job_i, task_i)
         self.update_solution_parameters()
 
+    ## SPOST UN TASK IN UN ALTRO BATCH (NON PIENO)
+    def move_task_in_other_batch(self, batch_to_fill: int, batch_to_dump: int, jt: [int, Task]):
+        btf, btd = self.batches[batch_to_fill], self.batches[batch_to_dump]
+        btd.remove_task(jt[0], jt[1])
+        if btd.empty_batch():
+            del self.batches[btd.id]
+        btf.add_task(jt[0], jt[1])
+        self.update_solution_parameters()
+
+    ## DISTRUGGO UN BATCH E INSERISCO UNA LISTA NUOVA DI TASK
+    def reset_batch_and_newInsert(self, batch_i: int, task_stack: [[int, Task]], strategy="SPT"):
+        s = 0 if strategy == "SPT" else -1
+        batch = self.batches[batch_i]
+        batch_temp = copy.deepcopy(batch)
+        for jt in batch_temp.j_t:
+            batch.remove_task(jt[0], jt[1])
+        del batch_temp
+        for i in range(batch.capacity):
+            if not task_stack:
+                break
+            jobtask_i = task_stack.pop(s)
+            batch.add_task(jobtask_i[0], jobtask_i[1])
+        self.update_solution_parameters()
+
+    ## AGGIORNAMENTO PARAMETRI SOLUZIONE
+
     def update_solution_parameters(self):
         self.update_batches_start_and_end()
         self.update_jobs_delay()
+        self.cost = self.obj_function(True)
 
     def update_batches_start_and_end(self):
         for pos, batch in enumerate(self.batches):
@@ -118,28 +144,6 @@ class Solution:
                     job.last_batch = batch.id
                     job.delay = self.batches[job.last_batch].end - job.due_date
                     break
-
-    def move_task_in_other_batch(self, batch_to_fill: int, batch_to_dump: int, jt: [int, Task]):
-        btf, btd = self.batches[batch_to_fill], self.batches[batch_to_dump]
-        btd.remove_task(jt[0], jt[1])
-        if btd.empty_batch():
-            del self.batches[btd.id]
-        btf.add_task(jt[0], jt[1])
-        self.update_solution_parameters()
-
-    def reset_batch_and_newInsert(self, batch_i: int, task_stack: [[int, Task]], strategy="SPT"):
-        s = 0 if strategy == "SPT" else -1
-        batch = self.batches[batch_i]
-        batch_temp = copy.deepcopy(batch)
-        for jt in batch_temp.j_t:
-            batch.remove_task(jt[0], jt[1])
-        del batch_temp
-        for i in range(batch.capacity):
-            if not task_stack:
-                break
-            jobtask_i = task_stack.pop(s)
-            batch.add_task(jobtask_i[0], jobtask_i[1])
-        self.update_solution_parameters()
 
     def __eq__(self, other):
         if not isinstance(other, Solution):

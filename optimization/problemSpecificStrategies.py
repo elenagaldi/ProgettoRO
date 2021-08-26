@@ -112,11 +112,6 @@ def random_swap(solution: Solution, history: History):
     return new_solution
 
 
-def task_extend_the_batch(task_to_move, batch_in):
-    longest_jt = max(batch_in.j_t, key=lambda jt: jt[1].duration)
-    return task_to_move.duration > longest_jt[1].duration
-
-
 def shuffle_batches(solution: Solution):
     new_solution = copy.deepcopy(solution)
     shuffle(new_solution.batches)
@@ -127,6 +122,7 @@ def shuffle_batches(solution: Solution):
 def destroy_and_repair(solution: Solution):
     new_solution = copy.deepcopy(solution)
     capacity_batch = new_solution.batches[0].capacity
+
     batch_to_destroy = new_solution.get_first_Mbatch_by_duration_differences(capacity_batch)
 
     late_jobs: [Job] = list(filter(lambda j: j.delay > 0, new_solution.jobs.values()))
@@ -143,22 +139,24 @@ def destroy_and_repair(solution: Solution):
     jobtask.sort(key=lambda jt: jt[1].duration)
     size = len(jobtask)
 
-    splitted_jt = []
-    counter = 0
-    for i in range(len(batch_to_destroy)):
-        jt_sublist = []
-        for k in range(capacity_batch):
-            jt_sublist.append(jobtask[counter])
-            counter += 1
-            if counter >= size:
-                break
-        splitted_jt.append(jt_sublist)
-        if counter >= size:
-            break
+    # splitted_jt = []
+    # counter = 0
+    # for i in range(len(batch_to_destroy)):
+    #     jt_sublist = []
+    #     for k in range(capacity_batch):
+    #         jt_sublist.append(jobtask[counter])
+    #         counter += 1
+    #         if counter >= size:
+    #             break
+    #     splitted_jt.append(jt_sublist)
+    #     if counter >= size:
+    #         break
+    #
+    # splitted_jt.sort(
+    #     key=lambda jt_sub: sum([solution.jobs[jt[0]].release_time + solution.jobs[jt[0]].due_date for jt in jt_sub]))
+    # jobtask = [item for sublist in splitted_jt for item in sublist]  # flatten di splitten_jt
 
-    splitted_jt.sort(
-        key=lambda jt_sub: sum([solution.jobs[jt[0]].release_time + solution.jobs[jt[0]].due_date for jt in jt_sub]))
-    jobtask = [item for sublist in splitted_jt for item in sublist]  # flatten di splitten_jt
+    shuffle(batch_to_destroy)
 
     # randchoice = randrange(2)
     # strategy = "SPT" if randchoice == 0 else "LPT"
@@ -168,22 +166,4 @@ def destroy_and_repair(solution: Solution):
         if not jobtask:
             break
         new_solution.reset_batch_and_newInsert(batch.id, jobtask, "SPT")
-    return new_solution
-
-
-def swaplatetask_local_search(solution: Solution):
-    new_solution = copy.deepcopy(solution)
-    cost = solution.obj_function(True)
-    late_jobs: [Job] = list(filter(lambda j: j.delay > 0, new_solution.jobs.values()))
-    late_jobs.sort(key=lambda j: j.delay, reverse=True)
-
-    # print(f'job in ritardo {late_jobs}')
-    imrovement = False
-    for late_job in late_jobs:
-        late_batch: Batch = new_solution.batches[late_job.last_batch]
-        jobtask_to_swap = [jt for jt in late_batch.j_t if jt[0] == late_job.id]
-
-        for jt in jobtask_to_swap:
-            #       print(f'scambio jobtask {jt[0], jt[1].id}')
-            new_solution, new_cost = localSearch.swap_onetask_search(new_solution, late_batch.id, jt)
     return new_solution
