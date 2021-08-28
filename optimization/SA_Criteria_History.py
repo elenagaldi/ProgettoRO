@@ -5,11 +5,11 @@ from random import *
 
 
 class SACriteriaHistory(History):
-    def __init__(self, initial_solution: Solution, temp_eq=5, max_t=1):
+    def __init__(self, initial_solution: Solution, temp_eq=15, min_t=0.1):
         super().__init__(initial_solution)
         self.TEMP_EQ = temp_eq
-        self.MAX_T = max_t
-        self.t = 0.8 * self.current_cost
+        self.MIN_T = min_t
+        self.t = self.current_cost
         self.k = 0
 
     def stop_condition(self):
@@ -18,7 +18,7 @@ class SACriteriaHistory(History):
         else:
             if self.static_solution:
                 self.nochages_count += 1
-            if self.t <= self.MAX_T and self.improvement is False:
+            if self.t <= self.MIN_T and self.improvement is False:
                 print("Raggiunta temperatura di raffreddamento, mi fermo")
                 return True
             else:
@@ -34,6 +34,7 @@ class SACriteriaHistory(History):
         else:
             self.static_solution = False
             self.nochages_count = 0
+            self.must_perturb = False
 
             print(f'\tTest di accettazione: nuovo costo: {next_cost}', end=' ')
 

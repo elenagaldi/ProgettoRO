@@ -64,7 +64,8 @@ if __name__ == '__main__':
         print(f'Ottimo trovato: {sol.cost} \n')
 
     print(f'Migliore soluzione:\n{best_solution.batches} Costo: {best_cost}')
+    # best_solution.analyze_solution()
 
     final_solution, final_cost = iteratedVNS.start(best_solution)
     print(f'Soluzione: dopo ottimizzazione \n{final_solution.batches} Costo: {final_cost}')
-    # solution.analyze_solution()
+    # final_solution.analyze_solution()

@@ -13,7 +13,7 @@ def stop_condition(history: History):
 
 
 def perturb_solution(solution: Solution, history: History):
-    cost = solution.obj_function(count_vincoli=True)
+    cost = solution.cost
     print("\t\tPerturbo soluzione:")
     norm_destr_rep, norm_shuffle, norm_rand_task = history.normalize_pert()
     r = random()
@@ -22,27 +22,24 @@ def perturb_solution(solution: Solution, history: History):
         print("\t\t\tPerturbo facendo D&R")
         new_solution = problemSpecificStrategies.destroy_and_repair(solution)
         new_cost = new_solution.cost
-        print(f'Destroy & repair rank: {history.pert_destr_rep} - new cost {new_cost} - init cost {cost}')
+        # print(f'Destroy & repair rank: {history.pert_destr_rep} - new cost {new_cost} - init cost {cost}')
         if new_cost < cost:
             history.pert_destr_rep += 1
-        print(f'Destroy & repair rank: {history.pert_destr_rep} ')
     else:
         if r <= norm_shuffle + norm_destr_rep:
             print("\t\t\tSHUFFLE")
             new_solution = problemSpecificStrategies.shuffle_batches(solution)
             new_cost = new_solution.cost
-            print(f'Shuffle rank: {history.pert_shuffel} - new cost {new_cost} - init cost {cost}')
+            # print(f'Shuffle rank: {history.pert_shuffel} - new cost {new_cost} - init cost {cost}')
             if new_cost <= cost:
                 history.pert_shuffel += 1
-            print(f'Shuffle rank: {history.pert_shuffel} - new cost {new_cost} - init cost {cost}')
         else:
             print("\t\t\tPerturbo facendo swap dei task casuali")
             new_solution = problemSpecificStrategies.random_swap(solution, history)
             new_cost = new_solution.cost
-            print(f'Random swap rank: {history.pert_rand_task} - new cost {new_cost} - init cost {cost}')
+            # print(f'Random swap rank: {history.pert_rand_task} - new cost {new_cost} - init cost {cost}')
             if new_cost <= cost:
                 history.pert_rand_task += 1
-            print(f'Random swap rank: {history.pert_rand_task} - new cost {new_cost} - init cost {cost}')
     return new_solution
 
 
@@ -63,7 +60,7 @@ def start(initial_solution: Solution):
 
         if history.static_solution or history.must_perturb:
             temp_solution = perturb_solution(current_solution, history)
-            history.perturb = False
+            history.must_perturb = False
 
         count_not_full_batch = current_solution.analyze_not_full_batch()
         if count_not_full_batch >= 1:
@@ -71,12 +68,13 @@ def start(initial_solution: Solution):
 
         cost_before_LS = temp_solution.cost
         if history.ls_batch:
-            print("\t\tCampionamento con SA:", end=' ')
-            temp_solution = simulated_annealing(temp_solution)
-            print(f' -> costo : {temp_solution.cost}')
 
             print("\t\tBatch local search:", end=' ')
             temp_solution = local_search(temp_solution, neighborhood=0)
+            print(f' -> costo : {temp_solution.cost}')
+
+            print("\t\tCampionamento con SA:", end=' ')
+            temp_solution = simulated_annealing(temp_solution)
             print(f' -> costo : {temp_solution.cost}')
 
             if temp_solution.cost >= cost_before_LS:
