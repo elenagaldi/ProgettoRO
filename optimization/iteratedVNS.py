@@ -68,13 +68,13 @@ def start(initial_solution: Solution):
 
         cost_before_LS = temp_solution.cost
         if history.ls_batch:
-
+                
+            print("\t\tShaking con SA:", end=' ')
+            temp_solution = simulated_annealing(temp_solution)
+            print(f' -> costo : {temp_solution.cost}')
+            
             print("\t\tBatch local search:", end=' ')
             temp_solution = local_search(temp_solution, neighborhood=0)
-            print(f' -> costo : {temp_solution.cost}')
-
-            print("\t\tCampionamento con SA:", end=' ')
-            temp_solution = simulated_annealing(temp_solution)
             print(f' -> costo : {temp_solution.cost}')
 
             if temp_solution.cost >= cost_before_LS:
