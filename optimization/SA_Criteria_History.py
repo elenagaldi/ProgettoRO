@@ -16,6 +16,9 @@ class SACriteriaHistory(History):
         if self.stop:
             return True
         else:
+            if self.current_cost == 0:
+                print("Trovato ottimo globale = 0")
+                return True
             if self.static_solution:
                 self.nochages_count += 1
             if self.t <= self.MIN_T and self.improvement is False:

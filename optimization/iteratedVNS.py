@@ -64,15 +64,16 @@ def start(initial_solution: Solution):
 
         count_not_full_batch = current_solution.analyze_not_full_batch()
         if count_not_full_batch >= 1:
+            print("\t\tRiempio batch non pieni")
             temp_solution = problemSpecificStrategies.fill_not_full_batch(temp_solution)
 
         cost_before_LS = temp_solution.cost
         if history.ls_batch:
-                
+
             print("\t\tShaking con SA:", end=' ')
             temp_solution = simulated_annealing(temp_solution)
             print(f' -> costo : {temp_solution.cost}')
-            
+
             print("\t\tBatch local search:", end=' ')
             temp_solution = local_search(temp_solution, neighborhood=0)
             print(f' -> costo : {temp_solution.cost}')

@@ -92,7 +92,7 @@ def fill_not_full_batch(solution: Solution):
 
 def random_swap(solution: Solution, history: History):
     new_solution = copy.deepcopy(solution)
-    for i in range(randrange(1, 10)):
+    for i in range(randrange(1, len(solution.batches))):
         batch1, batch2 = choice(new_solution.batches), choice(new_solution.batches)
         while batch2.id == batch1.id:
             batch2 = choice(new_solution.batches)
@@ -122,15 +122,25 @@ def shuffle_batches(solution: Solution):
 def destroy_and_repair(solution: Solution):
     new_solution = copy.deepcopy(solution)
     capacity_batch = new_solution.batches[0].capacity
-
-    batch_to_destroy = new_solution.get_first_Mbatch_by_duration_differences(capacity_batch)
+    batch_to_destroy = []
+    n = len(solution.batches)
+    # batch_to_destroy = new_solution.get_first_Mbatch_by_duration_differences(capacity_batch)
 
     late_jobs: [Job] = list(filter(lambda j: j.delay > 0, new_solution.jobs.values()))
+    early_jobs: [Job] = list(filter(lambda j: j.delay < 0, new_solution.jobs.values()))
 
     for late_job in late_jobs:
-        b = new_solution.batches[late_job.last_batch]
-        if b not in batch_to_destroy:
-            batch_to_destroy.append(b)
+        if len(batch_to_destroy) > n // 2:
+            break
+        b = late_job.last_batch
+        bs_latejob = [new_solution.batches[b]]
+        b -= 1
+        while late_job.due_date < new_solution.batches[b].end:
+            bs_latejob.append(new_solution.batches[b])
+            b -= 1
+        for b1 in bs_latejob:
+            if b1 not in batch_to_destroy and len(batch_to_destroy) <= n // 2:
+                batch_to_destroy.append(b1)
 
     jobtask = []
     for batch in batch_to_destroy:

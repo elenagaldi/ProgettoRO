@@ -19,14 +19,14 @@ def list_to_dict(ll: list, count=None):
         return {k: ll[k] for k in range(len(ll))}
 
 
-def average(l: [int]):
-    s = sum(l)
-    return s / len(l)
+def average(ll: [int]):
+    s = sum(ll)
+    return s / len(ll)
 
 
 if __name__ == '__main__':
 
-    input_obj = XlsInputData(configuration.INPUT_FILE9)
+    input_obj = XlsInputData(configuration.INPUT_FILE13)
     jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
 
     jobs_dict: dict = list_to_dict(jobs, jobs_num)
@@ -64,8 +64,9 @@ if __name__ == '__main__':
         print(f'Ottimo trovato: {sol.cost} \n')
 
     print(f'Migliore soluzione:\n{best_solution.batches} Costo: {best_cost}')
+    best_solution.analyze_solution()
     # best_solution.analyze_solution()
 
     final_solution, final_cost = iteratedVNS.start(best_solution)
     print(f'Soluzione: dopo ottimizzazione \n{final_solution.batches} Costo: {final_cost}')
-    # final_solution.analyze_solution()
+    final_solution.analyze_solution()
