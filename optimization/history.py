@@ -16,6 +16,7 @@ class History:
         self.must_perturb = False
         self.improvement = False
         self.ls_batch = True
+        self.pert = None
 
         self.pert_destr_rep = 1
         self.pert_rand_task = 1
@@ -34,3 +35,14 @@ class History:
 
     def increment_counter_search(self):
         self.counter_search += 1
+
+    def update_pert_rank(self):
+        if self.pert == "destr_rep":
+            self.pert_destr_rep += 1
+        else:
+            if self.pert == "shuffle":
+                self.pert_shuffel += 1
+            else:
+                if self.pert == "swap":
+                    self.pert_rand_task += 1
+        self.pert = None

@@ -23,23 +23,26 @@ def perturb_solution(solution: Solution, history: History):
         new_solution = problemSpecificStrategies.destroy_and_repair(solution)
         new_cost = new_solution.cost
         # print(f'Destroy & repair rank: {history.pert_destr_rep} - new cost {new_cost} - init cost {cost}')
-        if new_cost < cost:
-            history.pert_destr_rep += 1
+        # if new_cost < cost:
+        #     history.pert_destr_rep += 1
+        history.pert = "destr_rep"
     else:
         if r <= norm_shuffle + norm_destr_rep:
             print("\t\t\tSHUFFLE")
             new_solution = problemSpecificStrategies.shuffle_batches(solution)
             new_cost = new_solution.cost
             # print(f'Shuffle rank: {history.pert_shuffel} - new cost {new_cost} - init cost {cost}')
-            if new_cost <= cost:
-                history.pert_shuffel += 1
+            # if new_cost <= cost:
+            #     history.pert_shuffel += 1
+            history.pert = "shuffle"
         else:
             print("\t\t\tPerturbo facendo swap dei task casuali")
             new_solution = problemSpecificStrategies.random_swap(solution, history)
             new_cost = new_solution.cost
             # print(f'Random swap rank: {history.pert_rand_task} - new cost {new_cost} - init cost {cost}')
-            if new_cost <= cost:
-                history.pert_rand_task += 1
+            # if new_cost <= cost:
+            #     history.pert_rand_task += 1
+            history.pert = "swap"
     return new_solution
 
 

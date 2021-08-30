@@ -46,6 +46,8 @@ class SACriteriaHistory(History):
                 self.improvement = True
                 self.current_solution = next_solution
                 self.current_cost = next_cost
+                print(f'soluzione accettata con pert: {self.pert}')
+                self.update_pert_rank()
                 print(f'miglioramento', end=' ')
                 if next_cost < self.best_cost:
                     self.best_solution = next_solution
@@ -61,7 +63,8 @@ class SACriteriaHistory(History):
                 if r < math.exp((-deltaE / self.t)):
                     self.current_solution = next_solution
                     self.current_cost = next_cost
-                    print('soluzione accettata')
+                    print(f'soluzione accettata con pert: {self.pert}')
+                    self.update_pert_rank()
                 else:
                     print("soluzione rifiutata")
                     self.must_perturb = True
