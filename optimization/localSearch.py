@@ -1,4 +1,6 @@
 import copy
+from random import choice
+
 from model.solution import Solution
 
 # Best improvement strategy settato a false implica che verrà usata la First improvement strategy
@@ -6,13 +8,14 @@ from model.task import Task
 
 
 def local_search(solution: Solution, neighborhood=0):
-    initial_cost = solution.cost
-    cost = initial_cost
+    cost = solution.cost
+    new_solution = solution
     while True:
         if neighborhood == 0:
-            new_solution = search(solution, best_improvement_strategy=True)
+            new_solution = search(new_solution, best_improvement_strategy=True)
         else:
-            new_solution = swaptask_search(solution, best_improvement_strategy=False)
+            new_solution = swaptask_search(new_solution, best_improvement_strategy=False)
+            print(f'\t\t\t Trovato nuovo costo : {new_solution.cost}')
         new_cost = new_solution.cost
         if new_cost >= cost:
             break
@@ -35,7 +38,7 @@ def search(solution: Solution, best_improvement_strategy):
                 swap = (pos1, pos2)
                 if best_improvement_strategy is False:
                     # print(f'\t\tMiglioramento con swap: {swap} ')
-                    return best_cost
+                    return best_solution
             new_solution = copy.deepcopy(solution)
 
     # if swap is None:
@@ -47,8 +50,8 @@ def search(solution: Solution, best_improvement_strategy):
 
 def swaptask_search(solution: Solution, best_improvement_strategy):
     new_solution = copy.deepcopy(solution)
-    cost = solution.cost
-    best_solution, best_cost = solution, cost
+    init_cost = solution.cost
+    best_solution, best_cost = solution, init_cost
     swap = None
     for batch in solution.batches:
         for jobtask in batch.j_t:
@@ -71,3 +74,32 @@ def swaptask_search(solution: Solution, best_improvement_strategy):
     # else:
     #     print(f'\t\tMiglioramento con swap (B1,B2, Job-Task1, Job-Task2): {swap} con costo {best_cost}')
     return best_solution
+
+
+def batch_shaking(solution: Solution):
+    new_solution = copy.deepcopy(solution)
+    batch1 = choice(new_solution.batches)
+    pos1 = batch1.id
+    batch2 = choice(new_solution.batches)
+    while batch2.id == batch1.id:
+        batch2 = choice(new_solution.batches)
+    pos2 = batch2.id
+
+    new_solution.swap_batches(batch1, batch2, pos1, pos2)
+    return new_solution
+
+
+def task_shaking(solution: Solution):
+    new_solution = copy.deepcopy(solution)
+    batch1 = choice(new_solution.batches)
+    pos1 = batch1.id
+    batch2 = choice(new_solution.batches)
+    while batch2.id == batch1.id:
+        batch2 = choice(new_solution.batches)
+    pos2 = batch2.id
+
+    jt1 = choice(batch1.j_t)
+    jt2 = choice(batch2.j_t)
+
+    new_solution.swap_task(batch1.id, batch2.id, jt1[0], jt1[1], jt2[0], jt2[1])
+    return new_solution

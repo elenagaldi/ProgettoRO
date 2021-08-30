@@ -3,6 +3,8 @@ import copy
 from model.solution import Solution
 import math
 
+from optimization.localSearch import batch_shaking
+
 
 def simulated_annealing(solution: Solution):
     TEMP_EQ = 10
@@ -13,15 +15,7 @@ def simulated_annealing(solution: Solution):
 
     while t > 0.001:
         for k in range(TEMP_EQ):  # imposto il ciclo fino al raggiungimento dell'equilibrio
-            next_solution = copy.deepcopy(current_solution)
-            batch1 = choice(next_solution.batches)
-            pos1 = batch1.id
-            batch2 = choice(next_solution.batches)
-            while batch2.id == batch1.id:
-                batch2 = choice(next_solution.batches)
-            pos2 = batch2.id
-
-            next_solution.swap_batches(batch1, batch2, pos1, pos2)
+            next_solution = batch_shaking(current_solution)
             next_cost = next_solution.cost
 
             # next_cost, next_solution = search_with_worsening(next_solution)

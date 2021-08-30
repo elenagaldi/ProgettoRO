@@ -4,7 +4,7 @@ from model.solution import Solution
 from optimization import problemSpecificStrategies
 from optimization.SA_Criteria_History import SACriteriaHistory
 from optimization.history import History
-from optimization.localSearch import local_search
+from optimization.localSearch import local_search, task_shaking
 from optimization.simulatedAnnealing import *
 
 
@@ -17,29 +17,30 @@ def perturb_solution(solution: Solution, history: History):
     print("\t\tPerturbo soluzione:")
     norm_destr_rep, norm_shuffle, norm_rand_task = history.normalize_pert()
     r = random()
-
-    if r <= norm_destr_rep:
-        print("\t\t\tPerturbo facendo D&R")
-        new_solution = problemSpecificStrategies.destroy_and_repair(solution)
+    count_not_full_batch = solution.analyze_not_full_batch()
+    if r <= norm_destr_rep and count_not_full_batch >= 1:
+        print("\t\tRiempio batch non pieni", end=' ')
+        new_solution = problemSpecificStrategies.fill_not_full_batch(solution)
+        print(f' -> costo : {new_solution.cost}')
         new_cost = new_solution.cost
-        # print(f'Destroy & repair rank: {history.pert_destr_rep} - new cost {new_cost} - init cost {cost}')
-        if new_cost < cost:
-            history.pert_destr_rep += 1
+
+        history.pert = "destr_rep"
     else:
         if r <= norm_shuffle + norm_destr_rep:
-            print("\t\t\tSHUFFLE")
+            print("\t\t\tSHUFFLE", end=' ')
             new_solution = problemSpecificStrategies.shuffle_batches(solution)
+            print(f' -> costo : {new_solution.cost}')
             new_cost = new_solution.cost
-            # print(f'Shuffle rank: {history.pert_shuffel} - new cost {new_cost} - init cost {cost}')
-            if new_cost <= cost:
-                history.pert_shuffel += 1
+
+            history.pert = "destr_rep"
         else:
-            print("\t\t\tPerturbo facendo swap dei task casuali")
-            new_solution = problemSpecificStrategies.random_swap(solution, history)
+            print("\t\t\tPerturbo facendo swap dei task casuali", end=' ')
+            # new_solution = problemSpecificStrategies.random_swap(solution, history)
+            new_solution = task_shaking(solution)
+            print(f' -> costo : {new_solution.cost}')
             new_cost = new_solution.cost
-            # print(f'Random swap rank: {history.pert_rand_task} - new cost {new_cost} - init cost {cost}')
-            if new_cost <= cost:
-                history.pert_rand_task += 1
+
+            history.pert = "swap"
     return new_solution
 
 
@@ -47,46 +48,50 @@ def acceptance_test(temp_solution: Solution, temp_cost: int, history: History):
     return history.acceptance_test(temp_solution, temp_cost)
 
 
-def start(initial_solution: Solution):
+def start(solution_list: [Solution]):
+    initial_solution = solution_list[0]
     history = SACriteriaHistory(initial_solution)
-
-    # current_solution = local_search(initial_solution, neighborhood=0)
+    history.solution_processed = 1
     current_solution, current_cost = initial_solution, initial_solution.cost
     history.best_solution, history.best_cost = current_solution, current_cost
 
     while stop_condition(history) is False:
         print(f'\tIterated Local search: {history.counter_search}')
+
         temp_solution = current_solution
 
-        if history.static_solution or history.must_perturb:
-            temp_solution = perturb_solution(current_solution, history)
-            history.must_perturb = False
+        if history.must_perturb:
 
-        count_not_full_batch = current_solution.analyze_not_full_batch()
-        if count_not_full_batch >= 1:
-            print("\t\tRiempio batch non pieni")
-            temp_solution = problemSpecificStrategies.fill_not_full_batch(temp_solution)
+            if history.restart and history.solution_processed < len(solution_list):
+                print("RESTART!!!")
+                current_solution = solution_list[history.solution_processed]
+                temp_solution = current_solution
+                history.solution_processed += 1
+                history.restart = False
+                history.count_nobest_improvement = 0
+            else:
+                temp_solution = perturb_solution(temp_solution, history)
+                if temp_solution.cost < history.best_cost:
+                    history.best_solution = temp_solution
+                history.must_perturb = False
 
-        cost_before_LS = temp_solution.cost
-        if history.ls_batch:
+        cost_before_batchLS = temp_solution.cost
 
-            print("\t\tShaking con SA:", end=' ')
+        while True:
+            print("\t\tSimulated Annealing:", end=' ')
             temp_solution = simulated_annealing(temp_solution)
             print(f' -> costo : {temp_solution.cost}')
 
             print("\t\tBatch local search:", end=' ')
             temp_solution = local_search(temp_solution, neighborhood=0)
             print(f' -> costo : {temp_solution.cost}')
+            if temp_solution.cost >= cost_before_batchLS:
+                break
+            cost_before_batchLS = temp_solution.cost
 
-            if temp_solution.cost >= cost_before_LS:
-                history.ls_batch = False
-
-        if not history.ls_batch:
-            print('\t\tTask local search:', end=' ')
-            # temp_solution, temp_cost = simulated_annealing_tasks(temp_solution)
-            temp_solution = local_search(temp_solution, neighborhood=1)
-            print(f' -> costo : {temp_solution.cost}')
-            history.ls_batch = True
+        print('\t\tTask local search:')
+        # temp_solution = task_shaking(temp_solution)
+        temp_solution = local_search(temp_solution, neighborhood=1)
 
         current_solution, current_cost = acceptance_test(temp_solution, temp_solution.cost, history)
         history.increment_counter_search()

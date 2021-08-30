@@ -24,12 +24,6 @@ class Solution:
                             cost += 100
         return cost
 
-    def alternative_obj_function(self):
-        diff_cost = 0
-        for batch in self.batches:
-            diff_cost += batch.analyze_task_duration_diff()
-        return diff_cost
-
     ## FUNZIONI INFORMATIVE DELLA SOLUZIONE
 
     def find_not_full_batch(self):
@@ -49,12 +43,12 @@ class Solution:
         for job in self.jobs.values():
             print(f'Ritardo job {job.id}: {job.delay} -> ultimo batch: {job.last_batch} ')
 
-        for batch in self.batches:
-            if batch.capacity > len(batch.j_t):
-                print(f'Batch {batch.id} non pieno')
-
-            diff = batch.analyze_task_duration_diff()
-            print(f' Differenza durate task nel batch {batch.id}: {diff}')
+        # for batch in self.batches:
+        #     if batch.capacity > len(batch.j_t):
+        #         print(f'Batch {batch.id} non pieno')
+        #
+        #     diff = batch.analyze_task_duration_diff()
+        #     print(f' Differenza durate task nel batch {batch.id}: {diff}')
 
     def get_first_Mbatch_by_duration_differences(self, m):
         diff_l = []

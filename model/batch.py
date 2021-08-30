@@ -6,7 +6,7 @@ class Batch:
     # j_t è una matrice 2XM che indica i task da inserire nel batch, M è la dimensione
     # massima del batch, ogni riga è formata da due elementi, il primo è un intero che indica l'id del job, il
     # secondo è un oggetto Task
-    def __init__(self, id_batch, capacity, j_t: [[int, Task]] = None,
+    def __init__(self, id_batch, capacity, j_t: [(int, Task)] = None,
                  start=0):  # in ingresso prende una matrice 2xM, M numero
         # massimo di task processabili in un batch contemporaneamente
         self.id = id_batch
