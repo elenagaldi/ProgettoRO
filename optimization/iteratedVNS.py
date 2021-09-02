@@ -18,7 +18,7 @@ def perturb_solution(solution: Solution, history: History):
     norm_destr_rep, norm_shuffle, norm_rand_task, norm_fnfb = history.normalize_pert()
     r = random()
     if r <= norm_destr_rep:
-        print("\t\t\tPerturbo facendo D&R")
+        print("\t\t\tPerturbo facendo D&R", end=' ')
         new_solution = problemSpecificStrategies.destroy_and_repair(solution)
         print(f' -> costo : {new_solution.cost}')
         history.pert = "destr_rep"
@@ -38,7 +38,7 @@ def perturb_solution(solution: Solution, history: History):
             else:
                 print("\t\t\tPerturbo facendo swap dei task casuali", end=' ')
                 # new_solution = problemSpecificStrategies.random_swap(solution, history)
-                new_solution = task_shaking(solution)
+                new_solution = problemSpecificStrategies.random_swap(solution)
                 print(f' -> costo : {new_solution.cost}')
                 history.pert = "swap"
     return new_solution

@@ -67,12 +67,16 @@ class Batch:
         return end
 
     def analyze_task_duration_diff(self):
-        aux, weight = 0, 1
-        for jt1, jt2 in zip(self.j_t[0::1], self.j_t[1::1]):
-            auxTemp = abs(jt1[1].duration - jt2[1].duration) * weight
-            weight += 1 if auxTemp > 0 else 0
-            aux = aux + auxTemp
-        return aux
+        # aux, weight = 0, 1
+        # for jt1, jt2 in zip(self.j_t[0::1], self.j_t[1::1]):
+        #     auxTemp = abs(jt1[1].duration - jt2[1].duration) * weight
+        #     weight += 1 if auxTemp > 0 else 0
+        #     aux = aux + auxTemp
+        diff = 0
+        longest_task = self.get_longest_task()
+        for jt in self.j_t:
+            diff += longest_task.duration - jt[1].duration
+        return diff
 
     def __repr__(self):
         return f'"Batch {self.id} : {[(x[0], x[1].id) for x in self.j_t]} Start:{self.start} End: {self.end}"\n'

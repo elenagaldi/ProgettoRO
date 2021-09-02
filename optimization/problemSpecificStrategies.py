@@ -91,9 +91,9 @@ def fill_not_full_batch(solution: Solution):
     return new_solution
 
 
-def random_swap(solution: Solution, history: History):
+def random_swap(solution: Solution):
     new_solution = copy.deepcopy(solution)
-    for i in range(randrange(1, len(solution.batches))):
+    for i in range(randrange(1, len(solution.batches) // 2)):
         batch1, batch2 = choice(new_solution.batches), choice(new_solution.batches)
         while batch2.id == batch1.id:
             batch2 = choice(new_solution.batches)
@@ -140,24 +140,24 @@ def destroy_and_repair(solution: Solution):
     jobtask.sort(key=lambda jt: jt[1].duration)
     size = len(jobtask)
 
-    # splitted_jt = []
-    # counter = 0
-    # for i in range(len(batch_to_destroy)):
-    #     jt_sublist = []
-    #     for k in range(capacity_batch):
-    #         jt_sublist.append(jobtask[counter])
-    #         counter += 1
-    #         if counter >= size:
-    #             break
-    #     splitted_jt.append(jt_sublist)
-    #     if counter >= size:
-    #         break
-    #
-    # splitted_jt.sort(
-    #     key=lambda jt_sub: sum([solution.jobs[jt[0]].release_time + solution.jobs[jt[0]].due_date for jt in jt_sub]))
-    # jobtask = [item for sublist in splitted_jt for item in sublist]  # flatten di splitten_jt
+    splitted_jt = []
+    counter = 0
+    for i in range(len(batch_to_destroy)):
+        jt_sublist = []
+        for k in range(capacity_batch):
+            jt_sublist.append(jobtask[counter])
+            counter += 1
+            if counter >= size:
+                break
+        splitted_jt.append(jt_sublist)
+        if counter >= size:
+            break
 
-    shuffle(batch_to_destroy)
+    splitted_jt.sort(
+        key=lambda jt_sub: sum([solution.jobs[jt[0]].release_time + solution.jobs[jt[0]].due_date for jt in jt_sub]))
+    jobtask = [item for sublist in splitted_jt for item in sublist]  # flatten di splitten_jt
+
+    # shuffle(batch_to_destroy)
 
     # randchoice = randrange(2)
     # strategy = "SPT" if randchoice == 0 else "LPT"
@@ -172,8 +172,6 @@ def destroy_and_repair(solution: Solution):
 
 def destroy_and_repairv2(solution: Solution):
     new_solution = copy.deepcopy(solution)
-    capacity_batch = new_solution.batches[0].capacity
-    batch_to_destroy = []
     n = len(solution.batches)
     # batch_to_destroy = new_solution.get_first_Mbatch_by_duration_differences(capacity_batch)
 

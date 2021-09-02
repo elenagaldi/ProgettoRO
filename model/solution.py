@@ -72,10 +72,10 @@ class Solution:
     # effettuo scambio tra due batch
     # batch1 passa da pos1 a pos2, batch2 passa da pos2 a pos1
     def swap_batches(self, batch1: Batch, batch2: Batch, pos1: int, pos2: int):
-        ## effettuo una deepcopy per non modificare batch nella soluzione originale
-        ## nel caso siano stati passati per riferimento
+        # effettuo una deepcopy per non modificare batch nella soluzione originale
+        # nel caso siano stati passati per riferimento
         b2, b1 = copy.deepcopy(batch1), copy.deepcopy(batch2)
-        ## scambio i batch nella soluzione
+        # scambio i batch nella soluzione
         self.batches[pos1] = b1
         self.batches[pos2] = b2
         # aggiorno gli id dei batch
