@@ -15,8 +15,8 @@ class History:
         self.stop = False
         self.must_perturb = False
         self.improvement = False
-        self.pert = None
         self.ls_batch = True
+        self.pert = None
 
         self.pert_destr_rep = 1
         self.pert_rand_task = 1
