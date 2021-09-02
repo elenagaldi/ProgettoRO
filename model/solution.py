@@ -92,6 +92,15 @@ class Solution:
         batch2.add_task(job_i, task_i)
         self.update_solution_parameters()
 
+    def swap_taskv2(self, batch_i: int, batch_j: int, jt1: int, jt2: int, job_i: int, task_i: Task, job_j: int,
+                    task_j: Task):
+        batch1, batch2 = self.batches[batch_i], self.batches[batch_j]
+        batch1.remove_taskv2(jt1)
+        batch2.remove_taskv2(jt2)
+        batch1.add_task(job_j, task_j)
+        batch2.add_task(job_i, task_i)
+        self.update_solution_parameters()
+
     ## SPOST UN TASK IN UN ALTRO BATCH (NON PIENO)
     def move_task_in_other_batch(self, batch_to_fill: int, batch_to_dump: int, jt: [int, Task]):
         btf, btd = self.batches[batch_to_fill], self.batches[batch_to_dump]

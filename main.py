@@ -26,7 +26,7 @@ def average(ll: [int]):
 
 if __name__ == '__main__':
 
-    input_obj = XlsInputData(configuration.INPUT_FILE7)
+    input_obj = XlsInputData(configuration.INPUT_FILE14)
     jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
 
     jobs_dict: dict = list_to_dict(jobs, jobs_num)
@@ -44,18 +44,16 @@ if __name__ == '__main__':
     # FILTRO SOLUZIONI
     # solutions = list(filter(lambda sl: sl.cost < average(costi_iniziali) + stdev(costi_iniziali), solutions))
     # costi_iniziali = [sol.cost for sol in solutions]
-    # solutions = list(filter(lambda sl: sl.cost < average(costi_iniziali), solutions))
+    solutions = list(filter(lambda sl: sl.cost < average(costi_iniziali), solutions))
 
     best_solution = None
     best_cost = None
     costi = []
-    improved_solutions = []
     for pos, sol in enumerate(solutions):
         print(f'Miglioro soluzione {pos}')
         sol = local_search(sol, neighborhood=0)
         if (jobs_num * task_num * capacity_batch) <= 100:
             sol = local_search(sol, neighborhood=1)
-        improved_solutions.append(sol)
         if pos == 0:
             best_solution, best_cost = sol, sol.cost
         else:
@@ -65,7 +63,6 @@ if __name__ == '__main__':
 
     print(f'Migliore soluzione:\n{best_solution.batches} Costo: {best_cost}')
 
-    improved_solutions.sort(key=lambda s: s.cost)
-    final_solution, final_cost = iteratedVNS.start(improved_solutions)
+    final_solution, final_cost = iteratedVNS.start(best_solution)
     print(f'Soluzione: dopo ottimizzazione \n{final_solution.batches} Costo: {final_cost}')
     final_solution.analyze_solution()

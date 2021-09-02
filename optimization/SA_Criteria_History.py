@@ -5,7 +5,7 @@ from random import *
 
 
 class SACriteriaHistory(History):
-    def __init__(self, initial_solution: Solution, temp_eq=5, min_t=1):
+    def __init__(self, initial_solution: Solution, temp_eq=5, min_t=0.1):
         super().__init__(initial_solution)
         self.TEMP_EQ = temp_eq
         self.MIN_T = min_t
@@ -27,11 +27,6 @@ class SACriteriaHistory(History):
         if next_solution == self.current_solution:
             print("La soluzione non è cambiata")
             self.nochages_count += 1
-
-            if self.nochages_count > 1:
-                print("La soluzione non cambia, restart")
-                self.restart = True
-
             self.must_perturb = True
         else:
             self.nochages_count = 0
@@ -68,9 +63,5 @@ class SACriteriaHistory(History):
             if self.k >= self.TEMP_EQ:
                 self.k = 0
                 self.t = self.t / 2
-
-        self.count_nobest_improvement += 1
-        if self.count_nobest_improvement > self.TEMP_EQ and self.improvement is False:
-            self.restart = True
 
         return self.current_solution, self.current_cost

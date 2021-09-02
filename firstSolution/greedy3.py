@@ -118,7 +118,7 @@ class Greedy3:
         job = self.jobs[job_i]
         max_start = job.release_time
 
-        job_to_check = self.get_near_job(job_i, job, values, avg_change)
+        job_to_check = self.get_near_jobs(job_i, job, values, avg_change)
         while tasks_processed < self.tot_task:
             k = 0
             batch = Batch(id_batch, self.m, [], 0)
@@ -150,7 +150,7 @@ class Greedy3:
                     job_i += 1
                     job = self.jobs[job_i] if job_i < num_jobs else job
                     if job_i < num_jobs:
-                        job_to_check = self.get_near_job(job_i, job, values, avg_change)
+                        job_to_check = self.get_near_jobs(job_i, job, values, avg_change)
                 k += 1
             batch.start = max_start
             batch.end = batch.calc_end()
@@ -159,7 +159,7 @@ class Greedy3:
             id_batch += 1
         return batches
 
-    def get_near_job(self, job_i, job, values, avg_change):
+    def get_near_jobs(self, job_i, job, values, avg_change):
         job_to_check: [Job] = [job]
         this_value = values[job_i]
         for pos, next_job in enumerate(self.jobs[job_i + 1:]):

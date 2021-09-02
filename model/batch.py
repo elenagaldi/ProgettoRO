@@ -44,12 +44,13 @@ class Batch:
         return job_id in [x[0] for x in self.j_t]
 
     def add_task(self, job: int, task: Task):
-        if not self.full_batch():
-            ##inserisce il task in ordine di durata nel batch
-            durations = [jt[1].duration for jt in self.j_t]
-            i = bisect_left(durations, task.duration)
-            self.j_t.insert(i, [job, task])
-            self.end = self.calc_end()
+        # if not self.full_batch():
+        #     ##inserisce il task in ordine di durata nel batch
+        #     # durations = [jt[1].duration for jt in self.j_t]
+        #     # i = bisect_left(durations, task.duration)
+        #     # self.j_t.insert(i, [job, task])
+        #     #self.end = self.calc_end()
+        self.j_t.append((job, task))
 
     def remove_task(self, job: int, task: Task):
         if not self.empty_batch():
@@ -57,6 +58,9 @@ class Batch:
                 if x[0] == job and x[1].id == task.id:
                     del self.j_t[self.j_t.index(x)]
             self.end = self.calc_end()
+
+    def remove_taskv2(self, jt: int):
+        del self.j_t[jt]
 
     def calc_end(self):
         end = self.start + self.get_max_dur()
