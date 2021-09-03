@@ -17,7 +17,7 @@ def perturb_solution(solution: Solution, history: History):
     print("\t\tPerturbo soluzione:")
     norm_destr_rep, norm_shuffle, norm_rand_task, norm_fnfb = history.normalize_pert()
     r = random()
-    if True or r <= norm_destr_rep:
+    if r <= norm_destr_rep:
         print("\t\t\tPerturbo facendo D&R", end=' ')
         new_solution = perturbation.destroy_and_repairv3(solution)
         print(f' -> costo : {new_solution.cost}')
@@ -72,9 +72,9 @@ def start(solution: Solution):
             temp_solution = simulated_annealing(temp_solution)
             print(f' -> costo : {temp_solution.cost}')
 
-            print("\t\tBatch local search:", end=' ')
-            temp_solution = local_search(temp_solution, neighborhood=0)
-            print(f' -> costo : {temp_solution.cost}')
+            # print("\t\tBatch local search:", end=' ')
+            # temp_solution = local_search(temp_solution, neighborhood=0)
+            # print(f' -> costo : {temp_solution.cost}')
             if temp_solution.cost >= cost_before_batchLS:
                 history.ls_batch = False
             # cost_before_batchLS = temp_solution.cost
