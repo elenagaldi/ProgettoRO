@@ -3,12 +3,12 @@ from model.task import Task
 
 
 class Job:
-    def __init__(self, j_id, release_time, due_date, task: [Task] = None, last_batch=0):
+    def __init__(self, j_id, release_time, due_date, task: [Task] = None):
         self.id = j_id
         self.release_time = release_time
         self.due_date = due_date
         self.task = task
-        self.last_batch = last_batch
+        self.last_batch = None
         self.delay = None
 
     def set_task_on(self, index):

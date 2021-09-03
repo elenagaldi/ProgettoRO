@@ -66,9 +66,7 @@ class Greedy3:
 
     def greedy3(self, criteria_sort: str, strategy: str):
         self.jobs.sort(key=sort_criteria(criteria_sort))
-
         num_jobs = len(self.jobs)
-        # print(self.jobs)
         task_i = 0
         batches: [Batch] = []
         tasks_processed = 0

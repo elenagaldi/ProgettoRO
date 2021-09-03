@@ -228,5 +228,6 @@ def destroy_and_repairv3(solution: Solution):
 
     new_solution.smart_reallocate(jobtask)
     new_solution.delete_empty_batch()
+    new_solution.update_solution_parameters()
 
     return new_solution

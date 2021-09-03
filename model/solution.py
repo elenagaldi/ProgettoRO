@@ -144,7 +144,6 @@ class Solution:
                 j_t = jt_before_first[:capacity]
                 batch = Batch(0, capacity, j_t, start=max([jobs[jt[0]].release_time for jt in j_t]))
                 for jt in j_t:
-                    print("ok1")
                     task_list.remove(jt)
                 self.translate_batches(1)
                 self.batches = [batch] + self.batches
@@ -206,7 +205,7 @@ class Solution:
                 nf_batch = self.find_not_full_batch()
                 batch = choice(nf_batch)
                 batch.add_task2(jt)
-                
+
         self.update_solution_parameters()
 
     ## AGGIORNAMENTO PARAMETRI SOLUZIONE
