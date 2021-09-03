@@ -17,6 +17,7 @@ class History:
         self.improvement = False
         self.ls_batch = True
         self.pert = None
+        self.attracction_found_count = 0
 
         self.pert_destr_rep = 1
         self.pert_rand_task = 1

@@ -72,9 +72,9 @@ def start(solution: Solution):
             temp_solution = simulated_annealing(temp_solution)
             print(f' -> costo : {temp_solution.cost}')
 
-            # print("\t\tBatch local search:", end=' ')
-            # temp_solution = local_search(temp_solution, neighborhood=0)
-            # print(f' -> costo : {temp_solution.cost}')
+            print("\t\tBatch local search:", end=' ')
+            temp_solution = local_search(temp_solution, neighborhood=0)
+            print(f' -> costo : {temp_solution.cost}')
             if temp_solution.cost >= cost_before_batchLS:
                 history.ls_batch = False
             # cost_before_batchLS = temp_solution.cost

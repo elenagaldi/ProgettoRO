@@ -18,6 +18,9 @@ class SACriteriaHistory(History):
         if self.current_cost == 0:
             print("Trovato ottimo globale = 0")
             return True
+        if self.attracction_found_count >= 2:
+            print("Trovato bacino di attrazione 2 volte, mi fermo")
+            return True
         if self.t <= self.MIN_T and self.improvement is False:
             print("Raggiunta temperatura di raffreddamento, mi fermo")
             return True
@@ -29,7 +32,11 @@ class SACriteriaHistory(History):
             self.nochages_count += 1
             self.must_perturb = True
         else:
+            if next_cost == self.best_cost:
+                self.attracction_found_count += 1
+
             self.nochages_count = 0
+
             print(f'\tTest di accettazione: nuovo costo: {next_cost}', end=' ')
             deltaE = next_cost - self.current_cost
             if deltaE < 0:
@@ -39,9 +46,9 @@ class SACriteriaHistory(History):
                 print(f'miglioramento', end=' ')
                 self.update_pert_rank()
                 if next_cost < self.best_cost:
-                    self.count_nobest_improvement = 0
                     self.best_solution = next_solution
                     self.best_cost = next_cost
+                    self.attracction_found_count = 0
                     print('globale')
                 else:
 
