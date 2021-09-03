@@ -16,7 +16,6 @@ def local_search(solution: Solution, neighborhood=0):
         else:
             new_solution = swaptask_searchv2(new_solution, best_improvement_strategy=False)
             print(f'\t\t\t Trovato nuovo costo : {new_solution.cost}')
-            break
         new_cost = new_solution.cost
         if new_cost >= cost:
             break
@@ -86,13 +85,13 @@ def swaptask_searchv2(solution: Solution, best_improvement_strategy):
     for batch in reversed(solution.batches):
         late_batch = list(set([j.last_batch for j in solution.jobs.values() if j.delay > 0]))
         if batch.id in late_batch:
-            for jobtask in batch.j_t:
+            for pos, jobtask in enumerate(batch.j_t):
                 job, task = jobtask[0], jobtask[1]
                 for batch2 in reversed([b for b in solution.batches[:batch.id]
                                         if solution.jobs[job].release_time < b.end]):
-                    for jobtask2 in batch2.j_t:
+                    for pos2, jobtask2 in enumerate(batch2.j_t):
                         job2, task2 = jobtask2[0], jobtask2[1]
-                        new_solution.swap_task(batch.id, batch2.id, job, task, job2, task2)
+                        new_solution.swap_taskv2(batch.id, batch2.id, pos, pos2, job, task, job2, task2)
                         new_cost = new_solution.cost
                         if new_cost < best_cost:
                             best_cost, best_solution = new_cost, copy.deepcopy(new_solution)

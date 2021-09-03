@@ -29,7 +29,7 @@ class Solution:
     def find_not_full_batch(self):
         b_list = []
         for batch in self.batches[:-1]:  # non controllo l'ultimo batch
-            if batch.capacity > len(batch.j_t):
+            if not batch.full_batch():
                 b_list.append(batch)
         return b_list
 
@@ -43,12 +43,12 @@ class Solution:
         for job in self.jobs.values():
             print(f'Ritardo job {job.id}: {job.delay} -> ultimo batch: {job.last_batch} ')
 
-        # for batch in self.batches:
-        #     if batch.capacity > len(batch.j_t):
-        #         print(f'Batch {batch.id} non pieno')
-        #
-        #     diff = batch.analyze_task_duration_diff()
-        #     print(f' Differenza durate task nel batch {batch.id}: {diff}')
+        for batch in self.batches:
+            if batch.capacity > len(batch.j_t):
+                print(f'Batch {batch.id} non pieno')
+
+            diff = batch.analyze_task_duration_diff()
+            print(f' Differenza durate task nel batch {batch.id}: {diff}')
 
     def get_first_Mbatch_by_duration_differences(self, m):
         diff_l = []
@@ -125,6 +125,90 @@ class Solution:
             batch.add_task(jobtask_i[0], jobtask_i[1])
         self.update_solution_parameters()
 
+    def smart_reallocate(self, task_list: [(int, Task)]):
+        jobs = self.jobs
+        capacity = self.batches[0].capacity
+        task_list.sort(key=lambda jt: jt[1].duration, reverse=True)
+
+        # provo a creare un batch in cima se c'è spazio
+        first_start = self.batches[0].start
+        if first_start > 0:
+            jt_before_first = [jt for jt in task_list if
+                               jobs[jt[0]].release_time + jt[1].duration <= first_start]
+            if jt_before_first:
+                jt_before_first.sort(key=lambda jt: jt[1].duration, reverse=True)
+                first_jt = jt_before_first[0]
+                jt_before_first = list(
+                    filter(lambda jt: jobs[jt[0]].release_time - jobs[first_jt[0]].release_time <= first_start - (
+                            jobs[first_jt[0]].release_time + first_jt[1].duration), jt_before_first))
+                j_t = jt_before_first[:capacity]
+                batch = Batch(0, capacity, j_t, start=max([jobs[jt[0]].release_time for jt in j_t]))
+                for jt in j_t:
+                    print("ok1")
+                    task_list.remove(jt)
+                self.translate_batches(1)
+                self.batches = [batch] + self.batches
+                self.update_solution_parameters()
+
+        # provo a riempire batch non pieni
+        nf_batch = self.find_not_full_batch()
+        if nf_batch and task_list:
+            for batch in nf_batch:
+                if not batch.empty_batch():
+                    lt = batch.get_longest_task()
+                    equal_task = [jt for jt in task_list if jt[1].duration <= lt.duration]
+                    if equal_task:
+                        for eq_t in equal_task:
+                            if batch.full_batch():
+                                break
+                            if jobs[eq_t[0]].release_time <= batch.start and jobs[eq_t[0]].due_date >= batch.end:
+                                batch.add_task2(eq_t)
+                                self.update_solution_parameters()
+
+                                task_list.remove(eq_t)
+
+        if task_list:
+            empty_batch = [b for b in self.batches if b.empty_batch()]
+            empty_batch.sort(key=lambda b: b.start)
+
+            for batch in empty_batch:
+                i = 0
+                temp_tlist = task_list.copy()
+                temp_tlist.sort(key=lambda jt: jobs[jt[0]].due_date)
+                for jt in temp_tlist:
+                    if i < capacity:
+                        if jobs[jt[0]].release_time <= batch.start:
+                            batch.add_task2(jt)
+
+                            self.update_solution_parameters()
+                            task_list.remove(jt)
+                            i += 1
+                    else:
+                        break
+
+        del temp_tlist
+        nf_batch = self.find_not_full_batch()
+        if nf_batch and task_list:
+            nf_batch.sort(key=lambda b: (b.end - b.start))
+            temp_tlist = task_list.copy()
+            for jt in temp_tlist:
+                for batch in nf_batch:
+                    if not batch.full_batch() and jobs[jt[0]].release_time <= batch.start and jt[1].duration <= (
+                            batch.end - batch.start) and jobs[jt[0]].due_date >= batch.end:
+                        batch.add_task2(jt)
+
+                        self.update_solution_parameters()
+                        task_list.remove(jt)
+                        break
+
+        if task_list:
+            for jt in task_list:
+                nf_batch = self.find_not_full_batch()
+                batch = choice(nf_batch)
+                batch.add_task2(jt)
+                
+        self.update_solution_parameters()
+
     ## AGGIORNAMENTO PARAMETRI SOLUZIONE
 
     def update_solution_parameters(self):
@@ -154,3 +238,10 @@ class Solution:
             return NotImplemented
 
         return self.batches == other.batches
+
+    def translate_batches(self, n: int):
+        for batch in self.batches:
+            batch.id += n
+
+    def delete_empty_batch(self):
+        self.batches = [batch for batch in self.batches if not batch.empty_batch()]

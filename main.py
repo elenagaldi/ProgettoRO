@@ -7,9 +7,6 @@ from inputData.xlsInputData import XlsInputData
 from model.solution import Solution
 from optimization import localSearch, iteratedVNS
 from optimization.SA_Criteria_History import *
-from optimization import problemSpecificStrategies
-from optimization.simulatedAnnealing import simulated_annealing
-from statistics import stdev
 
 
 def list_to_dict(ll: list, count=None):
@@ -26,7 +23,7 @@ def average(ll: [int]):
 
 if __name__ == '__main__':
 
-    input_obj = XlsInputData(configuration.INPUT_FILE14)
+    input_obj = XlsInputData(configuration.INPUT_FILE9)
     jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
 
     jobs_dict: dict = list_to_dict(jobs, jobs_num)
@@ -41,9 +38,8 @@ if __name__ == '__main__':
         costi_iniziali.append(sol.cost)
         print(f'Soluzione {pos} -> Costo: {sol.cost}')
 
-    # FILTRO SOLUZIONI
-    # solutions = list(filter(lambda sl: sl.cost < average(costi_iniziali) + stdev(costi_iniziali), solutions))
-    # costi_iniziali = [sol.cost for sol in solutions]
+    # solution.analyze_solution()
+
     solutions = list(filter(lambda sl: sl.cost < average(costi_iniziali), solutions))
 
     best_solution = None
@@ -62,7 +58,7 @@ if __name__ == '__main__':
         print(f'Ottimo trovato: {sol.cost} \n')
 
     print(f'Migliore soluzione:\n{best_solution.batches} Costo: {best_cost}')
-
+    best_solution.analyze_solution()
     final_solution, final_cost = iteratedVNS.start(best_solution)
     print(f'Soluzione: dopo ottimizzazione \n{final_solution.batches} Costo: {final_cost}')
     final_solution.analyze_solution()

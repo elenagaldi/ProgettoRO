@@ -52,8 +52,6 @@ def fill_not_full_batch(solution: Solution):
 
     if batches_to_fill:
 
-        # print("\tTrovati batch non pieni")
-
         temp_jobs: dict = copy.deepcopy(new_solution.jobs)
         batch_in = choice(batches_to_fill)
 
@@ -157,8 +155,6 @@ def destroy_and_repair(solution: Solution):
         key=lambda jt_sub: sum([solution.jobs[jt[0]].release_time + solution.jobs[jt[0]].due_date for jt in jt_sub]))
     jobtask = [item for sublist in splitted_jt for item in sublist]  # flatten di splitten_jt
 
-    # shuffle(batch_to_destroy)
-
     # randchoice = randrange(2)
     # strategy = "SPT" if randchoice == 0 else "LPT"
 
@@ -209,4 +205,28 @@ def destroy_and_repairv2(solution: Solution):
                 new_solution.swap_task(lt[0].id, b.id, lt[1][0], lt[1][1], jt[0], jt[1])
                 # print(
                 #     f'\t\t Swap casuale tra task in ritardo {(lt[1][0], lt[1][1].id)} nel batch {lt[0].id} e task {(jt[0], jt[1].id)} nel batch {b.id}')
+    return new_solution
+
+
+def destroy_and_repairv3(solution: Solution):
+    new_solution: Solution = copy.deepcopy(solution)
+    capacity_batch = new_solution.batches[0].capacity
+
+    batch_to_destroy = new_solution.get_first_Mbatch_by_duration_differences(capacity_batch)
+
+    late_jobs: [Job] = list(filter(lambda j: j.delay > 0, new_solution.jobs.values()))
+
+    for late_job in late_jobs:
+        b = new_solution.batches[late_job.last_batch]
+        if b not in batch_to_destroy:
+            batch_to_destroy.append(b)
+
+    jobtask = []
+    for batch in batch_to_destroy:
+        jobtask.extend(batch.j_t)
+        batch.j_t.clear()
+
+    new_solution.smart_reallocate(jobtask)
+    new_solution.delete_empty_batch()
+
     return new_solution

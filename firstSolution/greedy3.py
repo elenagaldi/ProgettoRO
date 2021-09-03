@@ -14,7 +14,7 @@ from model.task import Task
 # CRITERIA_SORT = "RDT"
 
 
-def get_similar_task(batch: Batch, task_list: (Job, Task)):
+def get_similar_task(batch: Batch, task_list: [(Job, Task)]):
     longest_task = batch.get_longest_task()
     simil_task = task_list[0]
     best_diff = abs(longest_task.duration - simil_task[1].duration)

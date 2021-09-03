@@ -49,18 +49,21 @@ class Batch:
         #     # durations = [jt[1].duration for jt in self.j_t]
         #     # i = bisect_left(durations, task.duration)
         #     # self.j_t.insert(i, [job, task])
-        #     #self.end = self.calc_end()
         self.j_t.append((job, task))
+        self.end = self.calc_end()
+
+    def add_task2(self, jt: (int, Task)):
+        self.add_task(jt[0], jt[1])
 
     def remove_task(self, job: int, task: Task):
-        if not self.empty_batch():
-            for x in self.j_t:
-                if x[0] == job and x[1].id == task.id:
-                    del self.j_t[self.j_t.index(x)]
-            self.end = self.calc_end()
+        self.j_t.remove((job, task))
+        self.end = self.calc_end()
 
     def remove_taskv2(self, jt: int):
         del self.j_t[jt]
+
+    def remove_taskv3(self, jt: (int, Task)):
+        self.remove_task(jt[0], jt[1])
 
     def calc_end(self):
         end = self.start + self.get_max_dur()
