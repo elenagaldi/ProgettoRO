@@ -1,5 +1,4 @@
 import configuration
-from firstSolution.greedy import Greedy
 from firstSolution.greedy2 import Greedy2
 from firstSolution.greedy3 import Greedy3
 from firstSolution.greedyBattery import greedyBattery
@@ -50,15 +49,15 @@ def generate_initial_solution(jobs, capacity_batch, tot_task, jobs_dict):
 
 if __name__ == '__main__':
 
-    input_obj = XlsInputData(configuration.INPUT_FILE4)
+    input_obj = XlsInputData(configuration.INPUT_FILE3)
     jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
 
     jobs_dict: dict = list_to_dict(jobs, jobs_num)
 
-    # solution, jobs = randomInput.generate()
-    # print(f'{solution.batches} Costo: {solution.cost}')
-    # capacity_batch = solution.batches[0].capacity
-    # jobs_dict = copy.deepcopy(solution.jobs)
+    # initial_solution, jobs = randomInput.generate()
+    # print(f'{initial_solution.batches} Costo: {initial_solution.cost}')
+    # capacity_batch = initial_solution.batches[0].capacity
+    # jobs_dict = copy.deepcopy(initial_solution.jobs)
     # jobs_num = len(jobs_dict)
 
     tot_task = 0  # numero dei task totali

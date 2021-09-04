@@ -44,7 +44,7 @@ def average_change2(ll: [int]):
         for y in ll[pos + 1:]:
             mysum += abs(x - y)
             n += 1
-    return round(mysum / n)
+    return 2 * round(mysum / n)
 
 
 def sort_criteria(criteria: str):
@@ -67,7 +67,6 @@ class Greedy3:
     def greedy3(self, criteria_sort: str, strategy: str):
         self.jobs.sort(key=sort_criteria(criteria_sort))
         num_jobs = len(self.jobs)
-        task_i = 0
         batches: [Batch] = []
         tasks_processed = 0
         id_batch = 0
@@ -90,7 +89,6 @@ class Greedy3:
                 batch.add_task(job.id, task_to_insert)
                 task_to_insert.set_processed(True)
                 tasks_processed += 1
-                task_i += 1
                 if self.jobs[job_i].is_completed():
                     job.last_batch = id_batch
                     job_i += 1
@@ -108,7 +106,6 @@ class Greedy3:
         avg_change = average_change2(values)
         num_jobs = len(self.jobs)
         # print(self.jobs)
-        task_i = 0
         batches: [Batch] = []
         tasks_processed = 0
         id_batch = 0
@@ -121,35 +118,50 @@ class Greedy3:
             k = 0
             batch = Batch(id_batch, self.m, [], 0)
             while k in range(self.m) and job_i < num_jobs:
-                if not self.jobs[job_i].is_completed():
-                    if not batch.empty_batch():
-                        task_list_not_processed = [(job, t) for job in job_to_check for t in job.task if
-                                                   not t.is_processed()]
-
-                        t = get_similar_task(batch, task_list_not_processed)
-                        job_to_insert: Job = t[0]
-                        task_to_insert: Task = t[1]
-                    else:
-                        job_to_insert = job
-                        if strategy == "SPT":
-                            task_to_insert = job.find_shortest_task_notprocessed()
+                if len(batch.j_t) == 1:
+                    jt_in = batch.j_t[0]
+                    if sum([t.duration for t in self.jobs[jt_in[0]].task if not t.is_processed()]) + \
+                            self.jobs[jt_in[0]].release_time + jt_in[1].duration <= self.jobs[jt_in[0]].due_date:
+                        tasks_to_insert = [(job.id, t) for job in self.jobs for t in job.task if
+                                           t.duration == jt_in[1].duration and not t.is_processed()
+                                           and job.release_time <= self.jobs[jt_in[0]].release_time]
+                        tasks_to_insert = tasks_to_insert[:self.m - 1]
+                        for jt in tasks_to_insert:
+                            batch.add_task2(jt)
+                            jt[1].set_processed(True)
+                            tasks_processed += 1
+                            if self.jobs[jt[0]].is_completed():
+                                self.jobs[jt[0]].last_batch = id_batch
+                            k += 1
+                            if k == self.m:
+                                break
+                if k < self.m:
+                    if not self.jobs[job_i].is_completed():
+                        if not batch.empty_batch():
+                            task_list_not_processed = [(job, t) for job in job_to_check for t in job.task if
+                                                       not t.is_processed()]
+                            t = get_similar_task(batch, task_list_not_processed)
+                            job_to_insert: Job = t[0]
+                            task_to_insert: Task = t[1]
                         else:
-                            task_to_insert = job.find_longest_tast_notprocessed()
-                    if job_to_insert.release_time > max_start:
-                        max_start = job_to_insert.release_time
-                    batch.add_task(job_to_insert.id, task_to_insert)
-                    task_to_insert.set_processed(True)
-                    tasks_processed += 1
-                    task_i += 1
-                    if job_to_insert.is_completed():
-                        job_to_insert.last_batch = id_batch
-                else:
-                    job.last_batch = id_batch
-                    job_i += 1
-                    job = self.jobs[job_i] if job_i < num_jobs else job
-                    if job_i < num_jobs:
-                        job_to_check = self.get_near_jobs(job_i, job, values, avg_change)
-                k += 1
+                            job_to_insert = job
+                            if strategy == "SPT":
+                                task_to_insert = job.find_shortest_task_notprocessed()
+                            else:
+                                task_to_insert = job.find_longest_tast_notprocessed()
+                        if job_to_insert.release_time > max_start:
+                            max_start = job_to_insert.release_time
+                        batch.add_task(job_to_insert.id, task_to_insert)
+                        task_to_insert.set_processed(True)
+                        tasks_processed += 1
+                        if job_to_insert.is_completed():
+                            job_to_insert.last_batch = id_batch
+                        k += 1
+                    else:
+                        job_i += 1
+                        job = self.jobs[job_i] if job_i < num_jobs else job
+                        if job_i < num_jobs:
+                            job_to_check = self.get_near_jobs(job_i, job, values, avg_change)
             batch.start = max_start
             batch.end = batch.calc_end()
             batches.append(batch)

@@ -166,6 +166,7 @@ class Solution:
 
                                 task_list.remove(eq_t)
 
+        # inserisco i task rimanenti nei batch vuoti (logica greedy)
         if task_list:
             empty_batch = [b for b in self.batches if b.empty_batch()]
             empty_batch.sort(key=lambda b: b.start)
@@ -184,8 +185,9 @@ class Solution:
                             i += 1
                     else:
                         break
-
         del temp_tlist
+
+        # riprovo a inserire nei batch non pieni
         nf_batch = self.find_not_full_batch()
         if nf_batch and task_list:
             nf_batch.sort(key=lambda b: (b.end - b.start))
@@ -200,6 +202,7 @@ class Solution:
                         task_list.remove(jt)
                         break
 
+        # inserisco a caso
         if task_list:
             for jt in task_list:
                 nf_batch = self.find_not_full_batch()
@@ -208,7 +211,7 @@ class Solution:
 
         self.update_solution_parameters()
 
-    ## AGGIORNAMENTO PARAMETRI SOLUZIONE
+    # AGGIORNAMENTO PARAMETRI SOLUZIONE
 
     def update_solution_parameters(self):
         self.update_batches_start_and_end()
