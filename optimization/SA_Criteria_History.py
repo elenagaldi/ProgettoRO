@@ -27,15 +27,13 @@ class SACriteriaHistory(History):
         return False
 
     def acceptance_test(self, next_solution: Solution, next_cost):
+        if next_cost == self.best_cost:
+            self.attracction_found_count += 1
         if next_solution == self.current_solution:
             print("La soluzione non è cambiata")
             self.nochages_count += 1
-            self.attracction_found_count += 1
             self.must_perturb = True
         else:
-            if next_cost == self.best_cost:
-                self.attracction_found_count += 1
-
             self.nochages_count = 0
 
             print(f'\tTest di accettazione: nuovo costo: {next_cost}', end=' ')

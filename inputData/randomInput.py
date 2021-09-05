@@ -33,7 +33,7 @@ def generate():
         for i in range(capacity):
             batch.add_task2((randrange(njob), choice(tasks)))
 
-    solution = Solution(batches, jobs_dict)
+    solution = Solution(batches, jobs_dict, "random")
     solution.update_batches_start_and_end()
 
     # MI CREO I DUEDATE IN MODO CHE VENGA COSTO 0

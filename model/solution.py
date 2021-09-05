@@ -6,10 +6,11 @@ from bisect import bisect_left
 
 
 class Solution:
-    def __init__(self, batches: [Batch], jobs_dict_readonly: dict):
+    def __init__(self, batches: [Batch], jobs_dict_readonly: dict, greedy: str):
         self.batches = batches
         self.jobs = copy.deepcopy(jobs_dict_readonly)
         self.cost = None
+        self.greedy = greedy
 
     def obj_function(self, count_vincoli: bool):
         cost = 0
