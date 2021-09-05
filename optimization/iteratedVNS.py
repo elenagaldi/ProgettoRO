@@ -13,9 +13,8 @@ def stop_condition(history: History):
 
 
 def perturb_solution(solution: Solution, history: History):
-    cost = solution.cost
     print("\t\tPerturbo soluzione:")
-    norm_destr_rep, norm_shuffle, norm_rand_task, norm_fnfb = history.normalize_pert()
+    norm_destr_rep, norm_shuffle, norm_rand_task = history.normalize_pert()
     r = random()
     if r <= norm_destr_rep:
         print("\t\t\tPerturbo facendo D&R", end=' ')
@@ -29,18 +28,11 @@ def perturb_solution(solution: Solution, history: History):
             print(f' -> costo : {new_solution.cost}')
             history.pert = "destr_rep"
         else:
-            count_not_full_batch = solution.analyze_not_full_batch()
-            if r <= norm_fnfb + norm_shuffle + norm_destr_rep and count_not_full_batch >= 1:
-                print("\t\tRiempio batch non pieni", end=' ')
-                new_solution = perturbation.fill_not_full_batch(solution)
-                print(f' -> costo : {new_solution.cost}')
-                history.pert = "fnfb"
-            else:
-                print("\t\t\tPerturbo facendo swap dei task casuali", end=' ')
-                # new_solution = problemSpecificStrategies.random_swap(solution, history)
-                new_solution = perturbation.random_swap(solution)
-                print(f' -> costo : {new_solution.cost}')
-                history.pert = "swap"
+            print("\t\t\tPerturbo facendo swap dei task casuali", end=' ')
+            # new_solution = problemSpecificStrategies.random_swap(solution, history)
+            new_solution = perturbation.random_swap(solution)
+            print(f' -> costo : {new_solution.cost}')
+            history.pert = "swap"
     return new_solution
 
 

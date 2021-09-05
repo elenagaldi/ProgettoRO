@@ -44,11 +44,6 @@ class Batch:
         return job_id in [x[0] for x in self.j_t]
 
     def add_task(self, job: int, task: Task):
-        # if not self.full_batch():
-        #     ##inserisce il task in ordine di durata nel batch
-        #     # durations = [jt[1].duration for jt in self.j_t]
-        #     # i = bisect_left(durations, task.duration)
-        #     # self.j_t.insert(i, [job, task])
         self.j_t.append((job, task))
         self.end = self.calc_end()
 
@@ -70,11 +65,6 @@ class Batch:
         return end
 
     def analyze_task_duration_diff(self):
-        # aux, weight = 0, 1
-        # for jt1, jt2 in zip(self.j_t[0::1], self.j_t[1::1]):
-        #     auxTemp = abs(jt1[1].duration - jt2[1].duration) * weight
-        #     weight += 1 if auxTemp > 0 else 0
-        #     aux = aux + auxTemp
         diff = 0
         longest_task = (self.get_longest_task())[1]
         for jt in self.j_t:

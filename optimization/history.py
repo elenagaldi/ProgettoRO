@@ -22,13 +22,11 @@ class History:
         self.pert_destr_rep = 1
         self.pert_rand_task = 1
         self.pert_shuffel = 1
-        self.pert_fnfb = 1
 
     def normalize_pert(self):
-        totale = self.pert_shuffel + self.pert_shuffel + self.pert_rand_task + self.pert_fnfb
+        totale = self.pert_shuffel + self.pert_shuffel + self.pert_rand_task
 
-        return self.pert_shuffel / totale, self.pert_shuffel / totale, self.pert_rand_task / totale, \
-               self.pert_fnfb / totale
+        return self.pert_shuffel / totale, self.pert_shuffel / totale, self.pert_rand_task / totale
 
     def stop_condition(self):
         pass
@@ -48,7 +46,4 @@ class History:
             else:
                 if self.pert == "swap":
                     self.pert_rand_task += 1
-                else:
-                    if self.pert == "fnfb":
-                        self.pert_fnfb += 1
         self.pert = None
