@@ -25,7 +25,7 @@ def simulated_annealing(solution: Solution):
                 if next_cost < best_cost:
                     best_solution = next_solution
                     best_cost = next_cost
-
+            else:
                 r = random()
                 if r < math.exp((-deltaE / t)):
                     current_solution = copy.deepcopy(next_solution)
