@@ -59,7 +59,8 @@ if __name__ == '__main__':
     # jobs_dict: dict = list_to_dict(jobs, jobs_num)
 
     initial_solution, jobs = randomInput.generate()
-    print(f'{initial_solution.batches} Costo: {initial_solution.cost}')
+    #print(f'{initial_solution.batches} Costo: {initial_solution.cost}')
+    print(jobs)
     capacity_batch = initial_solution.batches[0].capacity
     jobs_dict = copy.deepcopy(initial_solution.jobs)
     jobs_num = len(jobs_dict)
