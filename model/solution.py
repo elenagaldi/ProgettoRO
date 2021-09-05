@@ -154,7 +154,7 @@ class Solution:
         if nf_batch and task_list:
             for batch in nf_batch:
                 if not batch.empty_batch():
-                    lt = batch.get_longest_task()
+                    lt = (batch.get_longest_task())[1]
                     equal_task = [jt for jt in task_list if jt[1].duration <= lt.duration]
                     if equal_task:
                         for eq_t in equal_task:

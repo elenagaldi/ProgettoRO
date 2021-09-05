@@ -24,7 +24,7 @@ class Batch:
 
     def get_longest_task(self):
         if not self.empty_batch():
-            return max([task[1] for task in self.j_t], key=lambda t: t.duration)
+            return max([task for task in self.j_t], key=lambda t: t[1].duration)
         else:
             return None
 
@@ -76,7 +76,7 @@ class Batch:
         #     weight += 1 if auxTemp > 0 else 0
         #     aux = aux + auxTemp
         diff = 0
-        longest_task = self.get_longest_task()
+        longest_task = (self.get_longest_task())[1]
         for jt in self.j_t:
             diff += longest_task.duration - jt[1].duration
         return diff
