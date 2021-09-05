@@ -22,10 +22,10 @@ def generate():
 
     batches = [Batch(i, capacity, []) for i in range(nbatch)]
     jobs = []
-    # for i in range(njob):
-    #     rl = randrange(50)
-    #     jobs.append(Job(i, rl, randrange(rl, 100), []))
-    jobs = [Job(i, randrange(100), None, []) for i in range(njob)]
+    for i in range(njob):
+        rl = randrange(50)
+        jobs.append(Job(i, rl, randrange(rl, 100), []))
+    #jobs = [Job(i, randrange(100), None, []) for i in range(njob)]
     jobs_dict = list_to_dict(jobs, njob)
     tasks = [Task(i, randrange(1, 10)) for i in range(ntask)]
 
@@ -37,16 +37,16 @@ def generate():
     solution.update_batches_start_and_end()
 
     # MI CREO I DUEDATE IN MODO CHE VENGA COSTO 0
-    for job in solution.jobs.values():
-        for batch in reversed(solution.batches):
-            job_in_batch = [jobtask[0] for jobtask in batch.j_t]
-            if job.id in job_in_batch:
-                job.last_batch = batch.id
-                job.due_date = batch.end // 3
-                break
-        else:
-            job.due_date = 0
-            job.delay = 0
+    #for job in solution.jobs.values():
+    #    for batch in reversed(solution.batches):
+    #        job_in_batch = [jobtask[0] for jobtask in batch.j_t]
+    #        if job.id in job_in_batch:
+    #            job.last_batch = batch.id
+    #            job.due_date = batch.end // 3
+    #            break
+    #    else:
+    #        job.due_date = 0
+    #        job.delay = 0
 
     solution.update_solution_parameters()
 
