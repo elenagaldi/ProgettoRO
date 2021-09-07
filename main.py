@@ -53,7 +53,7 @@ def generate_initial_solution(jobs, capacity_batch, tot_task, jobs_dict):
 
 if __name__ == '__main__':
 
-    # input_obj = XlsInputData(configuration.INPUT_FILE14)
+    # input_obj = XlsInputData(configuration.INPUT_FILE9)
     # jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
     #
     # jobs_dict: dict = list_to_dict(jobs, jobs_num)

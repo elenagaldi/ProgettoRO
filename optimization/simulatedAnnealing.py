@@ -7,13 +7,13 @@ from optimization.localSearch import batch_shaking
 
 
 def simulated_annealing(solution: Solution):
-    TEMP_EQ = 10
+    TEMP_EQ = 5
     current_solution = copy.deepcopy(solution)
     current_cost = solution.obj_function(count_vincoli=True)
     best_solution, best_cost = solution, current_cost
     t = 0.2 * current_cost
 
-    while t > 0.001:
+    while t > 0.1:
         for k in range(TEMP_EQ):  # imposto il ciclo fino al raggiungimento dell'equilibrio
             next_solution = batch_shaking(current_solution)
             next_cost = next_solution.cost

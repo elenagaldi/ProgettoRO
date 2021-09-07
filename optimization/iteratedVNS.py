@@ -16,7 +16,8 @@ def perturb_solution(solution: Solution, history: History):
     print("\t\tPerturbo soluzione:")
     norm_destr_rep, norm_shuffle, norm_rand_task = history.normalize_pert()
     r = random()
-    if not history.pert == "destr_rep" and r <= norm_destr_rep:
+    # if not history.pert == "destr_rep" and r <= norm_destr_rep:
+    if r <= norm_destr_rep:
         print("\t\t\tPerturbo facendo D&R", end=' ')
         new_solution = perturbation.destroy_and_repairv3(solution)
         print(f' -> costo : {new_solution.cost}')
