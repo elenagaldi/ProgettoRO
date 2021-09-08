@@ -1,6 +1,7 @@
 import copy
 
 from model.solution import Solution
+import time
 
 
 class History:
@@ -12,16 +13,19 @@ class History:
         self.static_solution = False
         self.nochages_count = 0
         self.counter_search = 1
-        self.stop = False
         self.must_perturb = False
         self.improvement = False
         self.ls_batch = True
         self.pert = None
         self.attracction_found_count = 0
+        self.cost_l = []
 
         self.pert_destr_rep = 1
         self.pert_rand_task = 1
         self.pert_shuffel = 1
+
+        self.max_running_time = 30
+        self.start_time = time.time()
 
     def normalize_pert(self):
         totale = self.pert_shuffel + self.pert_shuffel + self.pert_rand_task
@@ -37,13 +41,16 @@ class History:
     def increment_counter_search(self):
         self.counter_search += 1
 
-    def update_pert_rank(self):
+    def update_pert_rank(self, inc):
         if self.pert == "destr_rep":
-            self.pert_destr_rep += 1
+            if not (inc < 0 and self.pert_destr_rep == 0):
+                self.pert_destr_rep += inc
         else:
             if self.pert == "shuffle":
-                self.pert_shuffel += 1
+                if not (inc < 0 and self.pert_shuffel == 0):
+                    self.pert_shuffel += inc
             else:
                 if self.pert == "swap":
-                    self.pert_rand_task += 1
+                    if not (inc < 0 and self.pert_rand_task == 0):
+                        self.pert_rand_task += inc
         self.pert = None

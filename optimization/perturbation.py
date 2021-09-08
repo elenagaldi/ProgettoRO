@@ -86,6 +86,12 @@ def destroy_and_repairv3(solution: Solution):
     batch_to_destroy = new_solution.get_first_Mbatch_by_duration_differences(capacity_batch)
 
     late_jobs: [Job] = list(filter(lambda j: j.delay > 0, new_solution.jobs.values()))
+    # batch_to_destroy = []
+    # for i in range(randrange(1, len(solution.batches) // 2)):
+    #     batch = choice(new_solution.batches)
+    #     while batch in batch_to_destroy:
+    #         batch = choice(new_solution.batches)
+    #     batch_to_destroy.append(batch)
 
     for late_job in late_jobs:
         b = new_solution.batches[late_job.last_batch]

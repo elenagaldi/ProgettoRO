@@ -40,7 +40,18 @@ class Job:
         return sum(t.duration for t in self.task)
 
     def __repr__(self):
-        return f'Job ID:{self.id} Realease time:{self.release_time} Due date: {self.due_date} Last Batch : {self.last_batch}\n'
+        return f'ID:{self.id} Realease time:{self.release_time} Due date: {self.due_date} Task : {[t.id for t in self.task]}\n '
 
     def __str__(self):
         return self.__repr__()
+
+    def __key(self):
+        return self.id
+
+    def __hash__(self):
+        return hash(self.__key())
+
+    def __eq__(self, other):
+        if isinstance(other, Job):
+            return self.__key() == other.__key()
+        return NotImplemented

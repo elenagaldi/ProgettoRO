@@ -1,7 +1,7 @@
 from random import random, randrange
 
 from model.solution import Solution
-from optimization import perturbation
+from optimization import perturbation, localSearch
 from optimization.SA_Criteria_History import SACriteriaHistory
 from optimization.history import History
 from optimization.localSearch import local_search, task_shaking
@@ -16,8 +16,7 @@ def perturb_solution(solution: Solution, history: History):
     print("\t\tPerturbo soluzione:")
     norm_destr_rep, norm_shuffle, norm_rand_task = history.normalize_pert()
     r = random()
-    # if not history.pert == "destr_rep" and r <= norm_destr_rep:
-    if r <= norm_destr_rep:
+    if history.pert != "destr_rep" and r <= norm_destr_rep:
         print("\t\t\tPerturbo facendo D&R", end=' ')
         new_solution = perturbation.destroy_and_repairv3(solution)
         print(f' -> costo : {new_solution.cost}')
@@ -31,7 +30,7 @@ def perturb_solution(solution: Solution, history: History):
         else:
             print("\t\t\tPerturbo facendo swap dei task casuali", end=' ')
             # new_solution = problemSpecificStrategies.random_swap(solution, history)
-            new_solution = perturbation.random_swap(solution)
+            new_solution = localSearch.task_shaking(solution)
             print(f' -> costo : {new_solution.cost}')
             history.pert = "swap"
     return new_solution
@@ -44,6 +43,8 @@ def acceptance_test(temp_solution: Solution, temp_cost: int, history: History):
 def start(solution: Solution):
     initial_solution = solution
     history = SACriteriaHistory(initial_solution)
+    initial_solution.cost_info = [solution.cost]
+    history.cost_l.append(solution.cost)
     current_solution, current_cost = initial_solution, initial_solution.cost
     history.best_solution, history.best_cost = current_solution, current_cost
 
@@ -80,4 +81,4 @@ def start(solution: Solution):
 
         current_solution, current_cost = acceptance_test(temp_solution, temp_solution.cost, history)
         history.increment_counter_search()
-    return history.best_solution, history.best_cost
+    return history.best_solution

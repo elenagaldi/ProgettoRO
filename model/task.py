@@ -13,7 +13,18 @@ class Task:
         return self.processed
 
     def __repr__(self):
-        return f'"Task ID:{self.id} Duration:{self.duration} State: {self.processed}"\n'
+        return f'"ID:{self.id} Duration:{self.duration}"\n'
 
     def __str__(self):
         return self.__repr__()
+
+    def __key(self):
+        return self.id
+
+    def __hash__(self):
+        return hash(self.__key())
+
+    def __eq__(self, other):
+        if isinstance(other, Task):
+            return self.__key() == other.__key()
+        return NotImplemented

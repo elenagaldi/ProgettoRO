@@ -11,6 +11,7 @@ class Solution:
         self.jobs = copy.deepcopy(jobs_dict_readonly)
         self.cost = None
         self.greedy = greedy
+        self.cost_info = None
 
     def obj_function(self, count_vincoli: bool):
         cost = 0
@@ -234,12 +235,14 @@ class Solution:
                     job.last_batch = batch.id
                     job.delay = self.batches[job.last_batch].end - job.due_date
                     break
+            else:
+                job.due_date = 0
+                job.delay = 0
 
     def __eq__(self, other):
         if not isinstance(other, Solution):
             # don't attempt to compare against unrelated types
             return NotImplemented
-
         return self.batches == other.batches
 
     def translate_batches(self, n: int):
