@@ -24,7 +24,7 @@ class History:
         self.pert_rand_task = 1
         self.pert_shuffel = 1
 
-        self.max_running_time = 30
+        self.max_running_time = 180
         self.start_time = time.time()
 
     def normalize_pert(self):

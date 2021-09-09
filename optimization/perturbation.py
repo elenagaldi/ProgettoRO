@@ -94,6 +94,8 @@ def destroy_and_repairv3(solution: Solution):
     #     batch_to_destroy.append(batch)
 
     for late_job in late_jobs:
+        if len(batch_to_destroy) > len(solution.batches) * 0.5:
+            break
         b = new_solution.batches[late_job.last_batch]
         if b not in batch_to_destroy:
             batch_to_destroy.append(b)

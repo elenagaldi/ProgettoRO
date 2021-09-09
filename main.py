@@ -107,16 +107,16 @@ def mywrite_output(jl: [Job], tl: [Task], cap, solution: Solution):
 
 if __name__ == '__main__':
 
-    input_obj = XlsInputData(configuration.INPUT_FILE9)
-    jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
-    jobs_dict: dict = list_to_dict(jobs, jobs_num)
-    tasks = []
-    tasks = [t for j in jobs for t in j.task if t not in tasks]
+    # input_obj = XlsInputData(configuration.INPUT_FILE9)
+    # jobs, jobs_num, task_num, capacity_batch, durate_task_l = input_obj.read_jobs()
+    # jobs_dict: dict = list_to_dict(jobs, jobs_num)
+    # tasks = []
+    # tasks = [t for j in jobs for t in j.task if t not in tasks]
 
-    # initial_solution, jobs, tasks = randomInput.generate()
-    # capacity_batch = initial_solution.batches[0].capacity
-    # jobs_dict = copy.deepcopy(initial_solution.jobs)
-    # jobs_num = len(jobs_dict)
+    initial_solution, jobs, tasks = randomInput.generate()
+    capacity_batch = initial_solution.batches[0].capacity
+    jobs_dict = copy.deepcopy(initial_solution.jobs)
+    jobs_num = len(jobs_dict)
 
     tot_task = 0  # numero dei task totali
     for i in jobs:

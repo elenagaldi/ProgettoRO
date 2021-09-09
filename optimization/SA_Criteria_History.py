@@ -14,9 +14,9 @@ class SACriteriaHistory(History):
         self.k = 0
 
     def stop_condition(self):
-        # if (time.time() - self.start_time) > self.max_running_time:
-        #     print("Raggiunto tempo di esecuzione massimo")
-        #     return True
+        if (time.time() - self.start_time) > self.max_running_time:
+            print("Raggiunto tempo di esecuzione massimo")
+            return True
         if self.current_cost == 0:
             print("Trovato ottimo globale = 0")
             return True

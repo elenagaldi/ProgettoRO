@@ -13,12 +13,14 @@ def local_search(solution: Solution, neighborhood=0):
     while True:
         if neighborhood == 0:
             best_improvement_strategy = False if len(solution.batches) > 20 else True
-            if new_solution.cost >= 100:
+            if new_solution.cost >= 200:
+                # si può usare la fast_search per velocizzare la ricerca
                 new_solution = search(new_solution, best_improvement_strategy)
             else:
                 new_solution = search(new_solution, best_improvement_strategy)
         else:
-            if new_solution.cost >= 50:
+            if new_solution.cost >= 200:
+                # si può usare la fast_swaptask_search per velocizzare la ricerca
                 new_solution = swaptask_search(new_solution, best_improvement_strategy=False)
             else:
                 new_solution = swaptask_search(new_solution, best_improvement_strategy=True)
